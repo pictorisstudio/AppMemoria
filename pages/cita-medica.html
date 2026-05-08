@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Cita médica | Recordar +</title>
+
+  <link rel="stylesheet" href="../CSS/styles.css" />
+  <script src="../JS/cita-medica.js" defer></script>
+</head>
+
+<body>
+
+  <main class="app-container medical-app">
+
+    <!-- Pantalla 1: llamada -->
+    <section class="medical-screen is-active" id="screen-call">
+
+      <article class="welcome-card medical-card">
+
+        <header class="medical-header">
+
+          <a class="back-button medical-back" href="../index.html" aria-label="Volver al menú principal">
+            ‹
+          </a>
+
+          <h1>Llamada</h1>
+
+        </header>
+
+        <div class="call-content" id="call-content">
+
+        <div class="clinic-name">
+            <span class="clinic-icon">🏥</span>
+            <span>OS Salud</span>
+        </div>
+
+        <div class="call-visual" aria-hidden="true">
+            <span class="ring-wave ring-wave-one"></span>
+            <span class="ring-wave ring-wave-two"></span>
+            <span class="ring-wave ring-wave-three"></span>
+
+            <button class="call-button is-ringing" id="answer-call" type="button" aria-label="Contestar llamada">
+            <span aria-hidden="true">☎</span>
+            </button>
+        </div>
+
+        <p class="small-text" id="call-status">
+            Llamada entrante...
+        </p>
+
+        <button class="sound-button" id="enable-sound" type="button">
+            🔊 Activar sonido
+        </button>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- Pantalla 2: mensaje de la cita -->
+    <section class="medical-screen" id="screen-message">
+
+      <article class="welcome-card medical-card">
+
+        <header class="medical-header">
+
+          <button class="back-button medical-back" type="button" data-prev="screen-call" aria-label="Volver">
+            ‹
+          </button>
+
+          <h1>Información</h1>
+
+        </header>
+
+        <div class="appointment-layout">
+
+          <div class="appointment-message">
+            <p>
+              Hola, su cita es el lunes 6 de abril.
+            </p>
+          </div>
+
+          <div class="doctor-emoji" aria-hidden="true">
+            👩‍⚕️
+          </div>
+
+        </div>
+
+        <div class="appointment-actions">
+
+        <button class="sound-button repeat-button" id="repeat-message" type="button">
+            🔊 Repetir mensaje
+        </button>
+
+        <button class="memory-button button-one medical-next-button" id="continue-after-call" type="button" data-next="screen-question-shift" disabled>
+            Continuar
+        </button>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- Pantalla 3: pregunta mañana o tarde -->
+    <section class="medical-screen" id="screen-question-shift">
+
+      <article class="welcome-card medical-card">
+
+        <header class="medical-header">
+
+
+          <h1>Pregunta 1</h1>
+
+        </header>
+
+        <div class="question-content">
+
+          <h2>¿Prefiere en la mañana o en la tarde?</h2>
+
+          <div class="answer-grid">
+
+            <button class="answer-option" type="button" data-preference="morning" data-next="screen-question-hour">
+            <span class="answer-emoji">☀️</span>
+            <span>Mañana</span>
+            </button>
+
+            <button class="answer-option" type="button" data-preference="afternoon" data-next="screen-question-hour">
+            <span class="answer-emoji">🌙</span>
+            <span>Tarde</span>
+            </button>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- Pantalla 4: pregunta horario -->
+    <section class="medical-screen" id="screen-question-hour">
+
+      <article class="welcome-card medical-card">
+
+        <header class="medical-header">
+
+
+          <h1>Pregunta 2</h1>
+
+        </header>
+
+        <div class="question-content">
+
+          <h2>¿En qué horario prefiere?</h2>
+
+          <div class="answer-grid">
+
+            <button class="answer-option" type="button" data-hour="morning" data-next="screen-question-date">
+            <span class="answer-emoji">☀️</span>
+            <span>10:00 am</span>
+            </button>
+
+            <button class="answer-option" type="button" data-hour="afternoon" data-next="screen-question-date">
+            <span class="answer-emoji">🌙</span>
+            <span>4:00 pm</span>
+            </button>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- Pantalla 5: pregunta fecha -->
+    <section class="medical-screen" id="screen-question-date">
+
+      <article class="welcome-card medical-card">
+
+        <header class="medical-header">
+
+
+          <h1>Pregunta 3</h1>
+
+        </header>
+
+        <div class="question-content">
+
+          <h2>¿Cuál es el día de la cita?</h2>
+
+          <div class="date-grid">
+
+            <button class="date-option" type="button" data-correct="false" data-next="screen-results">
+              13 de mayo
+            </button>
+
+            <button class="date-option" type="button" data-correct="true" data-next="screen-results">
+              6 de abril
+            </button>
+
+            <button class="date-option" type="button" data-correct="false" data-next="screen-results">
+              20 de abril
+            </button>
+
+            <button class="date-option" type="button" data-correct="false" data-next="screen-results">
+              2 de mayo
+            </button>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- Pantalla 6: resultados -->
+    <section class="medical-screen" id="screen-results">
+
+      <article class="welcome-card medical-card">
+
+        <header class="medical-header medical-header-center">
+          <h1>Resultados</h1>
+        </header>
+
+        <div class="results-box">
+
+          <p>
+            <strong>Aciertos:</strong>
+            <span id="result-correct">0/3</span>
+          </p>
+
+          <p>
+            <strong>Errores:</strong>
+            <span id="result-errors">0</span>
+          </p>
+
+          <p>
+            <strong>Tiempo:</strong>
+            <span id="result-time">0:00</span>
+          </p>
+
+          <div class="result-trophy" aria-hidden="true">
+            🏆
+          </div>
+
+        </div>
+
+        <div class="medical-actions">
+
+        <button class="memory-button button-one medical-action-button" type="button" id="download-results">
+            Descargar CSV
+        </button>
+
+        <button class="memory-button button-one medical-action-button" type="button" id="restart-test">
+            Repetir
+        </button>
+
+        <a class="memory-button button-two medical-action-button" href="../index.html">
+            Salir
+        </a>
+
+        </div>
+
+      </article>
+
+    </section>
+
+  </main>
+
+</body>
+</html>

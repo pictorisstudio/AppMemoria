@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Recordar +</title>
+
+  <link rel="stylesheet" href="CSS/styles.css" />
+  <script src="JS/index.js" defer></script>
+</head>
+
+<body>
+
+  <main class="app-container">
+
+    <!-- Pantalla de carga -->
+    <section class="screen screen-splash is-active" id="screen-splash">
+
+      <article class="welcome-card splash-card">
+
+        <div class="splash-background">
+          <div class="circle circle-one"></div>
+          <div class="circle circle-two"></div>
+          <div class="circle circle-three"></div>
+        </div>
+
+        <div class="splash-content">
+          <h1>RECORDAR +</h1>
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- Pantalla principal -->
+    <section class="screen" id="screen-home">
+
+      <article class="welcome-card">
+
+        <div class="main-icon">
+          🧠
+        </div>
+
+        <h1>¡HOLA!</h1>
+
+        <div class="text-box">
+          <p>
+            Estoy aquí para ayudarte a recordar lo importante en tu día a día.
+          </p>
+        </div>
+
+        <div class="button-group">
+
+          <button class="memory-button button-one" type="button" data-screen="screen-tests">
+            <span class="button-icon">🧩</span>
+            <span>Pruebas</span>
+          </button>
+
+          <button class="memory-button button-two" type="button" id="help-button">
+            <span class="button-icon">❔</span>
+            <span>Ayuda</span>
+          </button>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- Pantalla de pruebas -->
+    <section class="screen" id="screen-tests">
+
+      <article class="welcome-card tests-card">
+
+        <header class="section-header">
+
+        <button class="back-button" type="button" data-screen="screen-home" aria-label="Volver al inicio">
+          ‹
+        </button>
+
+          <h1>Pruebas</h1>
+
+        </header>
+
+        <div class="tests-grid">
+
+          <a class="test-option card-blue" href="pages/cita-medica.html">
+            <span class="test-emoji" aria-hidden="true">📋</span>
+            <span>Cita médica</span>
+          </a>
+
+          <a class="test-option card-yellow" href="pages/preparar-comida.html">
+            <span class="test-emoji" aria-hidden="true">🍲</span>
+            <span>Preparar comida</span>
+          </a>
+
+          <a class="test-option card-green" href="pages/medicamentos.html">
+            <span class="test-emoji" aria-hidden="true">💊</span>
+            <span>Tomar medicamentos</span>
+          </a>
+
+          <a class="test-option card-pink" href="pages/compras.html">
+            <span class="test-emoji" aria-hidden="true">🛒</span>
+            <span>Hacer compras</span>
+          </a>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- Ayuda básica -->
+    <div class="help-modal" id="help-modal">
+
+      <div class="help-box">
+
+        <h2>Ayuda</h2>
+
+        <p>
+          Selecciona una prueba y responde con calma. Cada actividad te ayudará a practicar situaciones de la vida diaria.
+        </p>
+
+        <button class="memory-button button-one help-close" type="button" id="close-help">
+          Entendido
+        </button>
+
+      </div>
+
+    </div>
+
+        <div class="screen-wipe" id="screen-wipe"></div>
+
+  </main>
+
+</body>
+</html>
