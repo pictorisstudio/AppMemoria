@@ -11,6 +11,8 @@ const enableSoundButton = document.getElementById("enable-sound");
 const repeatMessageButton = document.getElementById("repeat-message");
 const continueAfterCallButton = document.getElementById("continue-after-call");
 const callStatus = document.getElementById("call-status");
+const llamadaMedicaAudio = new Audio("../Audio/LlamadaMedica.mp3");
+llamadaMedicaAudio.preload = "auto";
 
 const gameState = {
   correct: 0,
@@ -120,41 +122,37 @@ function playEndSound() {
   playTone(380, 0.16, 0, 0.1, "sine");
 }
 
-function speakAppointmentMessage() {
+function playMedicalCallAudio({ goToMessageScreen = false } = {}) {
   if (!continueAfterCallButton) return;
 
   continueAfterCallButton.disabled = true;
 
-  if (!("speechSynthesis" in window)) {
-    continueAfterCallButton.disabled = false;
-    return;
-  }
+  llamadaMedicaAudio.pause();
+  llamadaMedicaAudio.currentTime = 0;
 
-  window.speechSynthesis.cancel();
-
-  currentUtterance = new SpeechSynthesisUtterance(
-    "Hola. Su cita es el lunes seis de abril."
-  );
-
-  currentUtterance.lang = "es-CO";
-  currentUtterance.rate = 0.82;
-  currentUtterance.pitch = 1;
-  currentUtterance.volume = 1;
-
-  currentUtterance.onend = () => {
+  llamadaMedicaAudio.onended = () => {
     playEndSound();
+
+    if (goToMessageScreen) {
+      showMedicalScreen("screen-message");
+    }
+
     continueAfterCallButton.disabled = false;
   };
 
-  currentUtterance.onerror = () => {
-    continueAfterCallButton.disabled = false;
+  llamadaMedicaAudio.onerror = () => {
+    console.error("No se pudo cargar el audio LlamadaMedica.mp3");
+    callStatus.textContent = "No se pudo reproducir el audio.";
+    answerCallButton.disabled = false;
+    enableSoundButton.disabled = false;
   };
 
-  window.speechSynthesis.speak(currentUtterance);
-
-  setTimeout(() => {
-    continueAfterCallButton.disabled = false;
-  }, 5500);
+  llamadaMedicaAudio.play().catch((error) => {
+    console.error("El navegador bloqueó la reproducción del audio:", error);
+    callStatus.textContent = "Presione nuevamente para reproducir la llamada.";
+    answerCallButton.disabled = false;
+    enableSoundButton.disabled = false;
+  });
 }
 
 async function answerCall() {
@@ -172,7 +170,7 @@ async function answerCall() {
 
   gameState.startTime = performance.now();
 
-  callStatus.textContent = "Llamada conectada...";
+  callStatus.textContent = "Llamada conectada... Escuche la información completa.";
 
   answerCallButton.classList.remove("is-ringing");
   answerCallButton.classList.add("is-connected");
@@ -182,8 +180,9 @@ async function answerCall() {
   }
 
   setTimeout(() => {
-    showMedicalScreen("screen-message");
-    speakAppointmentMessage();
+    playMedicalCallAudio({
+      goToMessageScreen: true
+    });
   }, 850);
 }
 
@@ -227,6 +226,11 @@ function resetMedicalTest() {
   }
 
   stopRingtone();
+
+  llamadaMedicaAudio.pause();
+llamadaMedicaAudio.currentTime = 0;
+llamadaMedicaAudio.onended = null;
+llamadaMedicaAudio.onerror = null;
 
   if (audioEnabled) {
     startRingtone();
@@ -424,7 +428,9 @@ enableSoundButton.addEventListener("click", async () => {
 answerCallButton.addEventListener("click", answerCall);
 
 repeatMessageButton.addEventListener("click", () => {
-  speakAppointmentMessage();
+  playMedicalCallAudio({
+    goToMessageScreen: false
+  });
 });
 
 restartButton.addEventListener("click", resetMedicalTest);
@@ -433,9 +439,8 @@ downloadResultsButton.addEventListener("click", downloadCSVResults);
 window.addEventListener("beforeunload", () => {
   stopRingtone();
 
-  if ("speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-  }
+  llamadaMedicaAudio.pause();
+  llamadaMedicaAudio.currentTime = 0;
 });
 
 window.addEventListener("load", () => {
