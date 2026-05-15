@@ -11,16 +11,37 @@ const enableSoundButton = document.getElementById("enable-sound");
 const repeatMessageButton = document.getElementById("repeat-message");
 const continueAfterCallButton = document.getElementById("continue-after-call");
 const callStatus = document.getElementById("call-status");
+const phaseButtons = document.querySelectorAll("[data-phase]");
+const fullPhaseButton = document.querySelector("[data-phase-mode='all']");
 const llamadaMedicaAudio = new Audio("../Audio/LlamadaMedica.mp3");
+const calendarDaysContainer = document.getElementById("calendar-days");
+const calendarMonthLabel = document.getElementById("calendar-month-label");
+const calendarQuestionTitle = document.getElementById("calendar-question-title");
+const calendarQuestionText = document.getElementById("calendar-question-text");
+const calendarFeedback = document.getElementById("calendar-feedback");
+
 llamadaMedicaAudio.preload = "auto";
 
+const calendarState = {
+  year: 2026,
+  month: 3, // Abril. En JS enero es 0, abril es 3.
+  monthName: "Abril",
+  correctDay: 6,
+  selectedDay: null,
+  nextScreen: "screen-question-shift",
+  mode: "first-calendar"
+};
+
 const gameState = {
+  currentPhase: null,
+  phaseMode: "single",
   correct: 0,
   errors: 0,
   totalQuestions: 2,
   selectedPreference: null,
   selectedHour: null,
   selectedDate: null,
+  selectedFinalDate: null,
   finalTimeMs: 0,
   startTime: null
 };
@@ -43,6 +64,112 @@ function showMedicalScreen(screenId) {
   });
 
   targetScreen.classList.add("is-active");
+}
+
+function renderCalendar() {
+  if (!calendarDaysContainer || !calendarMonthLabel) return;
+
+  calendarDaysContainer.innerHTML = "";
+
+  calendarMonthLabel.textContent = `${calendarState.monthName} ${calendarState.year}`;
+
+  const firstDayOfMonth = new Date(calendarState.year, calendarState.month, 1).getDay();
+
+  // Ajuste para que la semana empiece en lunes.
+  // getDay(): domingo = 0, lunes = 1...
+  const emptyDaysBeforeStart = (firstDayOfMonth + 6) % 7;
+
+  const totalDaysInMonth = new Date(
+    calendarState.year,
+    calendarState.month + 1,
+    0
+  ).getDate();
+
+  for (let i = 0; i < emptyDaysBeforeStart; i++) {
+    const emptyDay = document.createElement("div");
+    emptyDay.className = "calendar-empty-day";
+    calendarDaysContainer.appendChild(emptyDay);
+  }
+
+  for (let day = 1; day <= totalDaysInMonth; day++) {
+    const dayButton = document.createElement("button");
+
+    dayButton.className = "calendar-day";
+    dayButton.type = "button";
+    dayButton.textContent = day;
+    dayButton.dataset.calendarDay = day;
+
+    dayButton.setAttribute("aria-label", `Seleccionar ${day} de ${calendarState.monthName}`);
+
+    calendarDaysContainer.appendChild(dayButton);
+  }
+}
+
+function startCalendarSelection({
+  mode = "first-calendar",
+  nextScreen = "screen-question-shift",
+  title = "Selecciona el día de la cita",
+  text = "Marca en el calendario la fecha que escuchaste durante la llamada."
+} = {}) {
+  calendarState.mode = mode;
+  calendarState.nextScreen = nextScreen;
+  calendarState.selectedDay = null;
+
+  if (calendarQuestionTitle) {
+    calendarQuestionTitle.textContent = title;
+  }
+
+  if (calendarQuestionText) {
+    calendarQuestionText.textContent = text;
+  }
+
+  if (calendarFeedback) {
+    calendarFeedback.textContent = "Selecciona un día para continuar.";
+  }
+
+  renderCalendar();
+  showMedicalScreen("screen-calendar-date");
+}
+
+function handleCalendarDaySelection(button) {
+  const selectedDay = Number(button.dataset.calendarDay);
+  const isCorrect = selectedDay === calendarState.correctDay;
+
+  calendarState.selectedDay = selectedDay;
+
+if (calendarState.mode === "first-calendar") {
+  gameState.selectedDate = `${selectedDay} de ${calendarState.monthName}`;
+}
+
+if (calendarState.mode === "final-calendar") {
+  gameState.selectedFinalDate = `${selectedDay} de ${calendarState.monthName}`;
+}
+
+  const calendarButtons = calendarDaysContainer.querySelectorAll(".calendar-day");
+
+  calendarButtons.forEach((calendarButton) => {
+    calendarButton.disabled = true;
+  });
+
+  if (isCorrect) {
+    gameState.correct++;
+    button.classList.add("is-correct");
+
+    if (calendarFeedback) {
+      calendarFeedback.textContent = "Fecha seleccionada correctamente.";
+    }
+  } else {
+    gameState.errors++;
+    button.classList.add("is-wrong");
+
+    if (calendarFeedback) {
+      calendarFeedback.textContent = `La fecha correcta era el ${calendarState.correctDay} de ${calendarState.monthName}.`;
+    }
+  }
+
+  setTimeout(() => {
+    showMedicalScreen(calendarState.nextScreen);
+  }, 1200);
 }
 
 function createAudioContext() {
@@ -133,9 +260,14 @@ function playMedicalCallAudio({ goToMessageScreen = false } = {}) {
   llamadaMedicaAudio.onended = () => {
     playEndSound();
 
-    if (goToMessageScreen) {
-      showMedicalScreen("screen-message");
-    }
+if (goToMessageScreen) {
+  startCalendarSelection({
+    mode: "first-calendar",
+    nextScreen: "screen-question-shift",
+    title: "Selecciona el día de la cita",
+    text: "Marca en el calendario la fecha que escuchaste durante la llamada."
+  });
+}
 
     continueAfterCallButton.disabled = false;
   };
@@ -186,14 +318,22 @@ async function answerCall() {
   }, 850);
 }
 
-function resetMedicalTest() {
+function resetMedicalTest(targetScreen = "screen-phase-selection") {
+  const shouldGoToCall = targetScreen === "screen-call";
+
   gameState.correct = 0;
   gameState.errors = 0;
   gameState.selectedPreference = null;
   gameState.selectedHour = null;
   gameState.selectedDate = null;
+  gameState.selectedFinalDate = null;
   gameState.finalTimeMs = 0;
   gameState.startTime = null;
+
+  if (!shouldGoToCall) {
+    gameState.currentPhase = null;
+    gameState.phaseMode = "single";
+  }
 
   const buttons = document.querySelectorAll("[data-correct], [data-preference], [data-hour]");
 
@@ -221,22 +361,27 @@ function resetMedicalTest() {
     callStatus.textContent = "Llamada entrante...";
   }
 
-  if ("speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-  }
-
   stopRingtone();
 
   llamadaMedicaAudio.pause();
-llamadaMedicaAudio.currentTime = 0;
-llamadaMedicaAudio.onended = null;
-llamadaMedicaAudio.onerror = null;
+  llamadaMedicaAudio.currentTime = 0;
+  llamadaMedicaAudio.onended = null;
+  llamadaMedicaAudio.onerror = null;
 
-  if (audioEnabled) {
+  if (audioEnabled && shouldGoToCall) {
     startRingtone();
   }
 
-  showMedicalScreen("screen-call");
+  showMedicalScreen(targetScreen);
+}
+
+function startPhase(phaseNumber) {
+  gameState.currentPhase = Number(phaseNumber);
+  gameState.phaseMode = "single";
+
+  resetMedicalTest("screen-call");
+
+  gameState.currentPhase = Number(phaseNumber);
 }
 
 function formatMilliseconds(milliseconds) {
@@ -357,7 +502,16 @@ function handleHourSelection(button) {
   }
 
   setTimeout(() => {
-    showMedicalScreen(nextScreen);
+    if (nextScreen === "screen-question-date") {
+      startCalendarSelection({
+        mode: "final-calendar",
+        nextScreen: "screen-results",
+        title: "Confirma el día de la cita",
+        text: "Selecciona nuevamente en el calendario el día de la cita médica."
+      });
+    } else {
+      showMedicalScreen(nextScreen);
+    }
   }, 700);
 }
 
@@ -390,10 +544,22 @@ function handleCorrectAnswer(button) {
 }
 
 document.addEventListener("click", (event) => {
+  const phaseButton = event.target.closest("[data-phase]");
   const preferenceButton = event.target.closest("[data-preference]");
   const hourButton = event.target.closest("[data-hour]");
   const answerButton = event.target.closest("[data-correct]");
   const nextButton = event.target.closest("[data-next]");
+  const calendarDayButton = event.target.closest("[data-calendar-day]");
+
+  if (calendarDayButton) {
+  handleCalendarDaySelection(calendarDayButton);
+  return;
+}
+
+  if (phaseButton && !phaseButton.disabled) {
+    startPhase(phaseButton.dataset.phase);
+    return;
+  }
 
   if (preferenceButton) {
     handlePreferenceSelection(preferenceButton);
@@ -433,7 +599,9 @@ repeatMessageButton.addEventListener("click", () => {
   });
 });
 
-restartButton.addEventListener("click", resetMedicalTest);
+restartButton.addEventListener("click", () => {
+  resetMedicalTest("screen-call");
+});
 downloadResultsButton.addEventListener("click", downloadCSVResults);
 
 window.addEventListener("beforeunload", () => {
@@ -444,5 +612,5 @@ window.addEventListener("beforeunload", () => {
 });
 
 window.addEventListener("load", () => {
-  resetMedicalTest();
+  resetMedicalTest("screen-phase-selection");
 });

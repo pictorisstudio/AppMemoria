@@ -14,8 +14,82 @@
 
   <main class="app-container medical-app">
 
+<!-- Pantalla inicial: selección de fases -->
+<section class="medical-screen is-active" id="screen-phase-selection">
+
+  <article class="welcome-card medical-card phase-card">
+
+    <header class="medical-header">
+
+      <a class="back-button medical-back" href="../index.html" aria-label="Volver al menú principal">
+        ‹
+      </a>
+
+      <h1>Cita médica</h1>
+
+    </header>
+
+    <div class="phase-selection-content">
+
+      <div class="phase-intro-text">
+        <h2>Selecciona una fase</h2>
+        <p>
+          Cada fase presenta una situación de memoria cotidiana relacionada con una cita médica.
+        </p>
+      </div>
+
+      <div class="phase-grid">
+
+        <button class="phase-option card-blue" type="button" data-phase="1">
+          <span class="phase-number">Fase 1</span>
+          <span class="phase-title">Cita EPS</span>
+          <span class="phase-description">
+            Escuchar la llamada, elegir fecha, jornada y hora de la cita.
+          </span>
+        </button>
+
+        <button class="phase-option card-yellow" type="button" data-phase="2">
+          <span class="phase-number">Fase 2</span>
+          <span class="phase-title">Cita y encargo familiar</span>
+          <span class="phase-description">
+            Recordar la cita médica y los alimentos pedidos por la hija.
+          </span>
+        </button>
+
+        <button class="phase-option card-green is-disabled" type="button" data-phase="3" disabled>
+          <span class="phase-number">Fase 3</span>
+          <span class="phase-title">Por estructurar</span>
+          <span class="phase-description">
+            Esta fase se definirá en la siguiente etapa del proyecto.
+          </span>
+        </button>
+
+        <button class="phase-option card-pink is-disabled" type="button" data-phase="4" disabled>
+          <span class="phase-number">Fase 4</span>
+          <span class="phase-title">Por estructurar</span>
+          <span class="phase-description">
+            Esta fase se definirá en la siguiente etapa del proyecto.
+          </span>
+        </button>
+
+      </div>
+
+      <button class="memory-button button-one phase-full-button" type="button" data-phase-mode="all" disabled>
+        Recorrer todas las fases
+      </button>
+
+      <p class="small-text phase-note">
+        El recorrido completo se activará cuando las cuatro fases estén estructuradas.
+      </p>
+
+    </div>
+
+  </article>
+
+</section>
+
     <!-- Pantalla 1: llamada -->
-    <section class="medical-screen is-active" id="screen-call">
+    <section class="medical-screen" id="screen-call">
 
       <article class="welcome-card medical-card">
 
@@ -59,6 +133,65 @@
       </article>
 
     </section>
+
+    <!-- Pantalla 2: calendario para seleccionar fecha -->
+<section class="medical-screen" id="screen-calendar-date">
+
+  <article class="welcome-card medical-card calendar-card-screen">
+
+    <header class="medical-header">
+
+      <button class="back-button medical-back" type="button" data-next="screen-phase-selection" aria-label="Volver">
+        ‹
+      </button>
+
+      <h1>Calendario</h1>
+
+    </header>
+
+    <div class="calendar-content">
+
+      <div class="calendar-instruction-box">
+        <h2 id="calendar-question-title">
+          Selecciona el día de la cita
+        </h2>
+
+        <p id="calendar-question-text">
+          Marca en el calendario la fecha que escuchaste durante la llamada.
+        </p>
+      </div>
+
+      <div class="calendar-box">
+
+        <div class="calendar-month" id="calendar-month-label">
+          Abril 2026
+        </div>
+
+        <div class="calendar-weekdays">
+          <span>Lun</span>
+          <span>Mar</span>
+          <span>Mié</span>
+          <span>Jue</span>
+          <span>Vie</span>
+          <span>Sáb</span>
+          <span>Dom</span>
+        </div>
+
+        <div class="calendar-days" id="calendar-days">
+          <!-- Los días se generan con JavaScript -->
+        </div>
+
+      </div>
+
+      <p class="small-text calendar-feedback" id="calendar-feedback">
+        Selecciona un día para continuar.
+      </p>
+
+    </div>
+
+  </article>
+
+</section>
 
     <!-- Pantalla 2: mensaje de la cita -->
     <section class="medical-screen" id="screen-message">
@@ -167,48 +300,6 @@
             <button class="answer-option" type="button" data-hour="afternoon" data-next="screen-question-date">
             <span class="answer-emoji">🌙</span>
             <span>4:00 pm</span>
-            </button>
-
-          </div>
-
-        </div>
-
-      </article>
-
-    </section>
-
-    <!-- Pantalla 5: pregunta fecha -->
-    <section class="medical-screen" id="screen-question-date">
-
-      <article class="welcome-card medical-card">
-
-        <header class="medical-header">
-
-
-          <h1>Pregunta 3</h1>
-
-        </header>
-
-        <div class="question-content">
-
-          <h2>¿Cuál es el día de la cita?</h2>
-
-          <div class="date-grid">
-
-            <button class="date-option" type="button" data-correct="false" data-next="screen-results">
-              13 de mayo
-            </button>
-
-            <button class="date-option" type="button" data-correct="true" data-next="screen-results">
-              6 de abril
-            </button>
-
-            <button class="date-option" type="button" data-correct="false" data-next="screen-results">
-              20 de abril
-            </button>
-
-            <button class="date-option" type="button" data-correct="false" data-next="screen-results">
-              2 de mayo
             </button>
 
           </div>
