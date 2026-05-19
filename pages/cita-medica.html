@@ -128,6 +128,10 @@
             🔊 Activar sonido
         </button>
 
+        <button class="sound-button" id="skip-call" type="button">
+        Saltar llamada
+      </button> 
+
         </div>
 
       </article>
@@ -281,14 +285,17 @@
 
         <header class="medical-header">
 
-
-          <h1>Pregunta 2</h1>
+        <h1 id="hour-screen-title">Pregunta 2</h1>
 
         </header>
 
         <div class="question-content">
 
-          <h2>¿En qué horario prefiere?</h2>
+        <h2 id="hour-question-title">¿En qué horario prefiere?</h2>
+
+        <p class="small-text" id="hour-question-text">
+          Selecciona el horario de la cita.
+        </p>
 
           <div class="answer-grid">
 
@@ -308,7 +315,123 @@
 
       </article>
 
-    </section>
+</section>
+
+<!-- Pantalla: llamada de la hija -->
+<section class="medical-screen" id="screen-daughter-call">
+
+  <article class="welcome-card medical-card">
+
+    <header class="medical-header">
+      <h1>Llamada</h1>
+    </header>
+
+    <div class="call-content">
+
+      <div class="clinic-name">
+        <span class="clinic-icon">👩‍🦱</span>
+        <span>Hija</span>
+      </div>
+
+      <div class="call-visual" aria-hidden="true">
+        <span class="ring-wave ring-wave-one"></span>
+        <span class="ring-wave ring-wave-two"></span>
+        <span class="ring-wave ring-wave-three"></span>
+
+        <button class="call-button is-ringing" id="answer-daughter-call" type="button" aria-label="Contestar llamada de la hija">
+          <span aria-hidden="true">☎</span>
+        </button>
+      </div>
+
+      <p class="small-text" id="daughter-call-status">
+        Llamada entrante de tu hija...
+      </p>
+
+      <button class="sound-button" id="skip-daughter-call" type="button">
+        Saltar llamada
+      </button>
+
+    </div>
+
+  </article>
+
+</section>
+
+<!-- Pantalla: selección de alimentos -->
+<section class="medical-screen" id="screen-food-question">
+
+  <article class="welcome-card medical-card food-card-screen">
+
+    <header class="medical-header">
+      <h1>Encargo familiar</h1>
+    </header>
+
+    <div class="food-content">
+
+      <div class="food-instruction-box">
+        <h2>¿Qué alimentos te pidió tu hija?</h2>
+        <p>
+          Selecciona todos los alimentos que recuerdes de la llamada.
+        </p>
+      </div>
+
+      <div class="food-grid">
+
+        <button class="food-option" type="button" data-food="banano">
+          <span class="food-emoji">🍌</span>
+          <span>Banano</span>
+        </button>
+
+        <button class="food-option" type="button" data-food="manzana">
+          <span class="food-emoji">🍎</span>
+          <span>Manzana</span>
+        </button>
+
+        <button class="food-option" type="button" data-food="zanahoria">
+          <span class="food-emoji">🥕</span>
+          <span>Zanahoria</span>
+        </button>
+
+        <button class="food-option" type="button" data-food="pollo">
+          <span class="food-emoji">🍗</span>
+          <span>Pollo</span>
+        </button>
+
+        <button class="food-option" type="button" data-food="tomate">
+          <span class="food-emoji">🍅</span>
+          <span>Tomate</span>
+        </button>
+
+        <button class="food-option" type="button" data-food="cebolla">
+          <span class="food-emoji">🧅</span>
+          <span>Cebolla</span>
+        </button>
+
+        <button class="food-option" type="button" data-food="papas">
+          <span class="food-emoji">🥔</span>
+          <span>Papas</span>
+        </button>
+
+        <button class="food-option" type="button" data-food="uvas">
+          <span class="food-emoji">🍇</span>
+          <span>Uvas</span>
+        </button>
+
+      </div>
+
+      <p class="small-text food-feedback" id="food-feedback">
+        Selecciona los alimentos y confirma tu respuesta.
+      </p>
+
+      <button class="memory-button button-one medical-next-button" type="button" id="confirm-food-selection" disabled>
+        Confirmar alimentos
+      </button>
+
+    </div>
+
+  </article>
+
+</section>
 
     <!-- Pantalla 6: resultados -->
     <section class="medical-screen" id="screen-results">
@@ -323,7 +446,7 @@
 
           <p>
             <strong>Aciertos:</strong>
-            <span id="result-correct">0/3</span>
+            <span id="result-correct">0/4</span>
           </p>
 
           <p>

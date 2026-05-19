@@ -1241,6 +1241,119 @@ a:focus-visible {
   cursor: not-allowed;
 }
 
+/* =========================
+   SELECCIÓN DE ALIMENTOS
+========================= */
+
+.food-card-screen {
+  justify-content: center;
+  gap: 34px;
+}
+
+.food-content {
+  width: 100%;
+  max-width: 880px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+.food-instruction-box {
+  width: 100%;
+  max-width: 760px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.food-instruction-box h2 {
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  line-height: 1.15;
+  font-weight: 900;
+  color: var(--text-main);
+}
+
+.food-instruction-box p {
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--text-soft);
+}
+
+.food-grid {
+  width: 100%;
+  max-width: 860px;
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
+  gap: 18px;
+}
+
+.food-option {
+  min-height: 150px;
+  padding: 18px 12px;
+
+  border: none;
+  border-radius: 28px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+
+  background: var(--blue-light);
+  color: var(--text-main);
+
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  line-height: 1.15;
+  font-weight: 900;
+
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(30, 64, 175, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.food-option:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 38px rgba(30, 64, 175, 0.2);
+}
+
+.food-option:active {
+  transform: scale(0.97);
+}
+
+.food-emoji {
+  font-size: clamp(3rem, 5vw, 4.2rem);
+  line-height: 1;
+}
+
+.food-option.is-selected {
+  background: #dbeafe;
+  outline: 5px solid var(--blue-main);
+}
+
+.food-option.is-correct {
+  background: #dcfce7;
+  outline: 5px solid #16a34a;
+}
+
+.food-option.is-wrong {
+  background: #fee2e2;
+  outline: 5px solid #dc2626;
+}
+
+.food-option:disabled {
+  cursor: not-allowed;
+}
+
+.food-feedback {
+  min-height: 42px;
+}
+
 /* Resultados */
 
 .results-box {
@@ -1334,6 +1447,35 @@ a:focus-visible {
 }
 
 @media (max-width: 620px) {
+
+  .food-content {
+  gap: 22px;
+}
+
+.food-instruction-box h2 {
+  font-size: 2rem;
+}
+
+.food-instruction-box p {
+  font-size: 1.15rem;
+}
+
+.food-grid {
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 14px;
+}
+
+.food-option {
+  min-height: 125px;
+  padding: 16px 10px;
+  border-radius: 24px;
+  font-size: 1.05rem;
+}
+
+.food-emoji {
+  font-size: 3.2rem;
+}
+
   .medical-card {
     gap: 26px;
   }
@@ -1530,6 +1672,20 @@ a:focus-visible {
 }
 
 @media (max-width: 390px) {
+
+  .food-grid {
+  gap: 10px;
+}
+
+.food-option {
+  min-height: 112px;
+  border-radius: 22px;
+}
+
+.food-emoji {
+  font-size: 2.8rem;
+}
+
   .answer-grid {
     grid-template-columns: 1fr;
   }
