@@ -1,561 +1,688 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Cita médica | Recordar +</title>
+    <title>Cita médica | Recordar +</title>
 
-  <link rel="stylesheet" href="../CSS/styles.css" />
-  <script src="../JS/cita-medica.js" defer></script>
-</head>
+    <link rel="stylesheet" href="../CSS/styles.css" />
+    <script src="../JS/cita-medica.js" defer></script>
+  </head>
 
-<body>
+  <body>
+    <main class="app-container medical-app">
+      <!-- Pantalla inicial: selección de fases -->
+      <section class="medical-screen is-active" id="screen-phase-selection">
+        <article class="welcome-card medical-card phase-card">
+          <header class="medical-header">
+            <a
+              class="back-button medical-back"
+              href="../index.html"
+              aria-label="Volver al menú principal"
+            >
+              ‹
+            </a>
 
-  <main class="app-container medical-app">
+            <h1>Cita médica</h1>
+          </header>
 
-<!-- Pantalla inicial: selección de fases -->
-<section class="medical-screen is-active" id="screen-phase-selection">
+          <div class="phase-selection-content">
+            <div class="phase-intro-text">
+              <h2>Selecciona una fase</h2>
+              <p>
+                Cada fase presenta una situación de memoria cotidiana
+                relacionada con una cita médica.
+              </p>
+            </div>
 
-  <article class="welcome-card medical-card phase-card">
+            <div class="phase-grid">
+              <button
+                class="phase-option card-blue"
+                type="button"
+                data-phase="1"
+              >
+                <span class="phase-number">Fase 1</span>
+                <span class="phase-title">Cita EPS</span>
+                <span class="phase-description">
+                  Escuchar la llamada, elegir fecha, jornada y hora de la cita.
+                </span>
+              </button>
 
-    <header class="medical-header">
+              <button
+                class="phase-option card-yellow"
+                type="button"
+                data-phase="2"
+              >
+                <span class="phase-number">Fase 2</span>
+                <span class="phase-title">Cita y encargo familiar</span>
+                <span class="phase-description">
+                  Recordar la cita médica y los alimentos pedidos por la hija.
+                </span>
+              </button>
 
-      <a class="back-button medical-back" href="../index.html" aria-label="Volver al menú principal">
-        ‹
-      </a>
+              <button
+                class="phase-option card-green"
+                type="button"
+                data-phase="3"
+              >
+                <span class="phase-number">Fase 3</span>
+                <span class="phase-title">Recordatorio familiar</span>
+                <span class="phase-description">
+                  Recordar la cita médica después de recibir ayuda de la hija.
+                </span>
+              </button>
 
-      <h1>Cita médica</h1>
+              <button
+                class="phase-option card-pink is-disabled"
+                type="button"
+                data-phase="4"
+                disabled
+              >
+                <span class="phase-number">Fase 4</span>
+                <span class="phase-title">Por estructurar</span>
+                <span class="phase-description">
+                  Esta fase se definirá en la siguiente etapa del proyecto.
+                </span>
+              </button>
+            </div>
 
-    </header>
-
-    <div class="phase-selection-content">
-
-      <div class="phase-intro-text">
-        <h2>Selecciona una fase</h2>
-        <p>
-          Cada fase presenta una situación de memoria cotidiana relacionada con una cita médica.
-        </p>
-      </div>
-
-      <div class="phase-grid">
-
-        <button class="phase-option card-blue" type="button" data-phase="1">
-          <span class="phase-number">Fase 1</span>
-          <span class="phase-title">Cita EPS</span>
-          <span class="phase-description">
-            Escuchar la llamada, elegir fecha, jornada y hora de la cita.
-          </span>
-        </button>
-
-        <button class="phase-option card-yellow" type="button" data-phase="2">
-          <span class="phase-number">Fase 2</span>
-          <span class="phase-title">Cita y encargo familiar</span>
-          <span class="phase-description">
-            Recordar la cita médica y los alimentos pedidos por la hija.
-          </span>
-        </button>
-
-        <button class="phase-option card-green" type="button" data-phase="3">
-          <span class="phase-number">Fase 3</span>
-          <span class="phase-title">Recordatorio familiar</span>
-          <span class="phase-description">
-            Recordar la cita médica después de recibir ayuda de la hija.
-          </span>
-        </button>
-
-        <button class="phase-option card-pink is-disabled" type="button" data-phase="4" disabled>
-          <span class="phase-number">Fase 4</span>
-          <span class="phase-title">Por estructurar</span>
-          <span class="phase-description">
-            Esta fase se definirá en la siguiente etapa del proyecto.
-          </span>
-        </button>
-
-      </div>
-
-      <button class="memory-button button-one phase-full-button" type="button" data-phase-mode="all" disabled>
-        Recorrer todas las fases
-      </button>
-
-      <p class="small-text phase-note">
-        El recorrido completo se activará cuando las cuatro fases estén estructuradas.
-      </p>
-
-    </div>
-
-  </article>
-
-</section>
-
-<!-- Pantalla intermedia: seleccion de tipo de fase -->
-<section class="medical-screen" id="screen-phase-mode-selection">
-
-  <article class="welcome-card medical-card phase-card">
-
-    <header class="medical-header">
-
-      <button class="back-button medical-back" type="button" data-next="screen-phase-selection" aria-label="Volver">
-        â€¹
-      </button>
-
-      <h1>Cita mÃ©dica</h1>
-
-    </header>
-
-    <div class="phase-selection-content">
-
-      <div class="phase-intro-text">
-        <h2 id="phase-mode-title">Selecciona el tipo de fase</h2>
-        <p id="phase-mode-description">
-          Elige si deseas realizar la fase simple o la fase doble.
-        </p>
-      </div>
-
-      <div class="phase-grid phase-mode-grid">
-
-        <button class="phase-option card-blue" type="button" data-phase-mode-option="simple">
-          <span class="phase-number">Fase simple</span>
-          <span class="phase-title">Llamada Nueva EPS</span>
-          <span class="phase-description">
-            Inicia la simulaciÃ³n de la llamada y responde las preguntas de memoria.
-          </span>
-        </button>
-
-        <button class="phase-option card-yellow" type="button" data-phase-mode-option="double">
-          <span class="phase-number">Fase doble</span>
-          <span class="phase-title">Recorrido doble</span>
-          <span class="phase-description">
-            Inicia la fase en modalidad doble manteniendo la misma situaciÃ³n.
-          </span>
-        </button>
-
-      </div>
-
-    </div>
-
-  </article>
-
-</section>
-
-    <!-- Pantalla 1: llamada -->
-    <section class="medical-screen" id="screen-call">
-
-      <article class="welcome-card medical-card">
-
-        <header class="medical-header">
-
-          <a class="back-button medical-back" href="../index.html" aria-label="Volver al menú principal">
-            ‹
-          </a>
-
-          <h1>Llamada</h1>
-
-        </header>
-
-        <div class="call-content" id="call-content">
-
-        <div class="clinic-name">
-            <span class="clinic-icon">🏥</span>
-            <span>OS Salud</span>
-        </div>
-
-        <div class="call-visual" aria-hidden="true">
-            <span class="ring-wave ring-wave-one"></span>
-            <span class="ring-wave ring-wave-two"></span>
-            <span class="ring-wave ring-wave-three"></span>
-
-            <button class="call-button is-ringing" id="answer-call" type="button" aria-label="Contestar llamada">
-            <span aria-hidden="true">☎</span>
+            <button
+              class="memory-button button-one phase-full-button"
+              type="button"
+              data-phase-mode="all"
+              disabled
+            >
+              Recorrer todas las fases
             </button>
-        </div>
 
-        <p class="small-text" id="call-status">
-            Llamada entrante...
-        </p>
-
-        <button class="sound-button" id="enable-sound" type="button">
-            🔊 Activar sonido
-        </button>
-
-        <button class="sound-button" id="skip-call" type="button">
-        Saltar llamada
-      </button> 
-
-        </div>
-
-      </article>
-
-    </section>
-
-    <!-- Pantalla 2: calendario para seleccionar fecha -->
-<section class="medical-screen" id="screen-calendar-date">
-
-  <article class="welcome-card medical-card calendar-card-screen">
-
-    <header class="medical-header">
-
-      <button class="back-button medical-back" type="button" data-next="screen-phase-selection" aria-label="Volver">
-        ‹
-      </button>
-
-      <h1>Calendario</h1>
-
-    </header>
-
-    <div class="calendar-content">
-
-      <div class="calendar-instruction-box">
-        <h2 id="calendar-question-title">
-          Selecciona el día de la cita
-        </h2>
-
-        <p id="calendar-question-text">
-          Marca en el calendario la fecha que escuchaste durante la llamada.
-        </p>
-      </div>
-
-      <div class="calendar-box">
-
-        <div class="calendar-month" id="calendar-month-label">
-          Abril 2026
-        </div>
-
-        <div class="calendar-weekdays">
-          <span>Lun</span>
-          <span>Mar</span>
-          <span>Mié</span>
-          <span>Jue</span>
-          <span>Vie</span>
-          <span>Sáb</span>
-          <span>Dom</span>
-        </div>
-
-        <div class="calendar-days" id="calendar-days">
-          <!-- Los días se generan con JavaScript -->
-        </div>
-
-      </div>
-
-      <p class="small-text calendar-feedback" id="calendar-feedback">
-        Selecciona un día para continuar.
-      </p>
-
-    </div>
-
-  </article>
-
-</section>
-
-    <!-- Pantalla 2: mensaje de la cita -->
-    <section class="medical-screen" id="screen-message">
-
-      <article class="welcome-card medical-card">
-
-        <header class="medical-header">
-
-          <button class="back-button medical-back" type="button" data-prev="screen-call" aria-label="Volver">
-            ‹
-          </button>
-
-          <h1>Información</h1>
-
-        </header>
-
-        <div class="appointment-layout">
-
-          <div class="appointment-message">
-            <p>
-              Hola, su cita es el lunes 6 de abril.
+            <p class="small-text phase-note">
+              El recorrido completo se activará cuando las cuatro fases estén
+              estructuradas.
             </p>
           </div>
+        </article>
+      </section>
 
-          <div class="doctor-emoji" aria-hidden="true">
-            👩‍⚕️
+      <!-- Pantalla intermedia: seleccion de tipo de fase -->
+      <section class="medical-screen" id="screen-phase-mode-selection">
+        <article class="welcome-card medical-card phase-card">
+          <header class="medical-header">
+            <button
+              class="back-button medical-back"
+              type="button"
+              data-next="screen-phase-selection"
+              aria-label="Volver"
+            >
+              ‹
+            </button>
+
+            <h1>Cita médica</h1>
+          </header>
+
+          <div class="phase-selection-content">
+            <div class="phase-intro-text">
+              <h2 id="phase-mode-title">Selecciona el tipo de fase</h2>
+              <p id="phase-mode-description">
+                Elige si deseas realizar la fase simple o la fase doble.
+              </p>
+            </div>
+
+            <div class="phase-grid phase-mode-grid">
+              <button
+                class="phase-option card-blue"
+                type="button"
+                data-phase-mode-option="simple"
+              >
+                <span class="phase-number">Estructura A - Fase simple</span>
+                <span class="phase-title">Llamada Nueva EPS</span>
+                <span class="phase-description">
+                  Inicia la simulación de la llamada y responde las preguntas de
+                  memoria.
+                </span>
+              </button>
+
+              <button
+                class="phase-option card-yellow"
+                type="button"
+                data-phase-mode-option="double"
+              >
+                <span class="phase-number">Estructura A - Fase doble</span>
+                <span class="phase-title">Recorrido doble</span>
+                <span class="phase-description">
+                  Inicia la fase en modalidad doble manteniendo la misma
+                  situación.
+                </span>
+              </button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Pantalla 1: llamada -->
+      <section class="medical-screen" id="screen-call">
+        <article class="welcome-card medical-card">
+          <header class="medical-header">
+            <a
+              class="back-button medical-back"
+              href="../index.html"
+              aria-label="Volver al menú principal"
+            >
+              ‹
+            </a>
+
+            <h1>Llamada</h1>
+          </header>
+
+          <div class="call-content" id="call-content">
+            <div class="clinic-name">
+              <span class="clinic-icon">🏥</span>
+              <span>OS Salud</span>
+            </div>
+
+            <div class="call-visual" aria-hidden="true">
+              <span class="ring-wave ring-wave-one"></span>
+              <span class="ring-wave ring-wave-two"></span>
+              <span class="ring-wave ring-wave-three"></span>
+
+              <button
+                class="call-button is-ringing"
+                id="answer-call"
+                type="button"
+                aria-label="Contestar llamada"
+              >
+                <span aria-hidden="true">☎</span>
+              </button>
+            </div>
+
+            <p class="small-text" id="call-status">Llamada entrante...</p>
+
+            <button class="sound-button" id="skip-call" type="button">
+              Saltar llamada
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <!-- Pantalla 2: calendario para seleccionar fecha -->
+      <section class="medical-screen" id="screen-calendar-date">
+        <article class="welcome-card medical-card calendar-card-screen">
+          <header class="medical-header">
+            <button
+              class="back-button medical-back"
+              type="button"
+              data-next="screen-phase-selection"
+              aria-label="Volver"
+            >
+              ‹
+            </button>
+
+            <h1>Calendario</h1>
+          </header>
+
+          <div class="calendar-content">
+            <div class="calendar-instruction-box">
+              <h2 id="calendar-question-title">Selecciona el día de la cita</h2>
+
+              <p id="calendar-question-text">
+                Marca en el calendario la fecha que escuchaste durante la
+                llamada.
+              </p>
+            </div>
+
+            <div class="calendar-box">
+              <div class="calendar-month" id="calendar-month-label">
+                Abril 2026
+              </div>
+
+              <div class="calendar-weekdays">
+                <span>Lun</span>
+                <span>Mar</span>
+                <span>Mié</span>
+                <span>Jue</span>
+                <span>Vie</span>
+                <span>Sáb</span>
+                <span>Dom</span>
+              </div>
+
+              <div class="calendar-days" id="calendar-days">
+                <!-- Los días se generan con JavaScript -->
+              </div>
+            </div>
+
+            <p class="small-text calendar-feedback" id="calendar-feedback">
+              Selecciona un día para continuar.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <!-- Pantalla 2: mensaje de la cita -->
+      <section class="medical-screen" id="screen-message">
+        <article class="welcome-card medical-card">
+          <header class="medical-header">
+            <button
+              class="back-button medical-back"
+              type="button"
+              data-prev="screen-call"
+              aria-label="Volver"
+            >
+              ‹
+            </button>
+
+            <h1>Información</h1>
+          </header>
+
+          <div class="appointment-layout">
+            <div class="appointment-message">
+              <p>Hola, su cita es el lunes 6 de abril.</p>
+            </div>
+
+            <div class="doctor-emoji" aria-hidden="true">👩‍⚕️</div>
           </div>
 
-        </div>
-
-        <div class="appointment-actions">
-
-        <button class="sound-button repeat-button" id="repeat-message" type="button">
-            🔊 Repetir mensaje
-        </button>
-
-        <button class="memory-button button-one medical-next-button" id="continue-after-call" type="button" data-next="screen-question-shift" disabled>
-            Continuar
-        </button>
-
-        </div>
-
-      </article>
-
-    </section>
-
-    <!-- Pantalla 3: pregunta mañana o tarde -->
-    <section class="medical-screen" id="screen-question-shift">
-
-      <article class="welcome-card medical-card">
-
-        <header class="medical-header">
-
-
-          <h1>Pregunta 1</h1>
-
-        </header>
-
-        <div class="question-content">
-
-          <h2>¿Prefiere en la mañana o en la tarde?</h2>
-
-          <div class="answer-grid">
-
-            <button class="answer-option" type="button" data-preference="morning" data-next="screen-question-hour">
-            <span class="answer-emoji">☀️</span>
-            <span>Mañana</span>
+          <div class="appointment-actions">
+            <button
+              class="sound-button repeat-button"
+              id="repeat-message"
+              type="button"
+            >
+              🔊 Repetir mensaje
             </button>
 
-            <button class="answer-option" type="button" data-preference="afternoon" data-next="screen-question-hour">
-            <span class="answer-emoji">🌙</span>
-            <span>Tarde</span>
+            <button
+              class="memory-button button-one medical-next-button"
+              id="continue-after-call"
+              type="button"
+              data-next="screen-question-shift"
+              disabled
+            >
+              Continuar
             </button>
+          </div>
+        </article>
+      </section>
 
+      <!-- Pantalla 3: pregunta mañana o tarde -->
+      <section class="medical-screen" id="screen-question-shift">
+        <article class="welcome-card medical-card">
+          <header class="medical-header">
+            <h1>Pregunta 1</h1>
+          </header>
+
+          <div class="question-content">
+            <h2>¿Prefiere en la mañana o en la tarde?</h2>
+
+            <div class="answer-grid">
+              <button
+                class="answer-option"
+                type="button"
+                data-preference="morning"
+                data-next="screen-question-hour"
+              >
+                <span class="answer-emoji">☀️</span>
+                <span>Mañana</span>
+              </button>
+
+              <button
+                class="answer-option"
+                type="button"
+                data-preference="afternoon"
+                data-next="screen-question-hour"
+              >
+                <span class="answer-emoji">🌙</span>
+                <span>Tarde</span>
+              </button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Pantalla 4: pregunta horario -->
+      <section class="medical-screen" id="screen-question-hour">
+        <article class="welcome-card medical-card">
+          <header class="medical-header">
+            <h1 id="hour-screen-title">Pregunta 2</h1>
+          </header>
+
+          <div class="question-content">
+            <h2 id="hour-question-title">¿En qué horario prefiere?</h2>
+
+            <p class="small-text" id="hour-question-text">
+              Selecciona el horario de la cita.
+            </p>
+
+            <div class="answer-grid">
+              <button
+                class="answer-option"
+                type="button"
+                data-hour="morning"
+                data-next="screen-question-date"
+              >
+                <span class="answer-emoji">☀️</span>
+                <span>10:00 am</span>
+              </button>
+
+              <button
+                class="answer-option"
+                type="button"
+                data-hour="afternoon"
+                data-next="screen-question-date"
+              >
+                <span class="answer-emoji">🌙</span>
+                <span>4:00 pm</span>
+              </button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Pantalla: llamada de la hija -->
+      <section class="medical-screen" id="screen-daughter-call">
+        <article class="welcome-card medical-card">
+          <header class="medical-header">
+            <h1>Llamada</h1>
+          </header>
+
+          <div class="call-content">
+            <div class="clinic-name">
+              <span class="clinic-icon">👩‍🦱</span>
+              <span>Hija</span>
+            </div>
+
+            <div class="call-visual" aria-hidden="true">
+              <span class="ring-wave ring-wave-one"></span>
+              <span class="ring-wave ring-wave-two"></span>
+              <span class="ring-wave ring-wave-three"></span>
+
+              <button
+                class="call-button is-ringing"
+                id="answer-daughter-call"
+                type="button"
+                aria-label="Contestar llamada de la hija"
+              >
+                <span aria-hidden="true">☎</span>
+              </button>
+            </div>
+
+            <p class="small-text" id="daughter-call-status">
+              Llamada entrante de tu hija...
+            </p>
+
+            <button class="sound-button" id="skip-daughter-call" type="button">
+              Saltar llamada
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <!-- Pantalla: selección de alimentos -->
+      <section class="medical-screen" id="screen-food-question">
+        <article class="welcome-card medical-card food-card-screen">
+          <header class="medical-header">
+            <h1>Encargo familiar</h1>
+          </header>
+
+          <div class="food-content">
+            <div class="food-instruction-box">
+              <h2>¿Qué alimentos te pidió tu hija?</h2>
+              <p>Selecciona todos los alimentos que recuerdes de la llamada.</p>
+            </div>
+
+            <div class="food-grid">
+              <button class="food-option" type="button" data-food="tomates">
+                <span class="food-emoji">🍅</span>
+                <span>Tomates</span>
+              </button>
+
+              <button class="food-option" type="button" data-food="lechugas">
+                <span class="food-emoji">🥬</span>
+                <span>Lechugas</span>
+              </button>
+
+              <button class="food-option" type="button" data-food="alverjas">
+                <span class="food-emoji">🟢</span>
+                <span>Alverjas</span>
+              </button>
+
+              <button class="food-option" type="button" data-food="papas">
+                <span class="food-emoji">🥔</span>
+                <span>Papas</span>
+              </button>
+
+              <button class="food-option" type="button" data-food="zanahorias">
+                <span class="food-emoji">🥕</span>
+                <span>Zanahorias</span>
+              </button>
+
+              <button class="food-option" type="button" data-food="cebollas">
+                <span class="food-emoji">🧅</span>
+                <span>Cebollas</span>
+              </button>
+
+              <button class="food-option" type="button" data-food="ajo">
+                <span class="food-emoji">🧄</span>
+                <span>Ajo</span>
+              </button>
+
+              <button class="food-option" type="button" data-food="banano">
+                <span class="food-emoji">🍌</span>
+                <span>Banano</span>
+              </button>
+
+              <button class="food-option" type="button" data-food="manzana">
+                <span class="food-emoji">🍎</span>
+                <span>Manzana</span>
+              </button>
+
+              <button class="food-option" type="button" data-food="pollo">
+                <span class="food-emoji">🍗</span>
+                <span>Pollo</span>
+              </button>
+
+              <button class="food-option" type="button" data-food="uvas">
+                <span class="food-emoji">🍇</span>
+                <span>Uvas</span>
+              </button>
+
+              <button class="food-option" type="button" data-food="arroz">
+                <span class="food-emoji">🍚</span>
+                <span>Arroz</span>
+              </button>
+            </div>
+
+            <p class="small-text food-feedback" id="food-feedback">
+              Selecciona los alimentos y confirma tu respuesta.
+            </p>
+
+            <button
+              class="memory-button button-one medical-next-button"
+              type="button"
+              id="confirm-food-selection"
+              disabled
+            >
+              Confirmar alimentos
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <!-- Pantalla: simulación de compras -->
+      <section class="medical-screen" id="screen-shopping-question">
+        <article class="welcome-card medical-card food-card-screen">
+          <header class="medical-header">
+            <h1>Compras del mercado</h1>
+          </header>
+
+          <div class="food-content">
+            <div class="food-instruction-box">
+              <h2>¿Qué productos debe comprar?</h2>
+              <p>
+                Selecciona los tres productos que recuerdas de la llamada.
+              </p>
+            </div>
+
+            <div class="food-grid">
+              <button class="food-option" type="button" data-shopping="avena">
+                <span class="food-emoji">🥣</span>
+                <span>Avena</span>
+              </button>
+
+              <button class="food-option" type="button" data-shopping="arroz">
+                <span class="food-emoji">🍚</span>
+                <span>Arroz</span>
+              </button>
+
+              <button class="food-option" type="button" data-shopping="lentejas">
+                <span class="food-emoji">🫘</span>
+                <span>Lentejas</span>
+              </button>
+
+              <button class="food-option" type="button" data-shopping="manzana">
+                <span class="food-emoji">🍎</span>
+                <span>Manzana</span>
+              </button>
+
+              <button class="food-option" type="button" data-shopping="banano">
+                <span class="food-emoji">🍌</span>
+                <span>Banano</span>
+              </button>
+
+              <button class="food-option" type="button" data-shopping="uvas">
+                <span class="food-emoji">🍇</span>
+                <span>Uvas</span>
+              </button>
+
+              <button class="food-option" type="button" data-shopping="pera">
+                <span class="food-emoji">🍐</span>
+                <span>Pera</span>
+              </button>
+
+              <button class="food-option" type="button" data-shopping="naranja">
+                <span class="food-emoji">🍊</span>
+                <span>Naranja</span>
+              </button>
+            </div>
+
+            <p class="small-text food-feedback" id="shopping-feedback">
+              Selecciona tres productos y confirma tu respuesta.
+            </p>
+
+            <button
+              class="memory-button button-one medical-next-button"
+              type="button"
+              id="confirm-shopping-selection"
+              disabled
+            >
+              Confirmar productos
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <!-- Pantalla 6: resultados -->
+      <section class="medical-screen" id="screen-results">
+        <article class="welcome-card medical-card">
+          <header class="medical-header medical-header-center">
+            <h1>Resultados</h1>
+          </header>
+
+          <div class="results-box">
+            <p>
+              <strong>Aciertos:</strong>
+              <span id="result-correct">0/4</span>
+            </p>
+
+            <p>
+              <strong>Errores:</strong>
+              <span id="result-errors">0</span>
+            </p>
+
+            <p>
+              <strong>Tiempo:</strong>
+              <span id="result-time">0:00</span>
+            </p>
+
+            <div class="result-trophy" aria-hidden="true">🏆</div>
           </div>
 
-        </div>
-
-      </article>
-
-    </section>
-
-    <!-- Pantalla 4: pregunta horario -->
-    <section class="medical-screen" id="screen-question-hour">
-
-      <article class="welcome-card medical-card">
-
-        <header class="medical-header">
-
-        <h1 id="hour-screen-title">Pregunta 2</h1>
-
-        </header>
-
-        <div class="question-content">
-
-        <h2 id="hour-question-title">¿En qué horario prefiere?</h2>
-
-        <p class="small-text" id="hour-question-text">
-          Selecciona el horario de la cita.
-        </p>
-
-          <div class="answer-grid">
-
-            <button class="answer-option" type="button" data-hour="morning" data-next="screen-question-date">
-            <span class="answer-emoji">☀️</span>
-            <span>10:00 am</span>
+          <div class="medical-actions">
+            <button
+              class="memory-button button-one medical-action-button"
+              type="button"
+              id="download-results"
+            >
+              Descargar CSV
             </button>
 
-            <button class="answer-option" type="button" data-hour="afternoon" data-next="screen-question-date">
-            <span class="answer-emoji">🌙</span>
-            <span>4:00 pm</span>
+            <button
+              class="memory-button button-one medical-action-button"
+              type="button"
+              id="restart-test"
+            >
+              Repetir
             </button>
 
+            <a
+              class="memory-button button-two medical-action-button"
+              href="../index.html"
+            >
+              Salir
+            </a>
           </div>
+        </article>
+      </section>
 
-        </div>
+      <div
+        class="appointment-confirmation-modal"
+        id="appointment-confirmation-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="appointment-confirmation-title"
+        aria-hidden="true"
+      >
+        <div class="appointment-confirmation-box">
+          <span
+            class="appointment-confirmation-shift"
+            id="appointment-confirmation-shift"
+          >
+            Jornada seleccionada
+          </span>
 
-      </article>
+          <h2 id="appointment-confirmation-title">Su cita quedó agendada</h2>
 
-</section>
-
-<!-- Pantalla: llamada de la hija -->
-<section class="medical-screen" id="screen-daughter-call">
-
-  <article class="welcome-card medical-card">
-
-    <header class="medical-header">
-      <h1>Llamada</h1>
-    </header>
-
-    <div class="call-content">
-
-      <div class="clinic-name">
-        <span class="clinic-icon">👩‍🦱</span>
-        <span>Hija</span>
-      </div>
-
-      <div class="call-visual" aria-hidden="true">
-        <span class="ring-wave ring-wave-one"></span>
-        <span class="ring-wave ring-wave-two"></span>
-        <span class="ring-wave ring-wave-three"></span>
-
-        <button class="call-button is-ringing" id="answer-daughter-call" type="button" aria-label="Contestar llamada de la hija">
-          <span aria-hidden="true">☎</span>
-        </button>
-      </div>
-
-      <p class="small-text" id="daughter-call-status">
-        Llamada entrante de tu hija...
-      </p>
-
-      <button class="sound-button" id="skip-daughter-call" type="button">
-        Saltar llamada
-      </button>
-
-    </div>
-
-  </article>
-
-</section>
-
-<!-- Pantalla: selección de alimentos -->
-<section class="medical-screen" id="screen-food-question">
-
-  <article class="welcome-card medical-card food-card-screen">
-
-    <header class="medical-header">
-      <h1>Encargo familiar</h1>
-    </header>
-
-    <div class="food-content">
-
-      <div class="food-instruction-box">
-        <h2>¿Qué alimentos te pidió tu hija?</h2>
-        <p>
-          Selecciona todos los alimentos que recuerdes de la llamada.
-        </p>
-      </div>
-
-    <div class="food-grid">
-
-        <button class="food-option" type="button" data-food="tomates">
-          <span class="food-emoji">🍅</span>
-          <span>Tomates</span>
-        </button>
-
-        <button class="food-option" type="button" data-food="lechugas">
-          <span class="food-emoji">🥬</span>
-          <span>Lechugas</span>
-        </button>
-
-        <button class="food-option" type="button" data-food="alverjas">
-          <span class="food-emoji">🟢</span>
-          <span>Alverjas</span>
-        </button>
-
-        <button class="food-option" type="button" data-food="papas">
-          <span class="food-emoji">🥔</span>
-          <span>Papas</span>
-        </button>
-
-        <button class="food-option" type="button" data-food="zanahorias">
-          <span class="food-emoji">🥕</span>
-          <span>Zanahorias</span>
-        </button>
-
-        <button class="food-option" type="button" data-food="cebollas">
-          <span class="food-emoji">🧅</span>
-          <span>Cebollas</span>
-        </button>
-
-        <button class="food-option" type="button" data-food="ajo">
-          <span class="food-emoji">🧄</span>
-          <span>Ajo</span>
-        </button>
-
-        <button class="food-option" type="button" data-food="banano">
-          <span class="food-emoji">🍌</span>
-          <span>Banano</span>
-        </button>
-
-        <button class="food-option" type="button" data-food="manzana">
-          <span class="food-emoji">🍎</span>
-          <span>Manzana</span>
-        </button>
-
-        <button class="food-option" type="button" data-food="pollo">
-          <span class="food-emoji">🍗</span>
-          <span>Pollo</span>
-        </button>
-
-        <button class="food-option" type="button" data-food="uvas">
-          <span class="food-emoji">🍇</span>
-          <span>Uvas</span>
-        </button>
-
-        <button class="food-option" type="button" data-food="arroz">
-          <span class="food-emoji">🍚</span>
-          <span>Arroz</span>
-        </button>
-
-</div>
-
-      <p class="small-text food-feedback" id="food-feedback">
-        Selecciona los alimentos y confirma tu respuesta.
-      </p>
-
-      <button class="memory-button button-one medical-next-button" type="button" id="confirm-food-selection" disabled>
-        Confirmar alimentos
-      </button>
-
-    </div>
-
-  </article>
-
-</section>
-
-    <!-- Pantalla 6: resultados -->
-    <section class="medical-screen" id="screen-results">
-
-      <article class="welcome-card medical-card">
-
-        <header class="medical-header medical-header-center">
-          <h1>Resultados</h1>
-        </header>
-
-        <div class="results-box">
-
-          <p>
-            <strong>Aciertos:</strong>
-            <span id="result-correct">0/4</span>
+          <p class="appointment-confirmation-intro">
+            Recuerde muy bien este dato de la cita médica:
           </p>
 
-          <p>
-            <strong>Errores:</strong>
-            <span id="result-errors">0</span>
-          </p>
-
-          <p>
-            <strong>Tiempo:</strong>
-            <span id="result-time">0:00</span>
-          </p>
-
-          <div class="result-trophy" aria-hidden="true">
-            🏆
+          <div class="appointment-confirmation-data">
+            <span>Día</span>
+            <strong id="appointment-confirmation-date">
+              Miércoles 13 de mayo de 2026
+            </strong>
           </div>
 
+          <div class="appointment-confirmation-data">
+            <span>Hora</span>
+            <strong id="appointment-confirmation-time">8:00 am</strong>
+          </div>
+
+          <p
+            class="appointment-confirmation-detail"
+            id="appointment-confirmation-detail"
+          >
+            Su cita se agendó en la jornada de la mañana.
+          </p>
+
+          <button
+            class="memory-button button-one appointment-confirmation-button"
+            id="appointment-confirmation-continue"
+            type="button"
+          >
+            Entendido, continuar
+          </button>
         </div>
-
-        <div class="medical-actions">
-
-        <button class="memory-button button-one medical-action-button" type="button" id="download-results">
-            Descargar CSV
-        </button>
-
-        <button class="memory-button button-one medical-action-button" type="button" id="restart-test">
-            Repetir
-        </button>
-
-        <a class="memory-button button-two medical-action-button" href="../index.html">
-            Salir
-        </a>
-
-        </div>
-
-      </article>
-
-    </section>
-
-  </main>
-
-</body>
+      </div>
+    </main>
+  </body>
 </html>

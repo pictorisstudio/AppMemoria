@@ -19,6 +19,9 @@ const daughterCallStatus = document.getElementById("daughter-call-status");
 const foodButtons = document.querySelectorAll("[data-food]");
 const confirmFoodButton = document.getElementById("confirm-food-selection");
 const foodFeedback = document.getElementById("food-feedback");
+const shoppingButtons = document.querySelectorAll("[data-shopping]");
+const confirmShoppingButton = document.getElementById("confirm-shopping-selection");
+const shoppingFeedback = document.getElementById("shopping-feedback");
 
 const requiredFoods = [
   "tomates",
@@ -30,6 +33,8 @@ const requiredFoods = [
   "ajo"
 ];
 
+const requiredShoppingProducts = ["avena", "arroz", "lentejas"];
+
 const hourScreenTitle = document.getElementById("hour-screen-title");
 const hourQuestionTitle = document.getElementById("hour-question-title");
 const hourQuestionText = document.getElementById("hour-question-text");
@@ -39,6 +44,12 @@ const phaseModeButtons = document.querySelectorAll("[data-phase-mode-option]");
 const fullPhaseButton = document.querySelector("[data-phase-mode='all']");
 const phaseModeTitle = document.getElementById("phase-mode-title");
 const phaseModeDescription = document.getElementById("phase-mode-description");
+const appointmentConfirmationModal = document.getElementById("appointment-confirmation-modal");
+const appointmentConfirmationShift = document.getElementById("appointment-confirmation-shift");
+const appointmentConfirmationDate = document.getElementById("appointment-confirmation-date");
+const appointmentConfirmationTime = document.getElementById("appointment-confirmation-time");
+const appointmentConfirmationDetail = document.getElementById("appointment-confirmation-detail");
+const appointmentConfirmationContinue = document.getElementById("appointment-confirmation-continue");
 const llamadaMedicaAudio = new Audio("../Audio/LlamadaMedica.mp3");
 const llamadaHijaAudio = new Audio("../Audio/LlamadaHija.mp3");
 const calendarDaysContainer = document.getElementById("calendar-days");
@@ -64,6 +75,8 @@ const phaseConfigs = {
     correctDay: 6,
     medicalAudio: "../Audio/LlamadaMedica.mp3",
     daughterAudio: "../Audio/LlamadaHija.mp3",
+    daughterAudioMorning: "../Audio/LlamadaHijaFase3Manana.mp3",
+    daughterAudioAfternoon: "../Audio/LlamadaHijaFase3Tarde.mp3",
     daughterFlow: "food"
   },
 
@@ -92,6 +105,36 @@ const calendarState = {
   mode: "first-calendar"
 };
 
+const phaseOneDoubleAppointment = {
+  year: 2026,
+  month: 4,
+  monthName: "Mayo",
+  correctDay: 13,
+  weekdayName: "Miércoles",
+  morningHour: "8:00 am",
+  afternoonHour: "2:00 pm"
+};
+
+const phaseTwoSimpleAppointment = {
+  year: 2026,
+  month: 4,
+  monthName: "Mayo",
+  correctDay: 21,
+  weekdayName: "Jueves",
+  morningHour: "8:00 am",
+  afternoonHour: "2:00 pm"
+};
+
+const phaseTwoDoubleAppointment = {
+  year: 2026,
+  month: 5,
+  monthName: "Junio",
+  correctDay: 2,
+  weekdayName: "Martes",
+  morningHour: "8:00 am",
+  afternoonHour: "2:00 pm"
+};
+
 const gameState = {
   currentPhase: null,
   selectedPhaseForMode: null,
@@ -101,9 +144,12 @@ const gameState = {
   totalQuestions: 4,
   hourSelectionMode: "first-hour",
   selectedFoods: [],
+  selectedShoppingProducts: [],
   selectedDaughterDate: null,
   selectedDaughterHour: null,
   foodAnswerStatus: null,
+  shoppingAnswerStatus: null,
+  daughterCallStage: null,
   selectedPreference: null,
   selectedHour: null,
   selectedDate: null,
@@ -117,6 +163,112 @@ let audioContext = null;
 let audioEnabled = false;
 let ringtoneInterval = null;
 let currentUtterance = null;
+
+function isPhaseOneDouble() {
+  return gameState.currentPhase === 1 && gameState.phaseMode === "double";
+}
+
+function isPhaseTwoSimple() {
+  return gameState.currentPhase === 2 && gameState.phaseMode === "simple";
+}
+
+function isPhaseTwoDouble() {
+  return gameState.currentPhase === 2 && gameState.phaseMode === "double";
+}
+
+function isAppointmentConfirmationFlow() {
+  return isPhaseOneDouble() || isPhaseTwoSimple() || isPhaseTwoDouble();
+}
+
+function getCurrentAppointmentConfig() {
+  if (isPhaseTwoDouble()) return phaseTwoDoubleAppointment;
+  if (isPhaseTwoSimple()) return phaseTwoSimpleAppointment;
+  return phaseOneDoubleAppointment;
+}
+
+function applyCurrentAppointmentCalendarConfig() {
+  const appointment = getCurrentAppointmentConfig();
+
+  calendarState.year = appointment.year;
+  calendarState.month = appointment.month;
+  calendarState.monthName = appointment.monthName;
+  calendarState.correctDay = appointment.correctDay;
+}
+
+function getAppointmentHourForPreference(preference) {
+  const appointment = getCurrentAppointmentConfig();
+
+  return preference === "afternoon"
+    ? appointment.afternoonHour
+    : appointment.morningHour;
+}
+
+function getAppointmentShiftLabel(preference) {
+  return preference === "afternoon"
+    ? "Jornada de la tarde"
+    : "Jornada de la mañana";
+}
+
+function getHourButtonText(button) {
+  const label = button.querySelector("span:last-child");
+  return (label || button).textContent.trim();
+}
+
+function openAppointmentConfirmationModal(preference) {
+  if (!appointmentConfirmationModal) return;
+
+  const appointment = getCurrentAppointmentConfig();
+  const hour = getAppointmentHourForPreference(preference);
+  const shiftLabel = getAppointmentShiftLabel(preference);
+  const dateText = `${appointment.weekdayName} ${appointment.correctDay} de ${appointment.monthName.toLowerCase()} de ${appointment.year}`;
+
+  if (appointmentConfirmationShift) {
+    appointmentConfirmationShift.textContent = shiftLabel;
+  }
+
+  if (appointmentConfirmationDate) {
+    appointmentConfirmationDate.textContent = dateText;
+  }
+
+  if (appointmentConfirmationTime) {
+    appointmentConfirmationTime.textContent = hour;
+  }
+
+  if (appointmentConfirmationDetail) {
+    appointmentConfirmationDetail.textContent = `Su cita médica quedó agendada para el ${dateText.toLowerCase()} a las ${hour}, en la ${shiftLabel.toLowerCase()}.`;
+  }
+
+  appointmentConfirmationModal.classList.add("is-open");
+  appointmentConfirmationModal.setAttribute("aria-hidden", "false");
+
+  if (appointmentConfirmationContinue) {
+    appointmentConfirmationContinue.focus();
+  }
+}
+
+function closeAppointmentConfirmationModal() {
+  if (!appointmentConfirmationModal) return;
+
+  appointmentConfirmationModal.classList.remove("is-open");
+  appointmentConfirmationModal.setAttribute("aria-hidden", "true");
+}
+
+function getPhaseTwoDoubleShoppingScript() {
+  return "Hola mamá, te llamaba para contarte que amanecí bien. Hoy estoy organizando el almuerzo y luego voy a hacer mercado. Por favor recuerda comprar un paquete de avena, una libra de arroz, una libra de lentejas, azúcar, condimento, salsa de tomate y pan.";
+}
+
+function getPhaseTwoDoubleAppointmentScript() {
+  const appointment = phaseTwoDoubleAppointment;
+  const hour = getAppointmentHourForPreference(gameState.selectedPreference);
+
+  return `Mamá, también me llegó una confirmación de tu cita médica. La cita quedó para el ${appointment.weekdayName.toLowerCase()} ${appointment.correctDay} de ${appointment.monthName.toLowerCase()} de ${appointment.year} a las ${hour}.`;
+}
+
+function getPhaseTwoDoubleDaughterScript() {
+  return gameState.daughterCallStage === "shopping"
+    ? getPhaseTwoDoubleShoppingScript()
+    : getPhaseTwoDoubleAppointmentScript();
+}
 
 function showMedicalScreen(screenId) {
   const targetScreen = document.getElementById(screenId);
@@ -347,6 +499,10 @@ function playEndSound() {
 }
 
 function goToFirstCalendar() {
+  if (isAppointmentConfirmationFlow()) {
+    applyCurrentAppointmentCalendarConfig();
+  }
+
   startCalendarSelection({
     mode: "first-calendar",
     nextScreen: "screen-question-shift",
@@ -412,20 +568,26 @@ if (goToMessageScreen) {
     console.error("No se pudo cargar el audio LlamadaMedica.mp3");
     callStatus.textContent = "No se pudo reproducir el audio.";
     answerCallButton.disabled = false;
-    enableSoundButton.disabled = false;
+    if (enableSoundButton) {
+      enableSoundButton.disabled = false;
+    }
   };
 
   llamadaMedicaAudio.play().catch((error) => {
     console.error("El navegador bloqueó la reproducción del audio:", error);
     callStatus.textContent = "Presione nuevamente para reproducir la llamada.";
     answerCallButton.disabled = false;
-    enableSoundButton.disabled = false;
+    if (enableSoundButton) {
+      enableSoundButton.disabled = false;
+    }
   });
 }
 
 async function answerCall() {
   answerCallButton.disabled = true;
-  enableSoundButton.disabled = true;
+  if (enableSoundButton) {
+    enableSoundButton.disabled = true;
+  }
 
   try {
     await unlockAudio();
@@ -455,10 +617,12 @@ async function answerCall() {
 }
 
 
-function startDaughterCallScreen() {
+function startDaughterCallScreen(stage = null) {
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
+
+  gameState.daughterCallStage = stage;
 
   setDaughterAudioForCurrentPhase();
 
@@ -478,10 +642,16 @@ function startDaughterCallScreen() {
   }
 
   if (daughterCallStatus) {
-    daughterCallStatus.textContent =
-      gameState.currentPhase === 3
-        ? "Llamada entrante de tu hija para recordarte la cita..."
-        : "Llamada entrante de tu hija...";
+    if (isPhaseTwoDouble() && stage === "shopping") {
+      daughterCallStatus.textContent = "Llamada entrante de tu hija sobre el mercado...";
+    } else if (isPhaseTwoDouble() && stage === "appointment-confirmation") {
+      daughterCallStatus.textContent = "Nueva llamada de tu hija para confirmar la cita...";
+    } else {
+      daughterCallStatus.textContent =
+        gameState.currentPhase === 3 || isPhaseTwoSimple()
+          ? "Llamada entrante de tu hija para confirmar la cita..."
+          : "Llamada entrante de tu hija...";
+    }
   }
 
   showMedicalScreen("screen-daughter-call");
@@ -491,6 +661,34 @@ function startDaughterCallScreen() {
 function goAfterDaughterCall() {
   if (daughterCallStatus) {
     daughterCallStatus.textContent = "Llamada finalizada.";
+  }
+
+  if (isPhaseTwoDouble() && gameState.daughterCallStage === "shopping") {
+    setTimeout(() => {
+      startDaughterCallScreen("appointment-confirmation");
+    }, 500);
+
+    return;
+  }
+
+  if (isPhaseTwoDouble() && gameState.daughterCallStage === "appointment-confirmation") {
+    goToShoppingQuestion();
+    return;
+  }
+
+  if (isPhaseTwoSimple()) {
+    applyCurrentAppointmentCalendarConfig();
+
+    setTimeout(() => {
+      startCalendarSelection({
+        mode: "daughter-final-calendar",
+        nextScreen: "screen-question-hour",
+        title: "Recuerda el dÃ­a de la cita",
+        text: "Tu hija te confirmÃ³ la cita mÃ©dica. Selecciona nuevamente el dÃ­a en el calendario."
+      });
+    }, 500);
+
+    return;
   }
 
   if (gameState.currentPhase === 3) {
@@ -510,6 +708,11 @@ function goAfterDaughterCall() {
 }
 
 function playDaughterCallAudio() {
+  if (isPhaseTwoDouble()) {
+    speakPhaseTwoDoubleDaughterCall();
+    return;
+  }
+
   llamadaHijaAudio.pause();
   llamadaHijaAudio.currentTime = 0;
 
@@ -551,6 +754,48 @@ function playDaughterCallAudio() {
   });
 }
 
+function speakPhaseTwoDoubleDaughterCall() {
+  if (!("speechSynthesis" in window)) {
+    if (daughterCallStatus) {
+      daughterCallStatus.textContent = "Llamada reproducida. Continúa con la siguiente pantalla.";
+    }
+
+    setTimeout(() => {
+      goAfterDaughterCall();
+    }, 4500);
+
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  currentUtterance = new SpeechSynthesisUtterance(getPhaseTwoDoubleDaughterScript());
+  currentUtterance.lang = "es-CO";
+  currentUtterance.rate = 0.86;
+  currentUtterance.pitch = 1;
+
+  currentUtterance.onend = () => {
+    playEndSound();
+    goAfterDaughterCall();
+  };
+
+  currentUtterance.onerror = () => {
+    if (daughterCallStatus) {
+      daughterCallStatus.textContent = "No se pudo reproducir la llamada de tu hija.";
+    }
+
+    if (answerDaughterCallButton) {
+      answerDaughterCallButton.disabled = false;
+    }
+
+    if (skipDaughterCallButton) {
+      skipDaughterCallButton.disabled = false;
+    }
+  };
+
+  window.speechSynthesis.speak(currentUtterance);
+}
+
 function goToFoodQuestion() {
   if (daughterCallStatus) {
     daughterCallStatus.textContent = "Llamada finalizada.";
@@ -558,6 +803,16 @@ function goToFoodQuestion() {
 
   setTimeout(() => {
     showMedicalScreen("screen-food-question");
+  }, 500);
+}
+
+function goToShoppingQuestion() {
+  if (daughterCallStatus) {
+    daughterCallStatus.textContent = "Llamada finalizada.";
+  }
+
+  setTimeout(() => {
+    showMedicalScreen("screen-shopping-question");
   }, 500);
 }
 
@@ -573,7 +828,10 @@ async function answerDaughterCall() {
   }
 
   if (daughterCallStatus) {
-    daughterCallStatus.textContent = "Llamada conectada... Escucha el encargo.";
+    daughterCallStatus.textContent =
+      isPhaseTwoSimple()
+        ? "Llamada conectada... Escucha la confirmación de la cita."
+        : "Llamada conectada... Escucha el encargo.";
   }
 
   try {
@@ -615,7 +873,7 @@ llamadaHijaAudio.onerror = null;
 
   if (daughterCallStatus) {
     daughterCallStatus.textContent =
-      gameState.currentPhase === 3
+      gameState.currentPhase === 3 || isPhaseTwoSimple()
         ? "Llamada saltada. Continúa con la fecha de la cita."
         : "Llamada saltada. Continúa con los alimentos.";
   }
@@ -694,6 +952,10 @@ function validateFoodSelection() {
     confirmFoodButton.disabled = true;
   }
 
+  if (isPhaseOneDouble()) {
+    applyCurrentAppointmentCalendarConfig();
+  }
+
   setTimeout(() => {
     startCalendarSelection({
       mode: "daughter-final-calendar",
@@ -706,6 +968,8 @@ function validateFoodSelection() {
 
 function resetMedicalTest(targetScreen = "screen-phase-selection") {
   const shouldGoToCall = targetScreen === "screen-call";
+
+  closeAppointmentConfirmationModal();
 
   gameState.correct = 0;
   gameState.errors = 0;
@@ -803,7 +1067,8 @@ const buttons = document.querySelectorAll("[data-correct], [data-preference], [d
   showMedicalScreen(targetScreen);
 }
 
-function getTotalQuestionsForPhase(phaseNumber) {
+function getTotalQuestionsForPhase(phaseNumber, phaseMode = gameState.phaseMode) {
+  if (Number(phaseNumber) === 2 && phaseMode === "simple") return 3;
   if (Number(phaseNumber) === 2) return 7;
   if (Number(phaseNumber) === 3) return 6;
   return 4;
@@ -820,6 +1085,10 @@ function applyPhaseConfig(phaseNumber) {
   calendarState.month = config.month;
   calendarState.monthName = config.monthName;
   calendarState.correctDay = config.correctDay;
+
+  if (isAppointmentConfirmationFlow()) {
+    applyCurrentAppointmentCalendarConfig();
+  }
 
   llamadaMedicaAudio.pause();
   llamadaMedicaAudio.currentTime = 0;
@@ -843,6 +1112,25 @@ function showPhaseModeSelection(phaseNumber) {
     phaseModeDescription.textContent = "Selecciona fase simple o fase doble para continuar.";
   }
 
+  phaseModeButtons.forEach((button) => {
+    const modeName = button.querySelector(".phase-number");
+
+    if (!modeName) return;
+
+    if (selectedPhase === 2) {
+      modeName.textContent =
+        button.dataset.phaseModeOption === "double"
+          ? "Estructura B – tarea doble"
+          : "Estructura B – tarea simple";
+      return;
+    }
+
+    modeName.textContent =
+      button.dataset.phaseModeOption === "double"
+        ? "Estructura A – Fase doble"
+        : "Estructura A – Fase simple";
+  });
+
   showMedicalScreen("screen-phase-mode-selection");
 }
 
@@ -858,7 +1146,7 @@ function setDaughterAudioForCurrentPhase() {
   llamadaHijaAudio.pause();
   llamadaHijaAudio.currentTime = 0;
 
-  if (gameState.currentPhase === 3) {
+  if (gameState.currentPhase === 3 || isPhaseTwoSimple()) {
     const daughterAudio =
       gameState.selectedPreference === "afternoon"
         ? config.daughterAudioAfternoon
@@ -884,7 +1172,7 @@ function startPhase(phaseNumber, phaseMode = "simple") {
   gameState.currentPhase = selectedPhase;
   gameState.selectedPhaseForMode = selectedPhase;
   gameState.phaseMode = phaseMode;
-  gameState.totalQuestions = getTotalQuestionsForPhase(selectedPhase);
+  gameState.totalQuestions = getTotalQuestionsForPhase(selectedPhase, phaseMode);
 
   applyPhaseConfig(selectedPhase);
   startCallSoundAutomatically();
@@ -989,13 +1277,49 @@ function showHourQuestion(mode = "first-hour") {
   gameState.hourSelectionMode = mode;
 
   const hourButtons = document.querySelectorAll("[data-hour]");
+  const isPhaseOneDoubleFinalHour =
+    isAppointmentConfirmationFlow() && mode === "daughter-final-hour";
 
   hourButtons.forEach((button) => {
     button.disabled = false;
     button.classList.remove("is-correct", "is-wrong", "is-selected");
+
+    if (isPhaseOneDoubleFinalHour) {
+      const label = button.querySelector("span:last-child");
+      const hourText =
+        button.dataset.hour === "afternoon"
+          ? getCurrentAppointmentConfig().afternoonHour
+          : getCurrentAppointmentConfig().morningHour;
+
+      if (label) {
+        label.textContent =
+          button.dataset.hour === "afternoon"
+            ? `Tarde - ${hourText}`
+            : `Mañana - ${hourText}`;
+      }
+    } else {
+      const label = button.querySelector("span:last-child");
+
+      if (label) {
+        label.textContent =
+          button.dataset.hour === "afternoon" ? "4:00 pm" : "10:00 am";
+      }
+    }
   });
 
-  if (mode === "final-hour" || mode === "daughter-final-hour") {
+  if (isPhaseOneDoubleFinalHour) {
+    if (hourScreenTitle) {
+      hourScreenTitle.textContent = "Confirmación final";
+    }
+
+    if (hourQuestionTitle) {
+      hourQuestionTitle.textContent = "¿Cuál era la jornada y hora de la cita?";
+    }
+
+    if (hourQuestionText) {
+      hourQuestionText.textContent = "Selecciona la jornada y la hora que se agendó.";
+    }
+  } else if (mode === "final-hour" || mode === "daughter-final-hour") {
     if (hourScreenTitle) {
       hourScreenTitle.textContent =
         mode === "daughter-final-hour"
@@ -1037,6 +1361,7 @@ function showHourQuestion(mode = "first-hour") {
 
 function handlePreferenceSelection(button) {
   gameState.selectedPreference = button.dataset.preference;
+  const selectedPreference = button.dataset.preference;
 
   const groupButtons = button.parentElement.querySelectorAll("button");
 
@@ -1045,6 +1370,19 @@ function handlePreferenceSelection(button) {
   });
 
   button.classList.add("is-selected");
+
+  if (isAppointmentConfirmationFlow()) {
+    const appointment = getCurrentAppointmentConfig();
+
+    gameState.selectedHour =
+      selectedPreference === "afternoon"
+        ? `Tarde - ${appointment.afternoonHour}`
+        : `Mañana - ${appointment.morningHour}`;
+
+    openAppointmentConfirmationModal(selectedPreference);
+
+    return;
+  }
 
   setTimeout(() => {
     if (button.dataset.next === "screen-question-hour") {
@@ -1057,7 +1395,7 @@ function handlePreferenceSelection(button) {
 
 function handleHourSelection(button) {
   const selectedHourPeriod = button.dataset.hour;
-  const selectedHourText = button.textContent.trim();
+  const selectedHourText = getHourButtonText(button);
   const currentHourMode = gameState.hourSelectionMode;
 
   const groupButtons = button.parentElement.querySelectorAll("button");
@@ -1198,15 +1536,17 @@ document.addEventListener("click", (event) => {
   }
 });
 
-enableSoundButton.addEventListener("click", async () => {
-  try {
-    await unlockAudio();
-    enableSoundButton.textContent = "🔊 Sonido activo";
-    startRingtone();
-  } catch (error) {
-    enableSoundButton.textContent = "Sonido no disponible";
-  }
-});
+if (enableSoundButton) {
+  enableSoundButton.addEventListener("click", async () => {
+    try {
+      await unlockAudio();
+      enableSoundButton.textContent = "🔊 Sonido activo";
+      startRingtone();
+    } catch (error) {
+      enableSoundButton.textContent = "Sonido no disponible";
+    }
+  });
+}
 
 answerCallButton.addEventListener("click", answerCall);
 
@@ -1222,6 +1562,16 @@ if (skipDaughterCallButton) {
 
 if (confirmFoodButton) {
   confirmFoodButton.addEventListener("click", validateFoodSelection);
+}
+
+if (appointmentConfirmationContinue) {
+  appointmentConfirmationContinue.addEventListener("click", () => {
+    closeAppointmentConfirmationModal();
+
+    setTimeout(() => {
+      startDaughterCallScreen();
+    }, 250);
+  });
 }
 
 repeatMessageButton.addEventListener("click", () => {

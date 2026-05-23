@@ -458,6 +458,114 @@ a:focus-visible {
 }
 
 /* =========================
+   CONFIRMACIÓN DE CITA
+========================= */
+
+.appointment-confirmation-modal {
+  position: fixed;
+  inset: 0;
+
+  display: none;
+  justify-content: center;
+  align-items: center;
+
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.55);
+  z-index: 60;
+}
+
+.appointment-confirmation-modal.is-open {
+  display: flex;
+}
+
+.appointment-confirmation-box {
+  width: 100%;
+  max-width: 720px;
+
+  background: var(--white);
+  border-radius: 30px;
+  padding: clamp(28px, 5vw, 48px);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.appointment-confirmation-shift {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 54px;
+  padding: 0 22px;
+  border-radius: 999px;
+
+  background: var(--yellow-soft);
+  color: var(--text-main);
+  font-size: clamp(1.15rem, 2.8vw, 1.55rem);
+  font-weight: 900;
+}
+
+.appointment-confirmation-box h2 {
+  color: var(--blue-dark);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.15;
+}
+
+.appointment-confirmation-intro,
+.appointment-confirmation-detail {
+  max-width: 580px;
+  color: var(--text-soft);
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+.appointment-confirmation-data {
+  width: 100%;
+  max-width: 540px;
+
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  align-items: center;
+  gap: 16px;
+
+  padding: 20px 24px;
+  border-radius: 22px;
+  background: var(--blue-light);
+}
+
+.appointment-confirmation-data span {
+  color: var(--text-soft);
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  font-weight: 900;
+}
+
+.appointment-confirmation-data strong {
+  color: var(--text-main);
+  font-size: clamp(1.6rem, 4.5vw, 2.55rem);
+  line-height: 1.2;
+  font-weight: 900;
+}
+
+.appointment-confirmation-button {
+  max-width: 420px;
+  min-height: 88px;
+  font-size: clamp(1.35rem, 3vw, 1.9rem);
+}
+
+@media (max-width: 560px) {
+  .appointment-confirmation-data {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+/* =========================
    ANIMACIÓN DE BARRIDO
 ========================= */
 
