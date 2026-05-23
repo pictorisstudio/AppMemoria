@@ -88,6 +88,56 @@
 
 </section>
 
+<!-- Pantalla intermedia: seleccion de tipo de fase -->
+<section class="medical-screen" id="screen-phase-mode-selection">
+
+  <article class="welcome-card medical-card phase-card">
+
+    <header class="medical-header">
+
+      <button class="back-button medical-back" type="button" data-next="screen-phase-selection" aria-label="Volver">
+        â€¹
+      </button>
+
+      <h1>Cita mÃ©dica</h1>
+
+    </header>
+
+    <div class="phase-selection-content">
+
+      <div class="phase-intro-text">
+        <h2 id="phase-mode-title">Selecciona el tipo de fase</h2>
+        <p id="phase-mode-description">
+          Elige si deseas realizar la fase simple o la fase doble.
+        </p>
+      </div>
+
+      <div class="phase-grid phase-mode-grid">
+
+        <button class="phase-option card-blue" type="button" data-phase-mode-option="simple">
+          <span class="phase-number">Fase simple</span>
+          <span class="phase-title">Llamada Nueva EPS</span>
+          <span class="phase-description">
+            Inicia la simulaciÃ³n de la llamada y responde las preguntas de memoria.
+          </span>
+        </button>
+
+        <button class="phase-option card-yellow" type="button" data-phase-mode-option="double">
+          <span class="phase-number">Fase doble</span>
+          <span class="phase-title">Recorrido doble</span>
+          <span class="phase-description">
+            Inicia la fase en modalidad doble manteniendo la misma situaciÃ³n.
+          </span>
+        </button>
+
+      </div>
+
+    </div>
+
+  </article>
+
+</section>
+
     <!-- Pantalla 1: llamada -->
     <section class="medical-screen" id="screen-call">
 

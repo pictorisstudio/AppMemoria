@@ -35,7 +35,10 @@ const hourQuestionTitle = document.getElementById("hour-question-title");
 const hourQuestionText = document.getElementById("hour-question-text");
 
 const phaseButtons = document.querySelectorAll("[data-phase]");
+const phaseModeButtons = document.querySelectorAll("[data-phase-mode-option]");
 const fullPhaseButton = document.querySelector("[data-phase-mode='all']");
+const phaseModeTitle = document.getElementById("phase-mode-title");
+const phaseModeDescription = document.getElementById("phase-mode-description");
 const llamadaMedicaAudio = new Audio("../Audio/LlamadaMedica.mp3");
 const llamadaHijaAudio = new Audio("../Audio/LlamadaHija.mp3");
 const calendarDaysContainer = document.getElementById("calendar-days");
@@ -91,6 +94,7 @@ const calendarState = {
 
 const gameState = {
   currentPhase: null,
+  selectedPhaseForMode: null,
   phaseMode: "single",
   correct: 0,
   errors: 0,
@@ -720,6 +724,7 @@ function resetMedicalTest(targetScreen = "screen-phase-selection") {
 
   if (!shouldGoToCall) {
     gameState.currentPhase = null;
+    gameState.selectedPhaseForMode = null;
     gameState.phaseMode = "single";
   }
 
@@ -822,6 +827,25 @@ function applyPhaseConfig(phaseNumber) {
   llamadaMedicaAudio.load();
 }
 
+function showPhaseModeSelection(phaseNumber) {
+  const selectedPhase = Number(phaseNumber);
+  const config = phaseConfigs[selectedPhase];
+
+  if (!config) return;
+
+  gameState.selectedPhaseForMode = selectedPhase;
+
+  if (phaseModeTitle) {
+    phaseModeTitle.textContent = `Fase ${selectedPhase}`;
+  }
+
+  if (phaseModeDescription) {
+    phaseModeDescription.textContent = "Selecciona fase simple o fase doble para continuar.";
+  }
+
+  showMedicalScreen("screen-phase-mode-selection");
+}
+
 function getSelectedShiftText() {
   if (gameState.selectedPreference === "morning") return "mañana";
   if (gameState.selectedPreference === "afternoon") return "tarde";
@@ -848,16 +872,18 @@ function setDaughterAudioForCurrentPhase() {
   llamadaHijaAudio.load();
 }
 
-function startPhase(phaseNumber) {
+function startPhase(phaseNumber, phaseMode = "simple") {
   const selectedPhase = Number(phaseNumber);
 
   gameState.currentPhase = selectedPhase;
-  gameState.phaseMode = "single";
+  gameState.selectedPhaseForMode = selectedPhase;
+  gameState.phaseMode = phaseMode;
 
   resetMedicalTest("screen-call");
 
   gameState.currentPhase = selectedPhase;
-  gameState.phaseMode = "single";
+  gameState.selectedPhaseForMode = selectedPhase;
+  gameState.phaseMode = phaseMode;
   gameState.totalQuestions = getTotalQuestionsForPhase(selectedPhase);
 
   applyPhaseConfig(selectedPhase);
@@ -1120,6 +1146,7 @@ function handleCorrectAnswer(button) {
 
 document.addEventListener("click", (event) => {
   const phaseButton = event.target.closest("[data-phase]");
+  const phaseModeButton = event.target.closest("[data-phase-mode-option]");
   const preferenceButton = event.target.closest("[data-preference]");
   const hourButton = event.target.closest("[data-hour]");
   const answerButton = event.target.closest("[data-correct]");
@@ -1134,7 +1161,15 @@ document.addEventListener("click", (event) => {
 }
 
   if (phaseButton && !phaseButton.disabled) {
-    startPhase(phaseButton.dataset.phase);
+    showPhaseModeSelection(phaseButton.dataset.phase);
+    return;
+  }
+
+  if (phaseModeButton && !phaseModeButton.disabled) {
+    startPhase(
+      gameState.selectedPhaseForMode || gameState.currentPhase || 1,
+      phaseModeButton.dataset.phaseModeOption
+    );
     return;
   }
 
