@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Preparar comida | Recordar +</title>
+
+    <link rel="stylesheet" href="../CSS/styles.css" />
+    <script src="../JS/preparar-comida.js" defer></script>
+  </head>
+
+  <body>
+    <main class="app-container medical-app">
+      <section class="medical-screen is-active" id="screen-food-phase-selection">
+        <article class="welcome-card medical-card phase-card">
+          <header class="medical-header">
+            <a
+              class="back-button medical-back"
+              href="../index.html"
+              aria-label="Volver al menú principal"
+            >
+              ‹
+            </a>
+
+            <h1>Preparar comida</h1>
+          </header>
+
+          <div class="phase-selection-content">
+            <div class="phase-intro-text">
+              <h2>Seleccione una fase</h2>
+              <p>
+                Cada fase presenta una situación de memoria cotidiana
+                relacionada con preparar comida.
+              </p>
+            </div>
+
+            <div class="phase-grid">
+              <button class="phase-option card-blue" type="button" data-food-phase="1">
+                <span class="phase-number">Fase 1</span>
+                <span class="phase-title">Preparar comida</span>
+                <span class="phase-description">
+                  Espacio reservado para estructurar la actividad.
+                </span>
+              </button>
+
+              <button class="phase-option card-yellow" type="button" data-food-phase="2">
+                <span class="phase-number">Fase 2</span>
+                <span class="phase-title">Preparar comida</span>
+                <span class="phase-description">
+                  Espacio reservado para estructurar la actividad.
+                </span>
+              </button>
+
+              <button class="phase-option card-green" type="button" data-food-phase="3">
+                <span class="phase-number">Fase 3</span>
+                <span class="phase-title">Preparar comida</span>
+                <span class="phase-description">
+                  Espacio reservado para estructurar la actividad.
+                </span>
+              </button>
+
+              <button class="phase-option card-pink" type="button" data-food-phase="4">
+                <span class="phase-number">Fase 4</span>
+                <span class="phase-title">Preparar comida</span>
+                <span class="phase-description">
+                  Espacio reservado para estructurar la actividad.
+                </span>
+              </button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="medical-screen" id="screen-food-mode-selection">
+        <article class="welcome-card medical-card phase-card">
+          <header class="medical-header">
+            <button
+              class="back-button medical-back"
+              type="button"
+              data-next="screen-food-phase-selection"
+              aria-label="Volver"
+            >
+              ‹
+            </button>
+
+            <h1>Preparar comida</h1>
+          </header>
+
+          <div class="phase-selection-content">
+            <div class="phase-intro-text">
+              <h2 id="food-mode-title">Fase 1</h2>
+              <p>Seleccione la estructura de la fase.</p>
+            </div>
+
+            <div class="phase-grid phase-mode-grid">
+              <button
+                class="phase-option card-blue"
+                type="button"
+                data-food-phase-mode="simple"
+              >
+                <span class="phase-number">Estructura fase simple</span>
+                <span class="phase-title">Fase simple</span>
+                <span class="phase-description">
+                  Espacio reservado para configurar esta estructura.
+                </span>
+              </button>
+
+              <button
+                class="phase-option card-yellow"
+                type="button"
+                data-food-phase-mode="double"
+              >
+                <span class="phase-number">Estructura fase doble</span>
+                <span class="phase-title">Fase doble</span>
+                <span class="phase-description">
+                  Espacio reservado para configurar esta estructura.
+                </span>
+              </button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="medical-screen" id="screen-food-empty-activity">
+        <article class="welcome-card medical-card phase-card">
+          <header class="medical-header">
+            <button
+              class="back-button medical-back"
+              type="button"
+              data-next="screen-food-mode-selection"
+              aria-label="Volver"
+            >
+              ‹
+            </button>
+
+            <h1>Preparar comida</h1>
+          </header>
+
+          <div class="phase-selection-content">
+            <div class="phase-intro-text">
+              <h2 id="food-empty-title">Fase pendiente</h2>
+              <p id="food-empty-description">
+                Esta estructura queda lista para asignar funcionalidades.
+              </p>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

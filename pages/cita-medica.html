@@ -87,19 +87,7 @@
               </button>
             </div>
 
-            <button
-              class="memory-button button-one phase-full-button"
-              type="button"
-              data-phase-mode="all"
-              disabled
-            >
-              Recorrer todas las fases
-            </button>
 
-            <p class="small-text phase-note">
-              El recorrido completo se activará cuando las cuatro fases estén
-              estructuradas.
-            </p>
           </div>
         </article>
       </section>
@@ -177,7 +165,7 @@
           <div class="call-content" id="call-content">
             <div class="clinic-name">
               <span class="clinic-icon">🏥</span>
-              <span>OS Salud</span>
+              <span>Nueva EPS</span>
             </div>
 
             <div class="call-visual" aria-hidden="true">
@@ -580,6 +568,79 @@
         </article>
       </section>
 
+      <!-- Pantalla: selección de medicamentos -->
+      <section class="medical-screen" id="screen-medicine-question">
+        <article class="welcome-card medical-card food-card-screen">
+          <header class="medical-header">
+            <h1>Medicamentos</h1>
+          </header>
+
+          <div class="food-content">
+            <div class="food-instruction-box">
+              <h2>¿Qué medicamentos pidió tu hija?</h2>
+              <p>
+                Selecciona los tres medicamentos que recuerdas de la llamada.
+              </p>
+            </div>
+
+            <div class="food-grid">
+              <button class="food-option" type="button" data-medicine="antigripal">
+                <span class="food-emoji">💊</span>
+                <span>Antigripal</span>
+              </button>
+
+              <button class="food-option" type="button" data-medicine="anticoagulante">
+                <span class="food-emoji">🩸</span>
+                <span>Anticoagulante</span>
+              </button>
+
+              <button class="food-option" type="button" data-medicine="pastilla-dormir">
+                <span class="food-emoji">🌙</span>
+                <span>Pastilla para dormir</span>
+              </button>
+
+              <button class="food-option" type="button" data-medicine="analgesico">
+                <span class="food-emoji">🧴</span>
+                <span>Analgésico</span>
+              </button>
+
+              <button class="food-option" type="button" data-medicine="vitaminas">
+                <span class="food-emoji">🍊</span>
+                <span>Vitaminas</span>
+              </button>
+
+              <button class="food-option" type="button" data-medicine="antiacido">
+                <span class="food-emoji">🧪</span>
+                <span>Antiácido</span>
+              </button>
+
+              <button class="food-option" type="button" data-medicine="jarabe">
+                <span class="food-emoji">🥄</span>
+                <span>Jarabe</span>
+              </button>
+
+              <button class="food-option" type="button" data-medicine="antibiotico">
+                <span class="food-emoji">🧬</span>
+                <span>Antibiótico</span>
+              </button>
+            </div>
+
+            <p class="small-text food-feedback" id="medicine-feedback">
+              Selecciona tres medicamentos y confirma tu respuesta.
+            </p>
+
+            <button
+              class="memory-button button-one medical-next-button"
+              type="button"
+              id="confirm-medicine-selection"
+              disabled
+            >
+              Confirmar medicamentos
+            </button>
+          </div>
+        </article>
+      </section>
+
       <!-- Pantalla 6: resultados -->
       <section class="medical-screen" id="screen-results">
         <article class="welcome-card medical-card">
@@ -642,18 +703,7 @@
         aria-hidden="true"
       >
         <div class="appointment-confirmation-box">
-          <span
-            class="appointment-confirmation-shift"
-            id="appointment-confirmation-shift"
-          >
-            Jornada seleccionada
-          </span>
-
           <h2 id="appointment-confirmation-title">Su cita quedó agendada</h2>
-
-          <p class="appointment-confirmation-intro">
-            Recuerde muy bien este dato de la cita médica:
-          </p>
 
           <div class="appointment-confirmation-data">
             <span>Día</span>
@@ -666,13 +716,6 @@
             <span>Hora</span>
             <strong id="appointment-confirmation-time">8:00 am</strong>
           </div>
-
-          <p
-            class="appointment-confirmation-detail"
-            id="appointment-confirmation-detail"
-          >
-            Su cita se agendó en la jornada de la mañana.
-          </p>
 
           <button
             class="memory-button button-one appointment-confirmation-button"
