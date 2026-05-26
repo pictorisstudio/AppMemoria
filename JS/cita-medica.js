@@ -112,7 +112,7 @@ const phaseOneDoubleAppointment = {
   month: 4,
   monthName: "Mayo",
   correctDay: 13,
-  weekdayName: "MiÃ©rcoles",
+  weekdayName: "Miércoles",
   morningHour: "8:00 am",
   afternoonHour: "2:00 pm"
 };
@@ -142,7 +142,7 @@ const phaseThreeStructureAAppointment = {
   month: 5,
   monthName: "Junio",
   correctDay: 10,
-  weekdayName: "MiÃ©rcoles",
+  weekdayName: "Miércoles",
   morningHour: "8:00 am",
   afternoonHour: "2:00 pm"
 };
@@ -249,7 +249,7 @@ function getAppointmentHourForPreference(preference) {
 function getAppointmentShiftLabel(preference) {
   return preference === "afternoon"
     ? "Jornada de la tarde"
-    : "Jornada de la maÃ±ana";
+    : "Jornada de la mañana";
 }
 
 function getHourButtonText(button) {
@@ -288,14 +288,14 @@ function closeAppointmentConfirmationModal() {
 }
 
 function getPhaseTwoDoubleShoppingScript() {
-  return "Hola mamÃ¡, te llamaba para contarte que amanecÃ­ bien. Hoy estoy organizando el almuerzo y luego voy a hacer mercado. Por favor recuerda comprar un paquete de avena, una libra de arroz, una libra de lentejas, azÃºcar, condimento, salsa de tomate y pan.";
+  return "Hola mamá, te llamaba para contarte que amanecí bien. Hoy estoy organizando el almuerzo y luego voy a hacer mercado. Por favor recuerda comprar un paquete de avena, una libra de arroz, una libra de lentejas, azúcar, condimento, salsa de tomate y pan.";
 }
 
 function getPhaseTwoDoubleAppointmentScript() {
   const appointment = phaseTwoDoubleAppointment;
   const hour = getAppointmentHourForPreference(gameState.selectedPreference);
 
-  return `MamÃ¡, tambiÃ©n me llegÃ³ una confirmaciÃ³n de tu cita mÃ©dica. La cita quedÃ³ para el ${appointment.weekdayName.toLowerCase()} ${appointment.correctDay} de ${appointment.monthName.toLowerCase()} de ${appointment.year} a las ${hour}.`;
+  return `Mamá, también me llegó una confirmación de tu cita médica. La cita quedó para el ${appointment.weekdayName.toLowerCase()} ${appointment.correctDay} de ${appointment.monthName.toLowerCase()} de ${appointment.year} a las ${hour}.`;
 }
 
 function getPhaseTwoDoubleDaughterScript() {
@@ -361,7 +361,7 @@ function renderCalendar() {
 function startCalendarSelection({
   mode = "first-calendar",
   nextScreen = "screen-question-shift",
-  title = "Selecciona el dÃ­a de la cita",
+  title = "Selecciona el día de la cita",
   text = "Marca en el calendario la fecha que escuchaste durante la llamada."
 } = {}) {
   calendarState.mode = mode;
@@ -377,7 +377,7 @@ function startCalendarSelection({
   }
 
   if (calendarFeedback) {
-    calendarFeedback.textContent = "Selecciona un dÃ­a para continuar.";
+    calendarFeedback.textContent = "Selecciona un día para continuar.";
   }
 
   renderCalendar();
@@ -514,12 +514,12 @@ async function startCallSoundAutomatically() {
     await unlockAudio();
 
     if (enableSoundButton) {
-      enableSoundButton.textContent = "ðŸ”Š Sonido activo";
+      enableSoundButton.textContent = "🔊 Sonido activo";
     }
 
     startRingtone();
   } catch (error) {
-    console.warn("El navegador no permitiÃ³ activar el audio automÃ¡ticamente.");
+    console.warn("El navegador no permitió activar el audio automáticamente.");
   }
 }
 
@@ -540,7 +540,7 @@ function goToFirstCalendar() {
   startCalendarSelection({
     mode: "first-calendar",
     nextScreen: "screen-question-shift",
-    title: "Selecciona el dÃ­a de la cita",
+    title: "Selecciona el día de la cita",
     text: "Marca en el calendario la fecha que escuchaste durante la llamada."
   });
 }
@@ -572,7 +572,7 @@ function skipMedicalCall() {
   }
 
   if (callStatus) {
-    callStatus.textContent = "Llamada saltada. ContinÃºa con la selecciÃ³n de fecha.";
+    callStatus.textContent = "Llamada saltada. Continúa con la selección de fecha.";
   }
 
   setTimeout(() => {
@@ -608,7 +608,7 @@ if (goToMessageScreen) {
   };
 
   llamadaMedicaAudio.play().catch((error) => {
-    console.error("El navegador bloqueÃ³ la reproducciÃ³n del audio:", error);
+    console.error("El navegador bloqueó la reproducción del audio:", error);
     callStatus.textContent = "Presione nuevamente para reproducir la llamada.";
     answerCallButton.disabled = false;
     if (enableSoundButton) {
@@ -626,7 +626,7 @@ async function answerCall() {
   try {
     await unlockAudio();
   } catch (error) {
-    console.warn("El navegador bloqueÃ³ el audio automÃ¡tico.");
+    console.warn("El navegador bloqueó el audio automático.");
   }
 
   stopRingtone();
@@ -634,7 +634,7 @@ async function answerCall() {
 
   gameState.startTime = performance.now();
 
-  callStatus.textContent = "Llamada conectada... Escuche la informaciÃ³n completa.";
+  callStatus.textContent = "Llamada conectada... Escuche la información completa.";
 
   answerCallButton.classList.remove("is-ringing");
   answerCallButton.classList.add("is-connected");
@@ -727,8 +727,8 @@ function goAfterDaughterCall() {
       startCalendarSelection({
         mode: "daughter-final-calendar",
         nextScreen: "screen-question-hour",
-        title: "Recuerda el dÃƒÂ­a de la cita",
-        text: "Tu hija te confirmÃƒÂ³ la cita mÃƒÂ©dica. Selecciona nuevamente el dÃƒÂ­a en el calendario."
+        title: "Recuerda el día de la cita",
+        text: "Tu hija te confirmó la cita médica. Selecciona nuevamente el día en el calendario."
       });
     }, 500);
 
@@ -740,8 +740,8 @@ function goAfterDaughterCall() {
       startCalendarSelection({
         mode: "daughter-final-calendar",
         nextScreen: "screen-question-hour",
-        title: "Recuerda el dÃ­a de la cita",
-        text: "Tu hija te recordÃ³ la cita mÃ©dica. Selecciona nuevamente el dÃ­a en el calendario."
+        title: "Recuerda el día de la cita",
+        text: "Tu hija te recordó la cita médica. Selecciona nuevamente el día en el calendario."
       });
     }, 500);
 
@@ -785,7 +785,7 @@ function playDaughterCallAudio() {
   };
 
   llamadaHijaAudio.play().catch((error) => {
-    console.error("El navegador bloqueÃ³ la llamada de la hija:", error);
+    console.error("El navegador bloqueó la llamada de la hija:", error);
 
     if (daughterCallStatus) {
       daughterCallStatus.textContent = "Presiona nuevamente para escuchar la llamada.";
@@ -804,7 +804,7 @@ function playDaughterCallAudio() {
 function speakPhaseTwoDoubleDaughterCall() {
   if (!("speechSynthesis" in window)) {
     if (daughterCallStatus) {
-      daughterCallStatus.textContent = "Llamada reproducida. ContinÃºa con la siguiente pantalla.";
+      daughterCallStatus.textContent = "Llamada reproducida. Continúa con la siguiente pantalla.";
     }
 
     setTimeout(() => {
@@ -879,14 +879,14 @@ async function answerDaughterCall() {
       isPhaseThreeStructureADouble()
         ? "Llamada conectada... Escucha los medicamentos."
         : isPhaseTwoSimple()
-        ? "Llamada conectada... Escucha la confirmaciÃ³n de la cita."
+        ? "Llamada conectada... Escucha la confirmación de la cita."
         : "Llamada conectada... Escucha el encargo.";
   }
 
   try {
     await unlockAudio();
   } catch (error) {
-    console.warn("El navegador bloqueÃ³ el audio de la llamada de la hija.");
+    console.warn("El navegador bloqueó el audio de la llamada de la hija.");
   }
 
   stopRingtone();
@@ -923,10 +923,10 @@ llamadaHijaAudio.onerror = null;
   if (daughterCallStatus) {
     daughterCallStatus.textContent =
       isPhaseThreeStructureADouble()
-        ? "Llamada saltada. ContinÃºa con los medicamentos."
+        ? "Llamada saltada. Continúa con los medicamentos."
         : gameState.currentPhase === 3 || isPhaseTwoSimple()
-        ? "Llamada saltada. ContinÃºa con la fecha de la cita."
-        : "Llamada saltada. ContinÃºa con los alimentos.";
+        ? "Llamada saltada. Continúa con la fecha de la cita."
+        : "Llamada saltada. Continúa con los alimentos.";
   }
 
   goAfterDaughterCall();
@@ -1011,8 +1011,8 @@ function validateFoodSelection() {
     startCalendarSelection({
       mode: "daughter-final-calendar",
       nextScreen: "screen-question-hour",
-      title: "Recuerda el dÃ­a de la cita",
-      text: "DespuÃ©s del encargo familiar, selecciona nuevamente el dÃ­a de la cita mÃ©dica."
+      title: "Recuerda el día de la cita",
+      text: "Después del encargo familiar, selecciona nuevamente el día de la cita médica."
     });
   }, 1400);
 }
@@ -1098,8 +1098,8 @@ function validateMedicineSelection() {
     startCalendarSelection({
       mode: "daughter-final-calendar",
       nextScreen: "screen-question-hour",
-      title: "Â¿QuÃ© dÃ­a fue asignada la cita?",
-      text: "Selecciona en el calendario el dÃ­a que fue asignado para la cita."
+      title: "¿Qué día fue asignada la cita?",
+      text: "Selecciona en el calendario el día que fue asignado para la cita."
     });
   }, 1400);
 }
@@ -1147,7 +1147,7 @@ const buttons = document.querySelectorAll("[data-correct], [data-preference], [d
 
   if (enableSoundButton) {
     enableSoundButton.disabled = false;
-    enableSoundButton.textContent = audioEnabled ? "ðŸ”Š Sonido activo" : "ðŸ”Š Activar sonido";
+    enableSoundButton.textContent = audioEnabled ? "🔊 Sonido activo" : "🔊 Activar sonido";
   }
 
   if (skipCallButton) {
@@ -1286,8 +1286,8 @@ function showPhaseModeSelection(phaseNumber) {
     if (selectedPhase === 2) {
       modeName.textContent =
         button.dataset.phaseModeOption === "double"
-          ? "Estructura B â€“ tarea doble"
-          : "Estructura B â€“ tarea simple";
+          ? "Estructura B – tarea doble"
+          : "Estructura B – tarea simple";
       return;
     }
 
@@ -1301,15 +1301,15 @@ function showPhaseModeSelection(phaseNumber) {
 
     modeName.textContent =
       button.dataset.phaseModeOption === "double"
-        ? "Estructura A â€“ Fase doble"
-        : "Estructura A â€“ Fase simple";
+        ? "Estructura A – Fase doble"
+        : "Estructura A – Fase simple";
   });
 
   showMedicalScreen("screen-phase-mode-selection");
 }
 
 function getSelectedShiftText() {
-  if (gameState.selectedPreference === "morning") return "maÃ±ana";
+  if (gameState.selectedPreference === "morning") return "mañana";
   if (gameState.selectedPreference === "afternoon") return "tarde";
   return "jornada seleccionada";
 }
@@ -1382,7 +1382,7 @@ function showResults() {
 }
 
 function getPreferenceText(preference) {
-  if (preference === "morning") return "MaÃ±ana";
+  if (preference === "morning") return "Mañana";
   if (preference === "afternoon") return "Tarde";
   return "No registrado";
 }
@@ -1420,7 +1420,7 @@ function downloadCSVResults() {
     ],
     [
       now.toLocaleString("es-CO"),
-      "Cita mÃ©dica",
+      "Cita médica",
       `Fase ${gameState.currentPhase || 1}`,
       getPreferenceText(gameState.selectedPreference),
       gameState.selectedHour || "No registrado",
@@ -1486,7 +1486,7 @@ function showHourQuestion(mode = "first-hour") {
         label.textContent =
           button.dataset.hour === "afternoon"
             ? `Tarde - ${hourText}`
-            : `MaÃ±ana - ${hourText}`;
+            : `Mañana - ${hourText}`;
       }
     } else {
       const label = button.querySelector("span:last-child");
@@ -1500,35 +1500,35 @@ function showHourQuestion(mode = "first-hour") {
 
   if (isPhaseOneDoubleFinalHour) {
     if (hourScreenTitle) {
-      hourScreenTitle.textContent = "ConfirmaciÃ³n final";
+      hourScreenTitle.textContent = "Confirmación final";
     }
 
     if (hourQuestionTitle) {
-      hourQuestionTitle.textContent = "Â¿CuÃ¡l era la jornada y hora de la cita?";
+      hourQuestionTitle.textContent = "¿Cuál era la jornada y hora de la cita?";
     }
 
     if (hourQuestionText) {
-      hourQuestionText.textContent = "Selecciona la jornada y la hora que se agendÃ³.";
+      hourQuestionText.textContent = "Selecciona la jornada y la hora que se agendó.";
     }
   } else if (mode === "final-hour" || mode === "daughter-final-hour") {
     if (hourScreenTitle) {
       hourScreenTitle.textContent =
         mode === "daughter-final-hour"
-          ? "ConfirmaciÃ³n final"
-          : "Ãšltima pregunta";
+          ? "Confirmación final"
+          : "Última pregunta";
     }
 
     if (hourQuestionTitle) {
       hourQuestionTitle.textContent =
         mode === "daughter-final-hour"
-          ? "Â¿QuÃ© hora tenÃ­a la cita recordada por tu hija?"
-          : "Â¿QuÃ© hora escogiÃ³ para la cita?";
+          ? "¿Qué hora tenía la cita recordada por tu hija?"
+          : "¿Qué hora escogió para la cita?";
     }
 
     if (hourQuestionText) {
       hourQuestionText.textContent =
         mode === "daughter-final-hour"
-          ? "Selecciona la misma hora que habÃ­as elegido anteriormente."
+          ? "Selecciona la misma hora que habías elegido anteriormente."
           : "Selecciona la misma hora que elegiste anteriormente.";
     }
   } else {
@@ -1537,7 +1537,7 @@ function showHourQuestion(mode = "first-hour") {
     }
 
     if (hourQuestionTitle) {
-      hourQuestionTitle.textContent = "Â¿En quÃ© horario prefiere?";
+      hourQuestionTitle.textContent = "¿En qué horario prefiere?";
     }
 
     if (hourQuestionText) {
@@ -1568,7 +1568,7 @@ function handlePreferenceSelection(button) {
     gameState.selectedHour =
       selectedPreference === "afternoon"
         ? `Tarde - ${appointment.afternoonHour}`
-        : `MaÃ±ana - ${appointment.morningHour}`;
+        : `Mañana - ${appointment.morningHour}`;
 
     openAppointmentConfirmationModal(selectedPreference);
 
@@ -1639,8 +1639,8 @@ function handleHourSelection(button) {
     startCalendarSelection({
       mode: "final-calendar",
       nextScreen: "screen-question-hour",
-      title: "Confirma el dÃ­a de la cita",
-      text: "Selecciona nuevamente en el calendario el dÃ­a de la cita mÃ©dica."
+      title: "Confirma el día de la cita",
+      text: "Selecciona nuevamente en el calendario el día de la cita médica."
     });
   }, 700);
 }
@@ -1737,7 +1737,7 @@ if (enableSoundButton) {
   enableSoundButton.addEventListener("click", async () => {
     try {
       await unlockAudio();
-      enableSoundButton.textContent = "ðŸ”Š Sonido activo";
+      enableSoundButton.textContent = "🔊 Sonido activo";
       startRingtone();
     } catch (error) {
       enableSoundButton.textContent = "Sonido no disponible";
@@ -1774,8 +1774,8 @@ if (appointmentConfirmationContinue) {
         startCalendarSelection({
           mode: "daughter-final-calendar",
           nextScreen: "screen-question-hour",
-          title: "Â¿QuÃ© dÃ­a fue asignada la cita?",
-          text: "Selecciona en el calendario el dÃ­a que fue asignado para la cita."
+          title: "¿Qué día fue asignada la cita?",
+          text: "Selecciona en el calendario el día que fue asignado para la cita."
         });
       }, 250);
 
