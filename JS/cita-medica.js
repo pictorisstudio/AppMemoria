@@ -187,6 +187,7 @@ let audioContext = null;
 let audioEnabled = false;
 let ringtoneInterval = null;
 let currentUtterance = null;
+let daughterCallPlaybackTimeout = null;
 
 function isPhaseOneDouble() {
   return gameState.currentPhase === 1 && gameState.phaseMode === "double";
@@ -656,6 +657,11 @@ function startDaughterCallScreen(stage = null) {
     window.speechSynthesis.cancel();
   }
 
+  if (daughterCallPlaybackTimeout) {
+    clearTimeout(daughterCallPlaybackTimeout);
+    daughterCallPlaybackTimeout = null;
+  }
+
   gameState.daughterCallStage = stage;
 
   setDaughterAudioForCurrentPhase();
@@ -871,7 +877,7 @@ async function answerDaughterCall() {
   }
 
   if (skipDaughterCallButton) {
-    skipDaughterCallButton.disabled = true;
+    skipDaughterCallButton.disabled = false;
   }
 
   if (daughterCallStatus) {
@@ -892,7 +898,8 @@ async function answerDaughterCall() {
   stopRingtone();
   playConnectSound();
 
-  setTimeout(() => {
+  daughterCallPlaybackTimeout = setTimeout(() => {
+    daughterCallPlaybackTimeout = null;
     playDaughterCallAudio();
   }, 850);
 }
@@ -901,10 +908,15 @@ function skipDaughterCall() {
 
   stopRingtone();
 
-llamadaHijaAudio.pause();
-llamadaHijaAudio.currentTime = 0;
-llamadaHijaAudio.onended = null;
-llamadaHijaAudio.onerror = null;
+  if (daughterCallPlaybackTimeout) {
+    clearTimeout(daughterCallPlaybackTimeout);
+    daughterCallPlaybackTimeout = null;
+  }
+
+  llamadaHijaAudio.pause();
+  llamadaHijaAudio.currentTime = 0;
+  llamadaHijaAudio.onended = null;
+  llamadaHijaAudio.onerror = null;
 
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
@@ -1013,6 +1025,94 @@ function validateFoodSelection() {
       nextScreen: "screen-question-hour",
       title: "Recuerda el día de la cita",
       text: "Después del encargo familiar, selecciona nuevamente el día de la cita médica."
+    });
+  }, 1400);
+}
+
+function toggleShoppingSelection(button) {
+  const product = button.dataset.shopping;
+
+  button.classList.toggle("is-selected");
+
+  if (button.classList.contains("is-selected")) {
+    if (!gameState.selectedShoppingProducts.includes(product)) {
+      gameState.selectedShoppingProducts.push(product);
+    }
+  } else {
+    gameState.selectedShoppingProducts = gameState.selectedShoppingProducts.filter(
+      (item) => item !== product
+    );
+  }
+
+  if (confirmShoppingButton) {
+    confirmShoppingButton.disabled = gameState.selectedShoppingProducts.length === 0;
+  }
+
+  if (shoppingFeedback) {
+    shoppingFeedback.textContent = `${gameState.selectedShoppingProducts.length} producto(s) seleccionado(s).`;
+  }
+}
+
+function validateShoppingSelection() {
+  const selectedProducts = [...gameState.selectedShoppingProducts];
+  const selectedSet = new Set(selectedProducts);
+  const requiredSet = new Set(requiredShoppingProducts);
+
+  const hasAllRequired = requiredShoppingProducts.every((product) => selectedSet.has(product));
+  const hasOnlyRequired = selectedProducts.every((product) => requiredSet.has(product));
+  const isCorrect =
+    hasAllRequired &&
+    hasOnlyRequired &&
+    selectedProducts.length === requiredShoppingProducts.length;
+
+  shoppingButtons.forEach((button) => {
+    const product = button.dataset.shopping;
+    const wasSelected = selectedSet.has(product);
+    const isRequired = requiredSet.has(product);
+
+    button.disabled = true;
+
+    if (wasSelected && isRequired) {
+      button.classList.add("is-correct");
+    }
+
+    if (wasSelected && !isRequired) {
+      button.classList.add("is-wrong");
+    }
+
+    if (!wasSelected && isRequired) {
+      button.classList.add("is-wrong");
+    }
+  });
+
+  if (isCorrect) {
+    gameState.correct++;
+    gameState.shoppingAnswerStatus = "Correcto";
+
+    if (shoppingFeedback) {
+      shoppingFeedback.textContent = "Productos seleccionados correctamente.";
+    }
+  } else {
+    gameState.errors++;
+    gameState.shoppingAnswerStatus = "Incorrecto";
+
+    if (shoppingFeedback) {
+      shoppingFeedback.textContent = "Los productos correctos eran: avena, arroz y lentejas.";
+    }
+  }
+
+  if (confirmShoppingButton) {
+    confirmShoppingButton.disabled = true;
+  }
+
+  applyCurrentAppointmentCalendarConfig();
+
+  setTimeout(() => {
+    startCalendarSelection({
+      mode: "daughter-final-calendar",
+      nextScreen: "screen-question-hour",
+      title: "¿Qué día fue asignada la cita?",
+      text: "Selecciona en el calendario el día que fue asignado para la cita."
     });
   }, 1400);
 }
@@ -1174,6 +1274,19 @@ const buttons = document.querySelectorAll("[data-correct], [data-preference], [d
 
   if (foodFeedback) {
     foodFeedback.textContent = "Selecciona los alimentos y confirma tu respuesta.";
+  }
+
+  shoppingButtons.forEach((button) => {
+    button.disabled = false;
+    button.classList.remove("is-selected", "is-correct", "is-wrong");
+  });
+
+  if (confirmShoppingButton) {
+    confirmShoppingButton.disabled = true;
+  }
+
+  if (shoppingFeedback) {
+    shoppingFeedback.textContent = "Selecciona tres productos y confirma tu respuesta.";
   }
 
   medicineButtons.forEach((button) => {
@@ -1682,6 +1795,7 @@ document.addEventListener("click", (event) => {
   const nextButton = event.target.closest("[data-next]");
   const calendarDayButton = event.target.closest("[data-calendar-day]");
   const foodButton = event.target.closest("[data-food]");
+  const shoppingButton = event.target.closest("[data-shopping]");
   const medicineButton = event.target.closest("[data-medicine]");
   
 
@@ -1715,6 +1829,11 @@ document.addEventListener("click", (event) => {
 
   if (foodButton) {
   toggleFoodSelection(foodButton);
+  return;
+}
+
+  if (shoppingButton) {
+  toggleShoppingSelection(shoppingButton);
   return;
 }
 
@@ -1761,6 +1880,10 @@ if (confirmFoodButton) {
   confirmFoodButton.addEventListener("click", validateFoodSelection);
 }
 
+if (confirmShoppingButton) {
+  confirmShoppingButton.addEventListener("click", validateShoppingSelection);
+}
+
 if (confirmMedicineButton) {
   confirmMedicineButton.addEventListener("click", validateMedicineSelection);
 }
@@ -1785,6 +1908,14 @@ if (appointmentConfirmationContinue) {
     if (isPhaseThreeStructureADouble()) {
       setTimeout(() => {
         startDaughterCallScreen("medicines");
+      }, 250);
+
+      return;
+    }
+
+    if (isPhaseTwoDouble()) {
+      setTimeout(() => {
+        startDaughterCallScreen("shopping");
       }, 250);
 
       return;
