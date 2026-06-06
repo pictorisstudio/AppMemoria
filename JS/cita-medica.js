@@ -38,6 +38,7 @@ const requiredFoods = [
 
 const requiredShoppingProducts = ["avena", "arroz", "lentejas"];
 const requiredMedicines = ["antigripal", "anticoagulante", "pastilla-dormir"];
+const multiAnswerFeedbackDelayMs = 3200;
 
 const hourScreenTitle = document.getElementById("hour-screen-title");
 const hourQuestionTitle = document.getElementById("hour-question-title");
@@ -179,6 +180,15 @@ const gameState = {
   selectedDate: null,
   selectedFinalDate: null,
   selectedFinalHour: null,
+  activeQuestionKey: null,
+  activeQuestionStartedAt: null,
+  questionResults: {},
+  questionOrder: [],
+  multiSelectTimings: {
+    foods: {},
+    shopping: {},
+    medicines: {}
+  },
   finalTimeMs: 0,
   startTime: null
 };
@@ -318,6 +328,180 @@ function showMedicalScreen(screenId) {
   });
 
   targetScreen.classList.add("is-active");
+
+  if (screenId === "screen-question-shift") {
+    startQuestionTimer("jornada_preferida");
+  } else if (screenId === "screen-food-question") {
+    startQuestionTimer("alimentos");
+  } else if (screenId === "screen-shopping-question") {
+    startQuestionTimer("compras");
+  } else if (screenId === "screen-medicine-question") {
+    startQuestionTimer("medicamentos");
+  }
+}
+
+const questionLabels = {
+  fecha_inicial: "Fecha inicial",
+  jornada_preferida: "Jornada elegida",
+  hora_preferida: "Hora elegida",
+  fecha_confirmacion: "Fecha confirmada",
+  hora_confirmacion: "Hora confirmada",
+  alimentos: "Alimentos recordados",
+  compras: "Compras recordadas",
+  medicamentos: "Medicamentos recordados",
+  fecha_recordada_hija: "Fecha final recordada",
+  hora_recordada_hija: "Hora final recordada"
+};
+
+function startQuestionTimer(questionKey) {
+  gameState.activeQuestionKey = questionKey;
+  gameState.activeQuestionStartedAt = performance.now();
+}
+
+function finishQuestionTimer(questionKey, answer, result) {
+  const activeQuestionKey = questionKey || gameState.activeQuestionKey;
+  const startedAt = gameState.activeQuestionStartedAt;
+
+  if (!activeQuestionKey) return;
+
+  const responseTimeMs = startedAt
+    ? Math.round(performance.now() - startedAt)
+    : 0;
+
+  if (!gameState.questionResults[activeQuestionKey]) {
+    gameState.questionOrder.push(activeQuestionKey);
+  }
+
+  gameState.questionResults[activeQuestionKey] = {
+    label: questionLabels[activeQuestionKey] || activeQuestionKey,
+    answer,
+    result,
+    responseTimeMs
+  };
+
+  gameState.activeQuestionKey = null;
+  gameState.activeQuestionStartedAt = null;
+}
+
+function getCalendarQuestionKey(mode) {
+  if (mode === "final-calendar") return "fecha_confirmacion";
+  if (mode === "daughter-final-calendar") return "fecha_recordada_hija";
+  return "fecha_inicial";
+}
+
+function getHourQuestionKey(mode) {
+  if (mode === "final-hour") return "hora_confirmacion";
+  if (mode === "daughter-final-hour") return "hora_recordada_hija";
+  return "hora_preferida";
+}
+
+function getElapsedQuestionTime() {
+  return gameState.activeQuestionStartedAt
+    ? Math.round(performance.now() - gameState.activeQuestionStartedAt)
+    : 0;
+}
+
+function getOptionText(button) {
+  const label = button.querySelector("span:last-child");
+  return (label || button).textContent.trim();
+}
+
+function getMultiSelectQuestionKey(groupKey, value) {
+  return `${groupKey}_${value.replaceAll("-", "_")}`;
+}
+
+function getMultiSelectQuestionLabel(groupLabel, optionText) {
+  return `${groupLabel}: ${optionText}`;
+}
+
+function recordMultiSelectQuestion(questionKey, label, answer, result, responseTimeMs) {
+  if (!gameState.questionResults[questionKey]) {
+    gameState.questionOrder.push(questionKey);
+  }
+
+  gameState.questionResults[questionKey] = {
+    label,
+    answer,
+    result,
+    responseTimeMs
+  };
+}
+
+function rememberMultiSelectTiming(timingGroup, value, isSelected) {
+  if (!gameState.multiSelectTimings[timingGroup]) {
+    gameState.multiSelectTimings[timingGroup] = {};
+  }
+
+  if (isSelected) {
+    gameState.multiSelectTimings[timingGroup][value] = getElapsedQuestionTime();
+  } else {
+    delete gameState.multiSelectTimings[timingGroup][value];
+  }
+}
+
+function evaluateMultiSelectItems({
+  buttons,
+  selectedValues,
+  requiredValues,
+  timingGroup,
+  questionGroupKey,
+  questionGroupLabel
+}) {
+  const selectedSet = new Set(selectedValues);
+  const requiredSet = new Set(requiredValues);
+  const timings = gameState.multiSelectTimings[timingGroup] || {};
+  const confirmTimeMs = getElapsedQuestionTime();
+  let correctCount = 0;
+  let errorCount = 0;
+
+  buttons.forEach((button) => {
+    const value =
+      button.dataset.food ||
+      button.dataset.shopping ||
+      button.dataset.medicine;
+    const optionText = getOptionText(button);
+    const wasSelected = selectedSet.has(value);
+    const isRequired = requiredSet.has(value);
+
+    if (wasSelected && isRequired) {
+      correctCount++;
+      recordMultiSelectQuestion(
+        getMultiSelectQuestionKey(questionGroupKey, value),
+        getMultiSelectQuestionLabel(questionGroupLabel, optionText),
+        optionText,
+        "Correcto",
+        timings[value] ?? confirmTimeMs
+      );
+    } else if (wasSelected && !isRequired) {
+      errorCount++;
+      recordMultiSelectQuestion(
+        getMultiSelectQuestionKey(questionGroupKey, value),
+        getMultiSelectQuestionLabel(questionGroupLabel, optionText),
+        optionText,
+        "Incorrecto",
+        timings[value] ?? confirmTimeMs
+      );
+    } else if (!wasSelected && isRequired) {
+      errorCount++;
+      recordMultiSelectQuestion(
+        getMultiSelectQuestionKey(questionGroupKey, value),
+        getMultiSelectQuestionLabel(questionGroupLabel, optionText),
+        "No seleccionado",
+        "Incorrecto",
+        confirmTimeMs
+      );
+    }
+  });
+
+  gameState.correct += correctCount;
+  gameState.errors += errorCount;
+  gameState.activeQuestionKey = null;
+  gameState.activeQuestionStartedAt = null;
+
+  return {
+    correctCount,
+    errorCount
+  };
 }
 
 function renderCalendar() {
@@ -383,6 +567,7 @@ function startCalendarSelection({
 
   renderCalendar();
   showMedicalScreen("screen-calendar-date");
+  startQuestionTimer(getCalendarQuestionKey(mode));
 }
 
 function handleCalendarDaySelection(button) {
@@ -424,6 +609,12 @@ if (calendarState.mode === "daughter-final-calendar") {
       calendarFeedback.textContent = `La fecha correcta era el ${calendarState.correctDay} de ${calendarState.monthName}.`;
     }
   }
+
+  finishQuestionTimer(
+    getCalendarQuestionKey(calendarState.mode),
+    `${selectedDay} de ${calendarState.monthName}`,
+    isCorrect ? "Correcto" : "Incorrecto"
+  );
 
   setTimeout(() => {
     if (
@@ -957,6 +1148,12 @@ function toggleFoodSelection(button) {
     gameState.selectedFoods = gameState.selectedFoods.filter((item) => item !== food);
   }
 
+  rememberMultiSelectTiming(
+    "foods",
+    food,
+    button.classList.contains("is-selected")
+  );
+
   if (confirmFoodButton) {
     confirmFoodButton.disabled = gameState.selectedFoods.length === 0;
   }
@@ -995,15 +1192,22 @@ function validateFoodSelection() {
     }
   });
 
+  evaluateMultiSelectItems({
+    buttons: foodButtons,
+    selectedValues: selectedFoods,
+    requiredValues: requiredFoods,
+    timingGroup: "foods",
+    questionGroupKey: "alimento",
+    questionGroupLabel: "Alimento"
+  });
+
   if (isCorrect) {
-    gameState.correct++;
     gameState.foodAnswerStatus = "Correcto";
 
     if (foodFeedback) {
       foodFeedback.textContent = "Alimentos seleccionados correctamente.";
     }
   } else {
-    gameState.errors++;
     gameState.foodAnswerStatus = "Incorrecto";
 
     if (foodFeedback) {
@@ -1026,7 +1230,7 @@ function validateFoodSelection() {
       title: "Recuerda el día de la cita",
       text: "Después del encargo familiar, selecciona nuevamente el día de la cita médica."
     });
-  }, 1400);
+  }, multiAnswerFeedbackDelayMs);
 }
 
 function toggleShoppingSelection(button) {
@@ -1043,6 +1247,12 @@ function toggleShoppingSelection(button) {
       (item) => item !== product
     );
   }
+
+  rememberMultiSelectTiming(
+    "shopping",
+    product,
+    button.classList.contains("is-selected")
+  );
 
   if (confirmShoppingButton) {
     confirmShoppingButton.disabled = gameState.selectedShoppingProducts.length === 0;
@@ -1085,15 +1295,22 @@ function validateShoppingSelection() {
     }
   });
 
+  evaluateMultiSelectItems({
+    buttons: shoppingButtons,
+    selectedValues: selectedProducts,
+    requiredValues: requiredShoppingProducts,
+    timingGroup: "shopping",
+    questionGroupKey: "compra",
+    questionGroupLabel: "Compra"
+  });
+
   if (isCorrect) {
-    gameState.correct++;
     gameState.shoppingAnswerStatus = "Correcto";
 
     if (shoppingFeedback) {
       shoppingFeedback.textContent = "Productos seleccionados correctamente.";
     }
   } else {
-    gameState.errors++;
     gameState.shoppingAnswerStatus = "Incorrecto";
 
     if (shoppingFeedback) {
@@ -1114,7 +1331,7 @@ function validateShoppingSelection() {
       title: "¿Qué día fue asignada la cita?",
       text: "Selecciona en el calendario el día que fue asignado para la cita."
     });
-  }, 1400);
+  }, multiAnswerFeedbackDelayMs);
 }
 
 function toggleMedicineSelection(button) {
@@ -1129,6 +1346,12 @@ function toggleMedicineSelection(button) {
   } else {
     gameState.selectedMedicines = gameState.selectedMedicines.filter((item) => item !== medicine);
   }
+
+  rememberMultiSelectTiming(
+    "medicines",
+    medicine,
+    button.classList.contains("is-selected")
+  );
 
   if (confirmMedicineButton) {
     confirmMedicineButton.disabled = gameState.selectedMedicines.length === 0;
@@ -1171,15 +1394,22 @@ function validateMedicineSelection() {
     }
   });
 
+  evaluateMultiSelectItems({
+    buttons: medicineButtons,
+    selectedValues: selectedMedicines,
+    requiredValues: requiredMedicines,
+    timingGroup: "medicines",
+    questionGroupKey: "medicamento",
+    questionGroupLabel: "Medicamento"
+  });
+
   if (isCorrect) {
-    gameState.correct++;
     gameState.medicineAnswerStatus = "Correcto";
 
     if (medicineFeedback) {
       medicineFeedback.textContent = "Medicamentos seleccionados correctamente.";
     }
   } else {
-    gameState.errors++;
     gameState.medicineAnswerStatus = "Incorrecto";
 
     if (medicineFeedback) {
@@ -1201,7 +1431,7 @@ function validateMedicineSelection() {
       title: "¿Qué día fue asignada la cita?",
       text: "Selecciona en el calendario el día que fue asignado para la cita."
     });
-  }, 1400);
+  }, multiAnswerFeedbackDelayMs);
 }
 
 function resetMedicalTest(targetScreen = "screen-phase-selection") {
@@ -1217,6 +1447,15 @@ function resetMedicalTest(targetScreen = "screen-phase-selection") {
   gameState.selectedDate = null;
   gameState.selectedFinalDate = null;
   gameState.selectedFinalHour = null;
+  gameState.activeQuestionKey = null;
+  gameState.activeQuestionStartedAt = null;
+  gameState.questionResults = {};
+  gameState.questionOrder = [];
+  gameState.multiSelectTimings = {
+    foods: {},
+    shopping: {},
+    medicines: {}
+  };
   gameState.finalTimeMs = 0;
   gameState.startTime = null;
   gameState.selectedFoods = [];
@@ -1480,12 +1719,29 @@ function formatMilliseconds(milliseconds) {
   return `${milliseconds} ms`;
 }
 
+function formatElapsedTime(milliseconds) {
+  const safeMilliseconds = Math.max(0, Math.round(Number(milliseconds) || 0));
+  const minutes = Math.floor(safeMilliseconds / 60000);
+  const remainingMilliseconds = safeMilliseconds % 60000;
+  const secondsText = (remainingMilliseconds / 1000)
+    .toFixed(3)
+    .replace(".", ",");
+
+  if (minutes > 0) {
+    const paddedSecondsText = secondsText.padStart(6, "0");
+    return `${minutes} min ${paddedSecondsText} s`;
+  }
+
+  return `${secondsText} s`;
+}
+
 function showResults() {
   const finalTime = gameState.startTime
     ? Math.round(performance.now() - gameState.startTime)
     : 0;
 
   gameState.finalTimeMs = finalTime;
+  gameState.totalQuestions = gameState.correct + gameState.errors;
 
   resultCorrect.textContent = `${gameState.correct}/${gameState.totalQuestions}`;
   resultErrors.textContent = gameState.errors;
@@ -1505,53 +1761,62 @@ function escapeCSV(value) {
   return `"${text.replaceAll('"', '""')}"`;
 }
 
+function getPhaseStructureText() {
+  if (gameState.currentPhase === 2) {
+    return gameState.phaseMode === "double"
+      ? "Estructura B - tarea doble"
+      : "Estructura B - tarea simple";
+  }
+
+  if (gameState.currentPhase === 3) {
+    return gameState.phaseMode === "double"
+      ? "Estructura A' - tarea doble"
+      : "Estructura A' - tarea simple";
+  }
+
+  return gameState.phaseMode === "double"
+    ? "Estructura A - fase doble"
+    : "Estructura A - fase simple";
+}
+
 function downloadCSVResults() {
   const now = new Date();
+  const questionResults = gameState.questionOrder
+    .map((questionKey) => gameState.questionResults[questionKey])
+    .filter(Boolean);
+  const questionHeaders = questionResults.flatMap((question) => [
+    `${question.label} - respuesta`,
+    `${question.label} - resultado`,
+    `${question.label} - tiempo`
+  ]);
+  const questionValues = questionResults.flatMap((question) => [
+    question.answer || "No registrado",
+    question.result || "No registrado",
+    formatElapsedTime(question.responseTimeMs)
+  ]);
 
   const rows = [
     [
       "fecha_registro",
       "prueba",
       "fase",
-      "preferencia_jornada",
-      "horario_elegido",
-      "dia_elegido_calendario_1",
-      "dia_elegido_calendario_2",
-      "hora_final_elegida",
-      "alimentos_seleccionados",
-      "alimentos_correctos",
-      "resultado_alimentos",
-      "medicamentos_seleccionados",
-      "medicamentos_correctos",
-      "resultado_medicamentos",
-      "dia_elegido_calendario_3",
-      "hora_final_fase_2",
+      "estructura",
       "aciertos",
       "errores",
       "total_preguntas_evaluadas",
-      "tiempo_milisegundos"
+      "tiempo_total",
+      ...questionHeaders
     ],
     [
       now.toLocaleString("es-CO"),
       "Cita médica",
       `Fase ${gameState.currentPhase || 1}`,
-      getPreferenceText(gameState.selectedPreference),
-      gameState.selectedHour || "No registrado",
-      gameState.selectedDate || "No registrado",
-      gameState.selectedFinalDate || "No registrado",
-      gameState.selectedFinalHour || "No registrado",
-      gameState.selectedFoods.join(", ") || "No registrado",
-      requiredFoods.join(", "),
-      gameState.foodAnswerStatus || "No aplica",
-      gameState.selectedMedicines.join(", ") || "No registrado",
-      requiredMedicines.join(", "),
-      gameState.medicineAnswerStatus || "No aplica",
-      gameState.selectedDaughterDate || "No aplica",
-      gameState.selectedDaughterHour || "No aplica",
+      getPhaseStructureText(),
       gameState.correct,
       gameState.errors,
       gameState.totalQuestions,
-      gameState.finalTimeMs
+      formatElapsedTime(gameState.finalTimeMs),
+      ...questionValues
     ]
   ];
 
@@ -1568,7 +1833,7 @@ function downloadCSVResults() {
 
   const link = document.createElement("a");
   link.href = url;
-  link.download = `resultado-cita-medica-${Date.now()}.csv`;
+  link.download = `resultado-cita-medica-fase-${gameState.currentPhase || 1}-${gameState.phaseMode}-${Date.now()}.csv`;
 
   document.body.appendChild(link);
   link.click();
@@ -1659,6 +1924,7 @@ function showHourQuestion(mode = "first-hour") {
   }
 
   showMedicalScreen("screen-question-hour");
+  startQuestionTimer(getHourQuestionKey(mode));
 }
 
 
@@ -1674,6 +1940,12 @@ function handlePreferenceSelection(button) {
   });
 
   button.classList.add("is-selected");
+
+  finishQuestionTimer(
+    "jornada_preferida",
+    getPreferenceText(selectedPreference),
+    "Registrado"
+  );
 
   if (isAppointmentConfirmationFlow()) {
     const appointment = getCurrentAppointmentConfig();
@@ -1725,6 +1997,12 @@ function handleHourSelection(button) {
       button.classList.add("is-wrong");
     }
 
+    finishQuestionTimer(
+      getHourQuestionKey(currentHourMode),
+      selectedHourText,
+      isCorrect ? "Correcto" : "Incorrecto"
+    );
+
     setTimeout(() => {
       if (currentHourMode === "final-hour" &&    (gameState.currentPhase === 2 || gameState.currentPhase === 3) ) {
         startDaughterCallScreen();
@@ -1747,6 +2025,12 @@ function handleHourSelection(button) {
     gameState.errors++;
     button.classList.add("is-wrong");
   }
+
+  finishQuestionTimer(
+    getHourQuestionKey(currentHourMode),
+    selectedHourText,
+    isCorrect ? "Correcto" : "Incorrecto"
+  );
 
   setTimeout(() => {
     startCalendarSelection({
