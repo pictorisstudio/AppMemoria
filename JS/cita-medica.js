@@ -1716,7 +1716,7 @@ function startPhase(phaseNumber, phaseMode = "simple") {
 }
 
 function formatMilliseconds(milliseconds) {
-  return `${milliseconds} ms`;
+  return formatElapsedTime(milliseconds);
 }
 
 function formatElapsedTime(milliseconds) {
