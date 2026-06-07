@@ -939,6 +939,10 @@ a:focus-visible {
   box-shadow: 0 20px 38px rgba(30, 64, 175, 0.2);
 }
 
+.phase-link-option {
+  text-decoration: none;
+}
+
 .phase-option:active {
   transform: scale(0.97);
 }
