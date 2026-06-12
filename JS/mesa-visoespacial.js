@@ -10,6 +10,9 @@ const sceneInstruction = document.getElementById("scene-instruction");
 const sceneFoundCount = document.getElementById("scene-found-count");
 const sceneSequence = document.getElementById("scene-sequence");
 const distractorStatus = document.getElementById("distractor-status");
+const weatherQuestion = document.getElementById("weather-question");
+const weatherQuestionText = document.getElementById("weather-question-text");
+const weatherFeedback = document.getElementById("weather-feedback");
 
 const resultCorrect = document.getElementById("result-correct");
 const resultErrors = document.getElementById("result-errors");
@@ -28,34 +31,36 @@ const sceneConfig = {
     { id: "biblia", label: "Biblia", x: 17, y: 71, width: 16, height: 19 },
     { id: "hilos", label: "Colección de hilos", x: 37, y: 24, width: 14, height: 12 },
     { id: "hilos-arriba-dos", label: "Colección de hilos", x: 48, y: 24, width: 14, height: 12 },
+    { id: "cable", label: "Cable USB", x: 46, y: 21, width: 20, height: 18 },
+    { id: "lapicero", label: "Lapicero", x: 32, y: 33, width: 11, height: 22 },
     { id: "hilos-copia", label: "Colección de hilos", x: 58, y: 68, width: 13, height: 12 },
     { id: "hilos-abajo-dos", label: "Colección de hilos", x: 69, y: 68, width: 13, height: 12 },
     { id: "frutas", label: "Arreglo frutal", x: 68, y: 11, width: 25, height: 17 },
-    { id: "revistas", label: "Pila de revistas", x: 60, y: 43, width: 23, height: 25 },
+    { id: "revistas", label: "Pila de revistas", x: 68, y: 43, width: 23, height: 25 },
     { id: "gafas", label: "Gafas", x: 38, y: 56, width: 25, height: 14 },
     {
       id: "calendario-hora",
       label: "Calendario con hora de la cita",
-      x: 36,
-      y: 27,
-      width: 14,
-      height: 17
+      x: 39,
+      y: 37,
+      width: 11,
+      height: 14
     },
     {
       id: "carpeta-documentos",
       label: "Carpeta con documentos",
-      x: 81,
-      y: 41,
-      width: 23,
-      height: 24
+      x: 82,
+      y: 40,
+      width: 19,
+      height: 20
     },
     {
       id: "autorizacion",
       label: "Autorización médica",
-      x: 81,
-      y: 64,
-      width: 14,
-      height: 24,
+      x: 82,
+      y: 67,
+      width: 11,
+      height: 20,
       target: true
     },
     {
@@ -63,10 +68,15 @@ const sceneConfig = {
       label: "Nota de la ruta del bus",
       x: 49,
       y: 72,
-      width: 13,
-      height: 17,
+      width: 10,
+      height: 10,
       target: true
-    }
+    },
+    { id: "panuelos", label: "Caja de panuelos", x: 35, y: 73, width: 11, height: 12 },
+    { id: "cinta", label: "Cinta adhesiva", x: 43, y: 80, width: 11, height: 9 },
+    { id: "calculadora", label: "Calculadora", x: 87, y: 56, width: 9, height: 18 },
+    { id: "clips", label: "Clips", x: 63, y: 82, width: 11, height: 5 },
+    { id: "llaves", label: "Llaves", x: 88, y: 79, width: 10, height: 14 }
   ]
 };
 
@@ -78,8 +88,12 @@ const doubleTaskConfig = {
     "nota-bus"
   ],
   cueGapAfterPreviewMs: 450,
-  distractorDurationMs: 5200,
-  distractorText: "Se esperan fuertes lluvias esta tarde en la ciudad.",
+  distractorDurationMs: 7600,
+  distractorText:
+    "Noticias del clima: esta tarde se esperan fuertes lluvias en la ciudad, con viento moderado y calles mojadas. Se recomienda salir con paraguas y caminar con cuidado.",
+  weatherQuestionText: "¿Cómo va a estar el clima en la ciudad?",
+  weatherCorrectAnswer: "lluvias",
+  weatherQuestionDelayAfterAnswerMs: 850,
   recallInstruction:
     "La hija ya no está detrás de ti. Busca en la mesa los objetos que debes llevar.",
   cues: [
@@ -117,12 +131,18 @@ const sceneState = {
   isActive: false,
   finalTimeMs: 0,
   phase: "idle",
-  currentCueIndex: null
+  currentCueIndex: null,
+  weatherQuestionStartedAt: null,
+  weatherAnswer: null,
+  weatherAnswerLabel: "No registrado",
+  weatherAnswerResult: "No aplica",
+  weatherAnswerTimeMs: null
 };
 
 let sceneRunId = 0;
 let sceneTimers = [];
 let instructionRunId = 0;
+const liftedSvgObjects = new Map();
 
 function showSceneScreen(screenId) {
   const targetScreen = document.getElementById(screenId);
@@ -156,6 +176,147 @@ function clearSceneTimers() {
   sceneTimers = [];
 }
 
+function resetWeatherQuestion() {
+  if (weatherQuestionText) {
+    weatherQuestionText.textContent = doubleTaskConfig.weatherQuestionText;
+  }
+
+  if (weatherFeedback) {
+    weatherFeedback.textContent = "";
+  }
+
+  document.querySelectorAll("[data-weather-answer]").forEach((button) => {
+    button.disabled = false;
+    button.classList.remove("is-correct", "is-wrong");
+  });
+}
+
+function showWeatherQuestion(runId) {
+  if (runId !== sceneRunId) return;
+
+  sceneState.phase = "weather-question";
+  sceneState.currentInstruction = doubleTaskConfig.weatherQuestionText;
+  sceneState.weatherQuestionStartedAt = performance.now();
+
+  if (weatherQuestionText) {
+    weatherQuestionText.textContent = doubleTaskConfig.weatherQuestionText;
+  }
+
+  showSceneScreen("screen-scene-weather-question");
+  playInstruction({ runId });
+}
+
+function finishWeatherQuestion(runId) {
+  if (runId !== sceneRunId) return;
+
+  showSceneScreen("screen-scene-table");
+  activateRecall(runId);
+}
+
+function handleWeatherAnswerSelection(button) {
+  if (sceneState.phase !== "weather-question" || button.disabled) {
+    return;
+  }
+
+  const answeredAt = performance.now();
+  const answer = button.dataset.weatherAnswer;
+  const isCorrect = answer === doubleTaskConfig.weatherCorrectAnswer;
+
+  sceneState.weatherAnswer = answer;
+  sceneState.weatherAnswerLabel = button.textContent.trim();
+  sceneState.weatherAnswerResult = isCorrect ? "Correcto" : "Incorrecto";
+  sceneState.weatherAnswerTimeMs = Math.round(
+    answeredAt - (sceneState.weatherQuestionStartedAt || answeredAt)
+  );
+
+  document.querySelectorAll("[data-weather-answer]").forEach((answerButton) => {
+    answerButton.disabled = true;
+  });
+
+  button.classList.add(isCorrect ? "is-correct" : "is-wrong");
+
+  if (weatherFeedback) {
+    weatherFeedback.textContent = isCorrect
+      ? "Respuesta registrada."
+      : "Respuesta registrada. La noticia hablaba de fuertes lluvias.";
+  }
+
+  const currentRunId = sceneRunId;
+  scheduleSceneTimer(() => {
+    finishWeatherQuestion(currentRunId);
+  }, doubleTaskConfig.weatherQuestionDelayAfterAnswerMs);
+}
+
+function getSvgObject(itemId) {
+  if (!tableScene) return null;
+
+  return tableScene.querySelector(`[data-svg-item="${itemId}"]`);
+}
+
+function liftSvgObject(itemId, stateClass) {
+  const svgObject = getSvgObject(itemId);
+
+  if (!svgObject || !svgObject.parentElement) return;
+
+  if (!liftedSvgObjects.has(itemId)) {
+    liftedSvgObjects.set(itemId, {
+      parent: svgObject.parentElement,
+      nextSibling: svgObject.nextSibling
+    });
+  }
+
+  svgObject.classList.add(stateClass);
+  svgObject.parentElement.appendChild(svgObject);
+}
+
+function returnSvgObjectToOriginalPlace(svgObject, originalPlace) {
+  if (!svgObject || !originalPlace?.parent) return;
+
+  if (originalPlace.nextSibling?.parentNode === originalPlace.parent) {
+    originalPlace.parent.insertBefore(svgObject, originalPlace.nextSibling);
+    return;
+  }
+
+  originalPlace.parent.appendChild(svgObject);
+}
+
+function restoreSvgObject(itemId, stateClass) {
+  const svgObject = getSvgObject(itemId);
+  const originalPlace = liftedSvgObjects.get(itemId);
+
+  if (!svgObject || !originalPlace || svgObject.classList.contains("is-svg-found")) {
+    return;
+  }
+
+  svgObject.classList.remove(stateClass);
+  returnSvgObjectToOriginalPlace(svgObject, originalPlace);
+  liftedSvgObjects.delete(itemId);
+}
+
+function markSvgObjectFound(itemId) {
+  const svgObject = getSvgObject(itemId);
+
+  liftSvgObject(itemId, "is-svg-found");
+
+  if (svgObject) {
+    svgObject.classList.remove("is-svg-previewed");
+    svgObject.classList.add("is-svg-found");
+  }
+}
+
+function resetSvgObjectLayers() {
+  liftedSvgObjects.forEach((originalPlace, itemId) => {
+    const svgObject = getSvgObject(itemId);
+
+    if (!svgObject) return;
+
+    svgObject.classList.remove("is-svg-previewed", "is-svg-found");
+    returnSvgObjectToOriginalPlace(svgObject, originalPlace);
+  });
+
+  liftedSvgObjects.clear();
+}
+
 function resetSceneState() {
   sceneRunId++;
   clearSceneTimers();
@@ -174,6 +335,14 @@ function resetSceneState() {
   sceneState.phase = "idle";
   sceneState.currentInstruction = sceneConfig.instruction;
   sceneState.currentCueIndex = null;
+  sceneState.weatherQuestionStartedAt = null;
+  sceneState.weatherAnswer = null;
+  sceneState.weatherAnswerLabel = "No registrado";
+  sceneState.weatherAnswerResult = "No aplica";
+  sceneState.weatherAnswerTimeMs = null;
+  resetSvgObjectLayers();
+
+  resetWeatherQuestion();
 
   if (sceneStatus) {
     sceneStatus.textContent = "Observa la mesa.";
@@ -290,9 +459,11 @@ function previewTarget(targetId, delayMs) {
     if (!target) return;
 
     target.classList.add("is-previewed");
+    liftSvgObject(targetId, "is-svg-previewed");
 
     scheduleSceneTimer(() => {
       target.classList.remove("is-previewed");
+      restoreSvgObject(targetId, "is-svg-previewed");
     }, sceneConfig.previewDurationMs);
   }, delayMs);
 }
@@ -386,6 +557,7 @@ function startDistractor(runId) {
 
   sceneState.phase = "distractor";
   sceneState.isActive = false;
+  resetWeatherQuestion();
 
   if (distractorStatus) {
     distractorStatus.textContent = doubleTaskConfig.distractorText;
@@ -398,8 +570,7 @@ function startDistractor(runId) {
   scheduleSceneTimer(() => {
     if (runId !== sceneRunId) return;
 
-    showSceneScreen("screen-scene-table");
-    activateRecall(runId);
+    showWeatherQuestion(runId);
   }, doubleTaskConfig.distractorDurationMs);
 }
 
@@ -483,6 +654,7 @@ function handleSceneObjectSelection(button) {
     sceneState.lastFoundAt = selectedAt;
     button.classList.add("is-found");
     button.disabled = true;
+    markSvgObjectFound(item.id);
 
     updateSceneProgress();
 
@@ -537,6 +709,28 @@ function getSceneCorrectCount() {
   return sceneState.found.length;
 }
 
+function getWeatherQuestionCorrectCount() {
+  if (sceneState.mode !== "double") return 0;
+  return sceneState.weatherAnswerResult === "Correcto" ? 1 : 0;
+}
+
+function getTotalCorrectCount() {
+  return getSceneCorrectCount() + getWeatherQuestionCorrectCount();
+}
+
+function getTotalQuestionCount() {
+  return getSceneTotalTargets() + (sceneState.mode === "double" ? 1 : 0);
+}
+
+function getWeatherQuestionErrorCount() {
+  if (sceneState.mode !== "double") return 0;
+  return sceneState.weatherAnswerResult === "Incorrecto" ? 1 : 0;
+}
+
+function getTotalErrorCount() {
+  return sceneState.errors + getWeatherQuestionErrorCount();
+}
+
 function getSceneTotalTargets() {
   return getActiveTargetIds().length;
 }
@@ -557,11 +751,11 @@ function getTimeBetweenTargetsMs() {
 
 function showSceneResults() {
   if (resultCorrect) {
-    resultCorrect.textContent = `${getSceneCorrectCount()}/${getSceneTotalTargets()}`;
+    resultCorrect.textContent = `${getTotalCorrectCount()}/${getTotalQuestionCount()}`;
   }
 
   if (resultErrors) {
-    resultErrors.textContent = sceneState.errors;
+    resultErrors.textContent = getTotalErrorCount();
   }
 
   if (resultTime) {
@@ -612,12 +806,19 @@ function downloadSceneCSVResults() {
       "fase",
       "estructura",
       "aciertos",
+      "aciertos_objetos",
       "errores",
+      "errores_objetos",
+      "total_preguntas",
       "total_objetivos",
       "tiempo_total",
       "primer_objeto",
       "secuencia",
       "tiempo_entre_objetos",
+      "pregunta_clima",
+      "respuesta_clima",
+      "resultado_clima",
+      "tiempo_respuesta_clima",
       ...foundLatencyHeaders,
       ...selectionHeaders
     ],
@@ -626,13 +827,28 @@ function downloadSceneCSVResults() {
       "Cita médica",
       "Fase 4",
       getActiveStructureText(),
+      getTotalCorrectCount(),
       getSceneCorrectCount(),
+      getTotalErrorCount(),
       sceneState.errors,
+      getTotalQuestionCount(),
       getSceneTotalTargets(),
       formatMilliseconds(sceneState.finalTimeMs),
       getFirstFoundObjectLabel(),
       getFoundSequenceText(),
       formatMilliseconds(getTimeBetweenTargetsMs()),
+      sceneState.mode === "double"
+        ? doubleTaskConfig.weatherQuestionText
+        : "No aplica",
+      sceneState.mode === "double"
+        ? sceneState.weatherAnswerLabel
+        : "No aplica",
+      sceneState.mode === "double"
+        ? sceneState.weatherAnswerResult
+        : "No aplica",
+      sceneState.mode === "double"
+        ? formatMilliseconds(sceneState.weatherAnswerTimeMs)
+        : "No aplica",
       ...foundLatencyValues,
       ...selectionValues
     ]
@@ -661,6 +877,12 @@ function downloadSceneCSVResults() {
 document.addEventListener("click", (event) => {
   const nextScreenButton = event.target.closest("[data-scene-screen]");
   const sceneObject = event.target.closest("[data-item-id]");
+  const weatherAnswer = event.target.closest("[data-weather-answer]");
+
+  if (weatherAnswer) {
+    handleWeatherAnswerSelection(weatherAnswer);
+    return;
+  }
 
   if (nextScreenButton) {
     resetSceneState();
@@ -699,6 +921,11 @@ if (repeatInstructionButton) {
     ) {
       clearSceneTimers();
       runDoubleCueStep(sceneState.currentCueIndex, sceneRunId);
+      return;
+    }
+
+    if (sceneState.phase === "weather-question") {
+      playInstruction();
       return;
     }
 

@@ -20,7 +20,8 @@
 
 .scene-start-card,
 .scene-results-card,
-.scene-distractor-card {
+.scene-distractor-card,
+.scene-weather-question-card {
   justify-content: center;
 }
 
@@ -189,6 +190,141 @@
   stroke-linejoin: round;
 }
 
+.target-underlay {
+  filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.1));
+}
+
+.svg-lift-body {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 260ms ease, filter 260ms ease;
+}
+
+.svg-object.is-svg-previewed .svg-lift-body {
+  animation: svg-object-lift 950ms ease-in-out 2;
+  filter: drop-shadow(0 0 16px rgba(250, 204, 21, 0.9));
+}
+
+.svg-object.is-svg-found .svg-lift-body {
+  transform: scale(1.06);
+  filter: drop-shadow(0 0 14px rgba(22, 163, 74, 0.72));
+}
+
+.svg-cable {
+  fill: none;
+}
+
+.svg-cable .cable-shadow {
+  fill: rgba(15, 23, 42, 0.18);
+  stroke: none;
+}
+
+.svg-cable .cable-loop {
+  stroke: #1f2937;
+  stroke-width: 16;
+}
+
+.svg-cable .cable-tail {
+  stroke: #1f2937;
+  stroke-width: 16;
+}
+
+.svg-cable .plug-body,
+.svg-cable .plug-neck {
+  fill: #1f2937;
+}
+
+.svg-cable .plug-tip {
+  fill: #f8fafc;
+  stroke: #1f2937;
+  stroke-width: 5;
+}
+
+.svg-pencil-cup .cup-floor-shadow {
+  fill: rgba(15, 23, 42, 0.14);
+  stroke: none;
+}
+
+.svg-pencil-cup .scissors {
+  fill: none;
+}
+
+.svg-pencil-cup .scissors circle {
+  stroke: #21445d;
+  stroke-width: 11;
+}
+
+.svg-pencil-cup .scissors-handle {
+  stroke: #21445d;
+  stroke-width: 12;
+}
+
+.svg-pencil-cup .scissors-blade {
+  fill: #cbd5e1;
+}
+
+.svg-pencil-cup .scissors-screw {
+  fill: #334155;
+}
+
+.svg-pencil-cup .ruler path:first-child {
+  fill: #fbbf24;
+}
+
+.svg-pencil-cup .ruler circle {
+  fill: #f8fafc;
+  stroke-width: 4;
+}
+
+.svg-pencil-cup .ruler-lines {
+  fill: none;
+  stroke: #92400e;
+  stroke-width: 3;
+}
+
+.svg-pencil-cup .yellow-pencil path:first-child {
+  fill: #fbbf24;
+}
+
+.svg-pencil-cup .blue-pencil path:first-child {
+  fill: #2563eb;
+}
+
+.svg-pencil-cup .wood-tip {
+  fill: #d9b166;
+}
+
+.svg-pencil-cup .lead-tip {
+  fill: #111827;
+}
+
+.svg-pencil-cup .yellow-pencil line {
+  stroke: #f59e0b;
+  stroke-width: 3;
+}
+
+.svg-pencil-cup .cup-back {
+  fill: #1f3f58;
+  opacity: 0.96;
+}
+
+.svg-pencil-cup .cup-rim-back {
+  fill: #3f6680;
+}
+
+.svg-pencil-cup .cup-body {
+  fill: #284d68;
+}
+
+.svg-pencil-cup .cup-front-rim {
+  fill: #315a75;
+}
+
+.svg-pencil-cup .cup-shade {
+  fill: rgba(15, 23, 42, 0.18);
+  stroke: none;
+}
+
 .svg-vase .vase-body,
 .svg-vase .vase-neck {
   fill: #f6e39b;
@@ -351,6 +487,136 @@
 .svg-magazines .magazine-label {
   fill: #bfdbfe;
   stroke: none;
+}
+
+.svg-tissue-box .tissue-left,
+.svg-tissue-box .tissue-right {
+  fill: #f3f4f6;
+}
+
+.svg-tissue-box .tissue-right {
+  fill: #e5e7eb;
+}
+
+.svg-tissue-box .tissue-fold {
+  fill: none;
+  stroke: #111827;
+  stroke-width: 7;
+}
+
+.svg-tissue-box .box-top {
+  fill: #0ea5e9;
+}
+
+.svg-tissue-box .box-front {
+  fill: #0284c7;
+}
+
+.svg-tissue-box .box-side {
+  fill: #075985;
+}
+
+.svg-tissue-box .tissue-slot {
+  fill: none;
+  stroke: #111827;
+  stroke-width: 8;
+}
+
+.svg-tissue-box .box-highlight {
+  fill: rgba(56, 189, 248, 0.34);
+  stroke: none;
+}
+
+.svg-tissue-box .box-line {
+  stroke: #111827;
+  stroke-width: 7;
+}
+
+.svg-tape .tape-thread {
+  fill: none;
+  stroke: #111827;
+  stroke-width: 6;
+}
+
+.svg-tape .tape-roll {
+  fill: #eee7dd;
+}
+
+.svg-tape .tape-hole {
+  fill: #fffaf0;
+}
+
+.svg-tape .tape-base {
+  fill: #ef4b2a;
+}
+
+.svg-tape .tape-lip {
+  fill: #facc15;
+}
+
+.svg-tape .tape-base-shadow {
+  fill: none;
+  stroke: rgba(127, 29, 29, 0.42);
+  stroke-width: 5;
+}
+
+.svg-calculator .calculator-body {
+  fill: #475569;
+}
+
+.svg-calculator .calculator-screen {
+  fill: #94a3b8;
+}
+
+.svg-calculator .calculator-keys rect {
+  fill: #cbd5e1;
+  stroke-width: 2;
+}
+
+.svg-paper-clips {
+  fill: none;
+}
+
+.svg-paper-clips .clip path {
+  stroke-width: 7;
+}
+
+.svg-paper-clips .clip-yellow path {
+  stroke: #facc15;
+}
+
+.svg-paper-clips .clip-blue path {
+  stroke: #2563eb;
+}
+
+.svg-paper-clips .clip-orange path {
+  stroke: #f97316;
+}
+
+.svg-paper-clips .clip-red path {
+  stroke: #ef4444;
+}
+
+.svg-keys .key {
+  fill: #f97316;
+  stroke: #2f3437;
+  stroke-width: 10;
+}
+
+.svg-keys .key-front {
+  fill: #fb7f18;
+}
+
+.svg-keys .key-hole {
+  fill: #f8fafc;
+  stroke: #2f3437;
+  stroke-width: 8;
+}
+
+.svg-keys .key-ring-link {
+  fill: none;
+  stroke: #2f3437;
+  stroke-width: 10;
 }
 
 .svg-calendar rect:first-child {
@@ -623,6 +889,29 @@
   font-weight: 800;
 }
 
+.weather-question {
+  width: min(100%, 720px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+.weather-answer.is-correct {
+  background: #dcfce7;
+  outline: 5px solid #16a34a;
+}
+
+.weather-answer.is-wrong {
+  background: #fee2e2;
+  outline: 5px solid #dc2626;
+}
+
+.weather-feedback {
+  min-height: 42px;
+  font-size: clamp(1rem, 2vw, 1.2rem) !important;
+}
+
 @keyframes object-pulse {
   0%,
   100% {
@@ -650,6 +939,17 @@
 
   70% {
     transform: translate(-47%, -50%);
+  }
+}
+
+@keyframes svg-object-lift {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.07);
   }
 }
 
@@ -700,7 +1000,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   .scene-object.is-previewed,
-  .scene-object.is-error {
+  .scene-object.is-error,
+  .svg-object.is-svg-previewed .svg-lift-body {
     animation: none;
+  }
+
+  .svg-lift-body {
+    transition: none;
   }
 }

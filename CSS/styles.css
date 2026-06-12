@@ -2023,10 +2023,57 @@ a:focus-visible {
   background: #f8fbff;
 }
 
+.cooking-card[data-cooking-screen="intro"],
+.cooking-card[data-cooking-screen="result"] {
+  min-height: min(720px, calc(100vh - 60px));
+  justify-content: center;
+  gap: 0;
+}
+
 #cooking-game-root {
   width: 100%;
   min-height: 100%;
-  padding-bottom: 92px;
+  padding-bottom: 0;
+}
+
+#cooking-game-root[data-cooking-screen="intro"],
+#cooking-game-root[data-cooking-screen="result"] {
+  min-height: clamp(520px, 72vh, 720px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(20px, 3vw, 30px);
+}
+
+#cooking-game-root[data-cooking-screen="intro"] .cooking-header,
+#cooking-game-root[data-cooking-screen="result"] .cooking-header {
+  max-width: 820px;
+  margin-bottom: 0;
+  display: grid;
+  grid-template-columns: 76px 1fr 76px;
+  align-items: center;
+}
+
+#cooking-game-root[data-cooking-screen="intro"] .cooking-header > div,
+#cooking-game-root[data-cooking-screen="result"] .cooking-header > div {
+  grid-column: 2;
+  text-align: center;
+}
+
+#cooking-game-root[data-cooking-screen="intro"] .cooking-body,
+#cooking-game-root[data-cooking-screen="result"] .cooking-body {
+  max-width: 760px;
+  justify-items: center;
+}
+
+#cooking-game-root[data-cooking-screen="intro"] .cooking-actions {
+  width: min(420px, 100%);
+  margin-top: 0;
+}
+
+#cooking-game-root[data-cooking-screen="result"] .medical-actions {
+  margin-top: 0;
 }
 
 .cooking-header {
@@ -2104,8 +2151,7 @@ a:focus-visible {
 
 .cooking-intro,
 .cooking-instruction,
-.daughter-message-card,
-.cooking-result {
+.daughter-message-card {
   width: 100%;
   padding: 22px;
   border: 2px solid #e5e7eb;
@@ -2115,10 +2161,18 @@ a:focus-visible {
   text-align: left;
 }
 
+#cooking-game-root[data-cooking-screen="intro"] .cooking-intro {
+  max-width: 760px;
+  padding: clamp(26px, 5vw, 46px);
+  border-color: #dbeafe;
+  border-radius: 28px;
+  text-align: center;
+  box-shadow: 0 12px 28px rgba(30, 64, 175, 0.1);
+}
+
 .cooking-intro h2,
 .cooking-instruction h2,
-.daughter-message-card h2,
-.cooking-result h2 {
+.daughter-message-card h2 {
   margin: 0 0 12px;
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   line-height: 1.18;
@@ -2127,8 +2181,7 @@ a:focus-visible {
 
 .cooking-intro p,
 .cooking-instruction p,
-.daughter-message-card p,
-.cooking-result p {
+.daughter-message-card p {
   margin: 0;
   font-size: 1.2rem;
   line-height: 1.45;
@@ -2272,48 +2325,353 @@ a:focus-visible {
   cursor: pointer;
 }
 
-.cooking-bottom-nav {
-  position: fixed;
-  left: 50%;
-  bottom: 14px;
-  z-index: 20;
-  width: min(680px, calc(100% - 24px));
-  min-height: 64px;
-  padding: 8px;
-  border: 2px solid #dbeafe;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
-  transform: translateX(-50%);
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 6px;
+#cooking-game-root[data-cooking-screen="intro"] .cooking-intro p {
+  font-size: clamp(1.15rem, 2.2vw, 1.45rem);
 }
 
-.cooking-bottom-nav a,
-.cooking-bottom-nav button {
-  min-height: 48px;
-  border: 0;
-  border-radius: 12px;
-  background: #eff6ff;
-  color: #1d4ed8;
-  display: grid;
-  place-items: center;
-  font-size: 0.95rem;
+.cooking-scene {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1120 / 680;
+  overflow: hidden;
+  border: 3px solid #dbeafe;
+  border-radius: 22px;
+  background: #eef6ff;
+  box-shadow: 0 12px 28px rgba(30, 64, 175, 0.12);
+}
+
+.kitchen-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.kitchen-art text {
+  font-family: Arial, Helvetica, sans-serif;
   font-weight: 900;
-  text-decoration: none;
+  text-anchor: middle;
+}
+
+.kitchen-wall {
+  fill: #eaf3fc;
+}
+
+.kitchen-tile-lines {
+  fill: none;
+  stroke: rgba(37, 99, 235, 0.12);
+  stroke-width: 5;
+}
+
+.kitchen-cabinets rect {
+  fill: #9a673f;
+  stroke: #334155;
+  stroke-width: 6;
+}
+
+.kitchen-cabinets line {
+  stroke: #5f3f2a;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.fridge rect {
+  fill: #dbeafe;
+  stroke: #334155;
+  stroke-width: 6;
+}
+
+.fridge line {
+  stroke: #64748b;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.person-head {
+  fill: #f0c7a2;
+  stroke: #334155;
+  stroke-width: 5;
+}
+
+.person-hair {
+  fill: #cbd5e1;
+  stroke: #334155;
+  stroke-width: 5;
+}
+
+.person-body {
+  fill: #60a5fa;
+  stroke: #334155;
+  stroke-width: 6;
+}
+
+.person-arm {
+  fill: none;
+  stroke: #f0c7a2;
+  stroke-width: 18;
+  stroke-linecap: round;
+}
+
+.person-hand {
+  fill: #f0c7a2;
+  stroke: #334155;
+  stroke-width: 4;
+}
+
+.counter rect:first-child {
+  fill: #b87345;
+}
+
+.counter rect:last-child {
+  fill: #f8fafc;
+  stroke: #334155;
+  stroke-width: 6;
+}
+
+.stove-base {
+  fill: #e5e7eb;
+  stroke: #334155;
+  stroke-width: 7;
+}
+
+.stove-divider {
+  stroke: #94a3b8;
+  stroke-width: 5;
+}
+
+.burner-svg circle {
+  fill: #f8fafc;
+  stroke: #334155;
+  stroke-width: 6;
+}
+
+.burner-svg circle + circle {
+  fill: #cbd5e1;
+}
+
+.burner-svg .burner-flame {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.burner-svg.is-on circle + circle {
+  fill: #fee2e2;
+}
+
+.burner-svg.is-on .burner-flame {
+  stroke: #ef4444;
+}
+
+.burner-svg.is-target circle:first-child {
+  stroke: #facc15;
+  stroke-width: 10;
+  filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.75));
+}
+
+.food-pan {
+  stroke: #334155;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.food-pan .pan-rim {
+  fill: #475569;
+}
+
+.food-pan .pan-inner {
+  fill: #1f2937;
+}
+
+.food-pan .pan-handle {
+  fill: none;
+  stroke: #334155;
+  stroke-width: 12;
+}
+
+.food-pan text {
+  fill: #f8fafc;
+  stroke: none;
+  font-size: 21px;
+}
+
+.rice-water {
+  fill: #dbeafe !important;
+}
+
+.egg-white {
+  fill: #f8fafc !important;
+}
+
+.egg-yolk {
+  fill: #facc15 !important;
+  stroke: #d97706;
+  stroke-width: 3;
+}
+
+.tomato {
+  fill: #ef4444 !important;
+}
+
+.pepper {
+  fill: #22c55e !important;
+}
+
+.onion {
+  fill: #f8fafc !important;
+}
+
+.meat {
+  fill: #92400e !important;
+}
+
+.oil {
+  fill: none !important;
+  stroke: rgba(250, 204, 21, 0.8);
+  stroke-width: 5;
+}
+
+.recipe-sheet rect:first-child {
+  fill: #fffaf0;
+  stroke: #334155;
+  stroke-width: 5;
+}
+
+.recipe-title {
+  fill: #1e3a8a;
+  stroke: none;
+  font-size: 30px;
+}
+
+.recipe-note rect {
+  fill: #eff6ff;
+  stroke: #bfdbfe;
+  stroke-width: 3;
+}
+
+.recipe-note text {
+  fill: #334155;
+  stroke: none;
+  font-size: 17px;
+}
+
+.recipe-note.is-active-note rect {
+  fill: #fef08a;
+  stroke: #f59e0b;
+  stroke-width: 5;
+  filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.7));
+}
+
+.phone rect:first-child {
+  fill: #1f2937;
+  stroke: #334155;
+  stroke-width: 5;
+}
+
+.phone-screen {
+  fill: #dbeafe;
+}
+
+.phone text {
+  fill: #1e3a8a;
+  stroke: none;
+  font-size: 27px;
+}
+
+.phone circle {
+  fill: #94a3b8;
+  stroke: none;
+}
+
+.phone.is-target rect:first-child {
+  stroke: #facc15;
+  stroke-width: 8;
+}
+
+.cooking-hotspot {
+  position: absolute;
+  border: 0;
+  border-radius: 22px;
+  background: transparent;
+  color: transparent;
   cursor: pointer;
 }
 
-.cooking-bottom-nav a:hover,
-.cooking-bottom-nav button:hover {
-  background: #dbeafe;
+.cooking-hotspot:focus-visible {
+  outline: 5px solid #111827;
+  outline-offset: 3px;
+}
+
+.cooking-hotspot-arroz {
+  left: 30%;
+  top: 38%;
+  width: 15%;
+  height: 18%;
+}
+
+.cooking-hotspot-huevos {
+  left: 53%;
+  top: 38%;
+  width: 15%;
+  height: 18%;
+}
+
+.cooking-hotspot-guiso {
+  left: 30%;
+  top: 56%;
+  width: 15%;
+  height: 18%;
+}
+
+.cooking-hotspot-carne {
+  left: 53%;
+  top: 56%;
+  width: 15%;
+  height: 18%;
 }
 
 @media (max-width: 560px) {
   .cooking-card {
     min-height: 100vh;
     border-radius: 0;
+    padding: 18px;
+  }
+
+  .cooking-card[data-cooking-screen="intro"],
+  .cooking-card[data-cooking-screen="result"] {
+    min-height: 100svh;
+  }
+
+  #cooking-game-root[data-cooking-screen="intro"],
+  #cooking-game-root[data-cooking-screen="result"] {
+    min-height: calc(100svh - 36px);
+    gap: 18px;
+  }
+
+  #cooking-game-root[data-cooking-screen="intro"] .cooking-header,
+  #cooking-game-root[data-cooking-screen="result"] .cooking-header {
+    grid-template-columns: 58px 1fr 58px;
+  }
+
+  #cooking-game-root[data-cooking-screen="intro"] .cooking-header h1,
+  #cooking-game-root[data-cooking-screen="result"] .cooking-header h1 {
+    font-size: 2rem;
+  }
+
+  #cooking-game-root[data-cooking-screen="intro"] .cooking-header p,
+  #cooking-game-root[data-cooking-screen="result"] .cooking-header p {
+    font-size: 0.92rem;
+  }
+
+  #cooking-game-root[data-cooking-screen="intro"] .cooking-intro {
+    padding: 22px;
+    border-radius: 22px;
+  }
+
+  #cooking-game-root[data-cooking-screen="result"] .medical-actions {
+    width: 100%;
   }
 
   .recipe-grid,
