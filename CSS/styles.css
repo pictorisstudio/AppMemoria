@@ -1109,6 +1109,21 @@ a:focus-visible {
   transform: scale(1.04);
 }
 
+.vehicle-captcha-option.is-correct {
+  border-color: #16a34a;
+  background: #dcfce7;
+}
+
+.vehicle-captcha-option.is-wrong {
+  border-color: #dc2626;
+  background: #fee2e2;
+}
+
+.vehicle-captcha-option:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
 .vehicle-body {
   fill: none;
   stroke: #1e3a8a;
@@ -2489,6 +2504,40 @@ a:focus-visible {
 .memory-product.is-selected {
   border-color: #16a34a;
   background: #dcfce7;
+}
+
+.memory-product.is-correct {
+  border-color: #16a34a;
+  background: #dcfce7;
+  color: #102a56;
+}
+
+.memory-product.is-wrong {
+  border-color: #dc2626;
+  background: #fee2e2;
+  color: #102a56;
+}
+
+.memory-product:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.memory-product-icon {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 2.15rem;
+  line-height: 1;
+}
+
+.memory-correct-answer {
+  max-width: 780px;
+  margin: 0 auto;
+  color: #102a56;
+  font-size: clamp(1.15rem, 2.4vw, 1.55rem);
+  line-height: 1.35;
+  font-weight: 900;
+  text-align: center;
 }
 
 .daughter-message-card ul {

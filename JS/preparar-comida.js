@@ -974,6 +974,8 @@ const gameState = {
   stepTimings: [],
   selectedProducts: [],
   memoryCorrectCount: 0,
+  memoryReview: null,
+  memoryReviewContinueTo: "result",
   memoryAnswered: false,
   memoryStartedAt: null,
   memoryResponseTimeMs: null,
@@ -1101,6 +1103,8 @@ function resetGame(mode = foodState.currentMode || "simple") {
   gameState.stepTimings = [];
   gameState.selectedProducts = [];
   gameState.memoryCorrectCount = 0;
+  gameState.memoryReview = null;
+  gameState.memoryReviewContinueTo = "result";
   gameState.memoryAnswered = false;
   gameState.memoryStartedAt = null;
   gameState.memoryResponseTimeMs = null;
@@ -1306,14 +1310,30 @@ function renderDaughterMessage() {
 
 function renderMemoryQuestion() {
   const memory = getCurrentMemoryConfig();
+  const review = gameState.memoryReview;
+  const selectedSet = new Set(gameState.selectedProducts);
+  const correctSet = new Set(memory.list);
+  const correctAnswerText = getMemorySelectionLabels(memory, memory.list).join(", ");
+  const getOptionReviewClass = (item) => {
+    if (!review) return "";
+
+    const wasSelected = selectedSet.has(item);
+    const isCorrect = correctSet.has(item);
+
+    if (wasSelected && isCorrect) return " is-correct";
+    if (wasSelected && !isCorrect) return " is-wrong";
+    if (!wasSelected && isCorrect) return " is-wrong";
+    return "";
+  };
   const optionsMarkup =
     memory.kind === "image-captcha"
       ? `<div class="vehicle-captcha-grid">
           ${memory.options
             .map((option) => {
               const selected = gameState.selectedProducts.includes(option.id) ? " is-selected" : "";
+              const reviewClass = getOptionReviewClass(option.id);
               return `
-                <button class="vehicle-captcha-option${selected}" type="button" data-cooking-memory-product="${option.id}">
+                <button class="vehicle-captcha-option${selected}${reviewClass}" type="button" data-cooking-memory-product="${option.id}" ${review ? "disabled" : ""}>
                   ${renderVehicleIcon(option.type)}
                   <span>${option.label}</span>
                 </button>
@@ -1325,9 +1345,11 @@ function renderMemoryQuestion() {
           ${memory.options
             .map((product) => {
               const selected = gameState.selectedProducts.includes(product) ? " is-selected" : "";
+              const reviewClass = getOptionReviewClass(product);
               return `
-                <button class="memory-product${selected}" type="button" data-cooking-memory-product="${product}">
-                  ${product}
+                <button class="memory-product${selected}${reviewClass}" type="button" data-cooking-memory-product="${product}" ${review ? "disabled" : ""}>
+                  <span class="memory-product-icon" aria-hidden="true">${getMemoryProductIcon(product)}</span>
+                  <span>${product}</span>
                 </button>
               `;
             })
@@ -1344,15 +1366,44 @@ function renderMemoryQuestion() {
         ? `<p class="cooking-feedback is-neutral">${gameState.feedback}</p>`
         : ""
     }
+    ${
+      review
+        ? `<p class="memory-correct-answer">Las opciones correctas eran: ${correctAnswerText}.</p>`
+        : ""
+    }
   `;
 
   const actions = `
     <button class="memory-button button-one cooking-action-button" type="button" data-cooking-confirm-memory>
-      ${memory.kind === "image-captcha" ? "Confirmar imagenes" : "Confirmar lista"}
+      ${review ? "Continuar" : memory.kind === "image-captcha" ? "Confirmar imagenes" : "Confirmar lista"}
     </button>
   `;
 
   return createShell("Pregunta de memoria", body, actions);
+}
+
+function getMemoryProductIcon(product) {
+  const icons = {
+    Lentejas: "🟤",
+    Arroz: "🍚",
+    Garbanzos: "🟡",
+    Tomates: "🍅",
+    Pan: "🥖",
+    Cebollas: "🧅",
+    Lechuga: "🥬",
+    Espinaca: "🥬",
+    Leche: "🥛",
+    Menudencias: "🥩",
+    Queso: "🧀",
+    Papas: "🥔",
+    Azucar: "🧂",
+    Sal: "🧂",
+    Envueltos: "🌽",
+    Pollo: "🍗",
+    Huevos: "🥚"
+  };
+
+  return icons[product] || "🍽️";
 }
 
 function renderVehicleIcon(type) {
@@ -1641,7 +1692,7 @@ function continueAfterDaughterMessage() {
 }
 
 function toggleMemoryProduct(product) {
-  if (gameState.screen !== "memory") return;
+  if (gameState.screen !== "memory" || gameState.memoryReview) return;
 
   if (!gameState.memoryProductTimings[product]) {
     gameState.memoryProductTimings[product] = Date.now() - (gameState.memoryStartedAt || Date.now());
@@ -1661,6 +1712,11 @@ function toggleMemoryProduct(product) {
 function confirmMemoryProducts() {
   if (gameState.screen !== "memory") return;
 
+  if (gameState.memoryReview) {
+    continueAfterMemoryReview();
+    return;
+  }
+
   cancelBrowserVoice();
 
   const memory = getCurrentMemoryConfig();
@@ -1670,20 +1726,43 @@ function confirmMemoryProducts() {
   const correctSet = new Set(memory.list);
   const correctSelections = gameState.selectedProducts.filter((product) => correctSet.has(product)).length;
   const wrongSelections = gameState.selectedProducts.filter((product) => !correctSet.has(product)).length;
-  const missedSelections = memory.list.filter((product) => !selectedSet.has(product)).length;
+  const missedItems = memory.list.filter((product) => !selectedSet.has(product));
+  const missedSelections = missedItems.length;
+  const correctItems = gameState.selectedProducts.filter((product) => correctSet.has(product));
+  const wrongItems = gameState.selectedProducts.filter((product) => !correctSet.has(product));
 
   gameState.memoryCorrectCount = correctSelections;
   gameState.memoryAnswered = true;
   gameState.memoryResponseTimeMs = Date.now() - (gameState.memoryStartedAt || Date.now());
   gameState.errors += wrongSelections + missedSelections;
+  gameState.memoryReview = {
+    correctLabels: getMemorySelectionLabels(memory, correctItems),
+    wrongLabels: getMemorySelectionLabels(memory, wrongItems),
+    missedLabels: getMemorySelectionLabels(memory, missedItems)
+  };
 
   if (memory.askAfterInterrupt && gameState.currentStepIndex < getCurrentSteps().length - 1) {
+    gameState.memoryReviewContinueTo = "scene";
+    renderScreen();
+    return;
+  }
+
+  gameState.memoryReviewContinueTo = "result";
+  renderScreen();
+}
+
+function continueAfterMemoryReview() {
+  if (gameState.screen !== "memory") return;
+
+  if (gameState.memoryReviewContinueTo === "scene") {
     gameState.screen = "scene";
     gameState.currentStepIndex++;
     gameState.stepStartedAt = Date.now();
     gameState.feedback = "";
     gameState.feedbackType = "";
     gameState.feedbackTarget = "";
+    gameState.memoryReview = null;
+    gameState.memoryReviewContinueTo = "result";
     gameState.isStepLocked = false;
     gameState.resolvedStepId = null;
     renderScreen();
@@ -1707,19 +1786,23 @@ function playCookingCue(cue = {}, onComplete) {
 
   if (audioSrc) {
     cancelBrowserVoice();
+    const cueToken = voiceSequenceToken;
     cookingAudioPlayer.src = audioSrc;
     cookingAudioPlayer.currentTime = 0;
     cookingAudioPlayer.onended = () => {
+      if (cueToken !== voiceSequenceToken) return;
       cookingAudioPlayer.onended = null;
       cookingAudioPlayer.onerror = null;
       if (onComplete) onComplete();
     };
     cookingAudioPlayer.onerror = () => {
+      if (cueToken !== voiceSequenceToken) return;
       cookingAudioPlayer.onended = null;
       cookingAudioPlayer.onerror = null;
       speakWithBrowserVoice(text, onComplete);
     };
     cookingAudioPlayer.play().catch(() => {
+      if (cueToken !== voiceSequenceToken) return;
       cookingAudioPlayer.onended = null;
       cookingAudioPlayer.onerror = null;
       speakWithBrowserVoice(text, onComplete);
@@ -1751,6 +1834,8 @@ function speakWithBrowserVoice(text, onComplete) {
 }
 
 function finishGame() {
+  cancelBrowserVoice();
+
   gameState.endedAt = Date.now();
   gameState.isStepLocked = false;
   gameState.resolvedStepId = null;
