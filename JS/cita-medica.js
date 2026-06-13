@@ -53,8 +53,8 @@ const appointmentConfirmationModal = document.getElementById("appointment-confir
 const appointmentConfirmationDate = document.getElementById("appointment-confirmation-date");
 const appointmentConfirmationTime = document.getElementById("appointment-confirmation-time");
 const appointmentConfirmationContinue = document.getElementById("appointment-confirmation-continue");
-const llamadaMedicaAudio = new Audio("../Audio/LlamadaMedica.mp3");
-const llamadaHijaAudio = new Audio("../Audio/LlamadaHija.mp3");
+const llamadaMedicaAudio = new Audio("../Audio/CitaMedica/Compartidos/llamada_medica_base.mp3");
+const llamadaHijaAudio = new Audio("../Audio/CitaMedica/Compartidos/llamada_hija_base.mp3");
 const calendarDaysContainer = document.getElementById("calendar-days");
 const calendarMonthLabel = document.getElementById("calendar-month-label");
 const calendarQuestionTitle = document.getElementById("calendar-question-title");
@@ -67,7 +67,7 @@ const phaseConfigs = {
     month: 3,
     monthName: "Abril",
     correctDay: 6,
-    medicalAudio: "../Audio/EPS06Abril.mp3",
+    medicalAudio: "../Audio/CitaMedica/Fase1/estructura_a_simple_eps_06_abril.mp3",
     daughterFlow: null
   },
 
@@ -76,10 +76,10 @@ const phaseConfigs = {
     month: 3,
     monthName: "Abril",
     correctDay: 6,
-    medicalAudio: "../Audio/LlamadaMedica.mp3",
-    daughterAudio: "../Audio/LlamadaHija.mp3",
-    daughterAudioMorning: "../Audio/LlamaHijaRecuerdo21MayoManiana.mp3",
-    daughterAudioAfternoon: "../Audio/LlamaHijaRecuerdo21MayoTarde.mp3",
+    medicalAudio: "../Audio/CitaMedica/Compartidos/llamada_medica_base.mp3",
+    daughterAudio: "../Audio/CitaMedica/Compartidos/llamada_hija_base.mp3",
+    daughterAudioMorning: "../Audio/CitaMedica/Fase2/estructura_b_simple_hija_manana_21_mayo.mp3",
+    daughterAudioAfternoon: "../Audio/CitaMedica/Fase2/estructura_b_simple_hija_tarde_21_mayo.mp3",
     daughterFlow: "food"
   },
 
@@ -88,9 +88,9 @@ const phaseConfigs = {
     month: 5,
     monthName: "Junio",
     correctDay: 10,
-    medicalAudio: "../Audio/EPS10Junio.mp3",
-    daughterAudioMorning: "../Audio/LlamadaHijaFase3Manana.mp3",
-    daughterAudioAfternoon: "../Audio/LlamadaHijaFase3Tarde.mp3",
+    medicalAudio: "../Audio/CitaMedica/Fase3/estructura_a_simple_eps_10_junio.mp3",
+    daughterAudioMorning: "../Audio/CitaMedica/Fase3/estructura_a_simple_hija_manana.mp3",
+    daughterAudioAfternoon: "../Audio/CitaMedica/Fase3/estructura_a_simple_hija_tarde.mp3",
     daughterFlow: "reminder"
   }
 };
@@ -791,7 +791,7 @@ if (goToMessageScreen) {
   };
 
   llamadaMedicaAudio.onerror = () => {
-    console.error("No se pudo cargar el audio LlamadaMedica.mp3");
+    console.error("No se pudo cargar el audio de la llamada médica.");
     callStatus.textContent = "No se pudo reproducir el audio.";
     answerCallButton.disabled = false;
     if (enableSoundButton) {
@@ -966,7 +966,7 @@ function playDaughterCallAudio() {
   };
 
   llamadaHijaAudio.onerror = () => {
-    console.error("No se pudo cargar el audio LlamadaHija.mp3");
+    console.error("No se pudo cargar el audio de la llamada de la hija.");
 
     if (daughterCallStatus) {
       daughterCallStatus.textContent = "No se pudo reproducir la llamada de tu hija.";
@@ -1601,13 +1601,13 @@ function applyPhaseConfig(phaseNumber) {
   llamadaMedicaAudio.pause();
   llamadaMedicaAudio.currentTime = 0;
   if (isPhaseOneDouble()) {
-    llamadaMedicaAudio.src = "../Audio/Eps13Mayo.mp3";
+    llamadaMedicaAudio.src = "../Audio/CitaMedica/Fase1/estructura_a_doble_eps_13_mayo.mp3";
   } else if (isPhaseTwoSimple()) {
-    llamadaMedicaAudio.src = "../Audio/Eps21Mayo.mp3";
+    llamadaMedicaAudio.src = "../Audio/CitaMedica/Fase2/estructura_b_simple_eps_21_mayo.mp3";
   } else if (isPhaseTwoDouble()) {
-    llamadaMedicaAudio.src = "../Audio/Eps02Junio.mp3";
+    llamadaMedicaAudio.src = "../Audio/CitaMedica/Fase2/estructura_b_doble_eps_02_junio.mp3";
   } else if (isPhaseThreeStructureADouble()) {
-    llamadaMedicaAudio.src = "../Audio/Eps16Junio.mp3";
+    llamadaMedicaAudio.src = "../Audio/CitaMedica/Fase3/estructura_a_doble_eps_16_junio.mp3";
   } else {
     llamadaMedicaAudio.src = config.medicalAudio;
   }
@@ -1673,16 +1673,16 @@ function setDaughterAudioForCurrentPhase() {
   llamadaHijaAudio.currentTime = 0;
 
   if (isPhaseOneDouble()) {
-    llamadaHijaAudio.src = "../Audio/LlamadaHijaVerduras13Mayo.mp3";
+    llamadaHijaAudio.src = "../Audio/CitaMedica/Fase1/estructura_a_doble_hija_verduras_13_mayo.mp3";
   } else if (isPhaseTwoDouble() && gameState.daughterCallStage === "shopping") {
-    llamadaHijaAudio.src = "../Audio/LlamaHijaCompras02Junio.mp3";
+    llamadaHijaAudio.src = "../Audio/CitaMedica/Fase2/estructura_b_doble_hija_compras_02_junio.mp3";
   } else if (isPhaseTwoDouble() && gameState.daughterCallStage === "appointment-confirmation") {
     llamadaHijaAudio.src =
       gameState.selectedPreference === "afternoon"
-        ? "../Audio/LlamaHijaRecuerdo02JunioTarde.mp3"
-        : "../Audio/LlamaHijaRecuerdo02JunioManania.mp3";
+        ? "../Audio/CitaMedica/Fase2/estructura_b_doble_hija_recordatorio_tarde_02_junio.mp3"
+        : "../Audio/CitaMedica/Fase2/estructura_b_doble_hija_recordatorio_manana_02_junio.mp3";
   } else if (isPhaseThreeStructureADouble()) {
-    llamadaHijaAudio.src = "../Audio/LlamadaHijaMedicinas.mp3";
+    llamadaHijaAudio.src = "../Audio/CitaMedica/Fase3/estructura_a_doble_hija_medicinas.mp3";
   } else if (gameState.currentPhase === 3 || isPhaseTwoSimple()) {
     const daughterAudio =
       gameState.selectedPreference === "afternoon"
@@ -1691,7 +1691,7 @@ function setDaughterAudioForCurrentPhase() {
 
     llamadaHijaAudio.src = daughterAudio;
   } else {
-    llamadaHijaAudio.src = config.daughterAudio || "../Audio/LlamadaHija.mp3";
+    llamadaHijaAudio.src = config.daughterAudio || "../Audio/CitaMedica/Compartidos/llamada_hija_base.mp3";
   }
 
   llamadaHijaAudio.load();

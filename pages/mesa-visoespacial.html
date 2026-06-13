@@ -66,11 +66,6 @@
             <button class="sound-button scene-sound-button" id="repeat-instruction" type="button">Repetir</button>
           </header>
 
-          <div class="scene-instruction-band">
-            <span class="scene-speaker" aria-hidden="true">◖</span>
-            <p id="scene-instruction">Busca la autorización médica y la nota con la ruta del bus.</p>
-          </div>
-
           <div class="table-scene is-simple-mode" id="table-scene" role="group" aria-label="Mesa del comedor con objetos">
             <svg class="table-art" viewBox="0 0 1120 680" aria-hidden="true" focusable="false">
               <defs>
@@ -458,36 +453,40 @@
 
           <div class="scene-distractor-content">
             <svg class="tv-news-art" viewBox="0 0 760 460" aria-hidden="true" focusable="false">
-              <path class="tv-antenna" d="M342 74 L282 20 M418 74 L478 20" />
-              <rect class="tv-offset" x="148" y="100" width="502" height="272" rx="38" />
-              <rect class="tv-frame" x="108" y="78" width="502" height="272" rx="38" />
-              <rect class="tv-screen" x="146" y="116" width="426" height="190" rx="22" />
-              <path class="screen-glow" d="M170 138 H548 V176 C430 146 300 146 170 196 Z" />
+              <path class="tv-antenna" d="M338 72 L278 20 M422 72 L482 20" />
+              <circle class="tv-antenna-tip" cx="278" cy="20" r="8" />
+              <circle class="tv-antenna-tip" cx="482" cy="20" r="8" />
+              <rect class="tv-offset" x="154" y="104" width="512" height="280" rx="42" />
+              <rect class="tv-frame" x="92" y="76" width="540" height="294" rx="42" />
+              <rect class="tv-speaker-panel" x="536" y="116" width="58" height="206" rx="18" />
+              <circle class="tv-knob" cx="566" cy="150" r="12" />
+              <circle class="tv-knob" cx="566" cy="190" r="12" />
+              <path class="tv-speaker-lines" d="M550 238 H582 M550 260 H582 M550 282 H582" />
+              <rect class="tv-screen" x="132" y="112" width="382" height="210" rx="24" />
+              <path class="screen-glow" d="M158 136 H490 V178 C390 148 275 148 158 198 Z" />
 
-              <g class="weather-icon">
+              <g class="weather-icon" transform="translate(-22 -4)">
+                <circle class="sun-back" cx="254" cy="166" r="42" />
                 <path class="rain-cloud" d="M204 190 C218 146 278 140 304 176 C334 156 386 176 390 220 C394 260 350 284 298 276 H218 C172 276 140 248 148 212 C153 192 176 184 204 190 Z" />
                 <line class="rain-line" x1="204" y1="296" x2="188" y2="338" />
                 <line class="rain-line" x1="260" y1="302" x2="244" y2="344" />
                 <line class="rain-line" x1="316" y1="296" x2="300" y2="338" />
+                <line class="rain-line rain-line-soft" x1="356" y1="292" x2="340" y2="328" />
               </g>
 
-              <g class="weather-copy">
-                <text class="weather-title" x="488" y="174">Noticias</text>
-                <text class="weather-title weather-title-small" x="488" y="214">del clima</text>
-                <line class="news-copy-line" x1="426" y1="248" x2="552" y2="248" />
-                <line class="news-copy-line" x1="426" y1="278" x2="532" y2="278" />
+              <g class="news-anchor">
+                <circle class="anchor-head" cx="420" cy="210" r="28" />
+                <path class="anchor-hair" d="M392 208 C398 176 438 172 448 206 C432 194 410 194 392 208 Z" />
+                <path class="anchor-body" d="M382 250 C394 228 446 228 458 250 L470 304 H370 Z" />
+                <rect class="anchor-desk" x="348" y="284" width="146" height="34" rx="8" />
               </g>
 
-              <rect class="news-band" x="108" y="318" width="502" height="44" />
-              <line class="tv-stand" x1="252" y1="382" x2="204" y2="438" />
-              <line class="tv-stand" x1="466" y1="382" x2="514" y2="438" />
-              <line class="tv-base" x1="184" y1="440" x2="534" y2="440" />
+              <rect class="news-band" x="132" y="322" width="382" height="34" />
+              <path class="ticker-block" d="M154 334 H210 M230 334 H318 M338 334 H478" />
+              <line class="tv-stand" x1="250" y1="384" x2="206" y2="438" />
+              <line class="tv-stand" x1="474" y1="384" x2="518" y2="438" />
+              <line class="tv-base" x1="180" y1="440" x2="544" y2="440" />
             </svg>
-
-            <p id="distractor-status">
-              Se esperan fuertes lluvias esta tarde en la ciudad.
-            </p>
-
           </div>
         </article>
       </section>

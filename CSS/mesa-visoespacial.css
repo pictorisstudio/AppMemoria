@@ -54,8 +54,7 @@
 }
 
 .scene-title-group p,
-.scene-progress,
-.scene-instruction-band p {
+.scene-progress {
   color: var(--text-soft);
   font-size: clamp(1rem, 2vw, 1.3rem);
   line-height: 1.35;
@@ -78,33 +77,6 @@
 .scene-sound-button {
   min-width: 110px;
   min-height: 64px;
-}
-
-.scene-instruction-band {
-  width: 100%;
-  max-width: 980px;
-  min-height: 74px;
-  padding: 14px 22px;
-  border-radius: 24px;
-  background: var(--blue-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-}
-
-.scene-speaker {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--blue-main);
-  color: var(--white);
-  font-size: 2rem;
-  font-weight: 900;
 }
 
 .table-card {
@@ -818,6 +790,12 @@
   stroke-linecap: round;
 }
 
+.tv-antenna-tip {
+  fill: #dbeafe;
+  stroke: #1e3a8a;
+  stroke-width: 4;
+}
+
 .tv-offset {
   fill: #93c5fd;
 }
@@ -830,8 +808,33 @@
   fill: #eff6ff;
 }
 
+.tv-speaker-panel {
+  fill: #172554;
+  stroke: #0f172a;
+  stroke-width: 4;
+}
+
+.tv-knob {
+  fill: #bfdbfe;
+  stroke: #0f172a;
+  stroke-width: 4;
+}
+
+.tv-speaker-lines {
+  fill: none;
+  stroke: #93c5fd;
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
 .screen-glow {
   fill: rgba(191, 219, 254, 0.8);
+}
+
+.sun-back {
+  fill: #facc15;
+  stroke: #f59e0b;
+  stroke-width: 5;
 }
 
 .rain-cloud {
@@ -845,6 +848,10 @@
   stroke: #2563eb;
   stroke-width: 11;
   stroke-linecap: round;
+}
+
+.rain-line-soft {
+  opacity: 0.65;
 }
 
 .weather-icon {
@@ -872,6 +879,37 @@
 
 .news-band {
   fill: #60a5fa;
+}
+
+.anchor-head {
+  fill: #f3c7a1;
+  stroke: #1e293b;
+  stroke-width: 4;
+}
+
+.anchor-hair {
+  fill: #475569;
+  stroke: #1e293b;
+  stroke-width: 4;
+}
+
+.anchor-body {
+  fill: #2563eb;
+  stroke: #1e293b;
+  stroke-width: 4;
+}
+
+.anchor-desk {
+  fill: #1e3a8a;
+  stroke: #0f172a;
+  stroke-width: 4;
+}
+
+.ticker-block {
+  fill: none;
+  stroke: #f8fafc;
+  stroke-width: 5;
+  stroke-linecap: round;
 }
 
 .tv-stand,
@@ -969,18 +1007,6 @@
     padding: 8px 12px;
     border-radius: 18px;
     font-size: 1rem;
-  }
-
-  .scene-instruction-band {
-    min-height: 66px;
-    padding: 12px 14px;
-    border-radius: 20px;
-  }
-
-  .scene-speaker {
-    width: 34px;
-    height: 34px;
-    font-size: 1.6rem;
   }
 
   .table-card {

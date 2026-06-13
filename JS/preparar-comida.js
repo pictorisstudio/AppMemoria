@@ -3,6 +3,7 @@ const foodModeTitle = document.getElementById("food-mode-title");
 const foodEmptyTitle = document.getElementById("food-empty-title");
 const foodEmptyDescription = document.getElementById("food-empty-description");
 const cookingGameRoot = document.getElementById("cooking-game-root");
+const cookingAudioPlayer = new Audio();
 const foodModeCards = {
   simple: document.querySelector('[data-food-phase-mode="simple"]'),
   double: document.querySelector('[data-food-phase-mode="double"]')
@@ -98,6 +99,7 @@ const phase2SimpleSteps = [
     success: "Sal agregada a la pasta.",
     timer: "Faltan 10 min",
     progress: 20,
+    audioSrc: "../Audio/PrepararComida/Fase2/F2_B_SIMPLE_02_sal_pasta.mp3",
     audioText:
       "Soy tu hija. La pasta está arriba a la izquierda y ya lleva cinco minutos. Agrega cuatro pizcas de sal y mantén el fuego medio."
   },
@@ -111,6 +113,7 @@ const phase2SimpleSteps = [
     timer: "Faltan 8 min",
     progress: 40,
     turnOn: "verduras",
+    audioSrc: "../Audio/PrepararComida/Fase2/F2_B_SIMPLE_03_encender_verduras.mp3",
     audioText:
       "Ahora debes sofreír las verduras por un minuto: zanahoria, habichuela y cebolla. Están abajo a la izquierda."
   },
@@ -124,6 +127,7 @@ const phase2SimpleSteps = [
     timer: "Faltan 7 min",
     progress: 60,
     turnOn: "pollo",
+    audioSrc: "../Audio/PrepararComida/Fase2/F2_B_SIMPLE_04_encender_pollo.mp3",
     audioText:
       "Antes de que termine el minuto de las verduras, comienza a freír la pechuga arriba a la derecha y sigue pendiente de la pasta."
   },
@@ -137,6 +141,7 @@ const phase2SimpleSteps = [
     timer: "Faltan 6 min",
     progress: 75,
     turnOff: "verduras",
+    audioSrc: "../Audio/PrepararComida/Fase2/F2_B_SIMPLE_05_apagar_verduras.mp3",
     audioText:
       "Recuerda apagar las verduras casi de inmediato. Deben sofreírse solo un minuto."
   },
@@ -150,6 +155,7 @@ const phase2SimpleSteps = [
     timer: "Faltan 4 min",
     progress: 100,
     turnOn: "platano",
+    audioSrc: "../Audio/PrepararComida/Fase2/F2_B_SIMPLE_06_encender_platano.mp3",
     audioText:
       "Cuando falten cuatro minutos para que la pasta esté lista, comienza a freír las rodajas de plátano abajo a la derecha."
   }
@@ -165,6 +171,7 @@ const phase2DoubleSteps = [
     success: "Sal agregada a las papas.",
     timer: "Faltan 10 min",
     progress: 20,
+    audioSrc: "../Audio/PrepararComida/Fase2/F2_B_DOBLE_02_sal_papas.mp3",
     audioText:
       "Soy tu hija. Las papas estan arriba a la izquierda, ya llevan diez minutos y faltan diez mas. Agrega una pizca de sal."
   },
@@ -178,6 +185,7 @@ const phase2DoubleSteps = [
     timer: "Faltan 9 min",
     progress: 40,
     turnOn: "guiso-cebolla",
+    audioSrc: "../Audio/PrepararComida/Fase2/F2_B_DOBLE_03_encender_guiso.mp3",
     audioText:
       "Primero enciende el guiso de cebolla, tomate y ajo. Esta abajo a la izquierda y debe sofreirse cerca de un minuto."
   },
@@ -191,6 +199,7 @@ const phase2DoubleSteps = [
     timer: "Faltan 8 min",
     progress: 60,
     turnOn: "pollo-filetes",
+    audioSrc: "../Audio/PrepararComida/Fase2/F2_B_DOBLE_04_encender_pollo.mp3",
     audioText:
       "Antes de que termine el minuto del guiso, enciende los filetes de pollo de arriba a la derecha y sigue pendiente de las papas."
   },
@@ -204,6 +213,7 @@ const phase2DoubleSteps = [
     timer: "Faltan 7 min",
     progress: 78,
     turnOff: "guiso-cebolla",
+    audioSrc: "../Audio/PrepararComida/Fase2/F2_B_DOBLE_05_apagar_guiso.mp3",
     audioText:
       "Recuerda apagar el guiso cuando pase aproximadamente un minuto en el cronometro."
   },
@@ -217,6 +227,7 @@ const phase2DoubleSteps = [
     timer: "Faltan 4 min",
     progress: 100,
     turnOn: "huevos-dos",
+    audioSrc: "../Audio/PrepararComida/Fase2/F2_B_DOBLE_06_encender_huevos.mp3",
     audioText:
       "Cuando falten aproximadamente cuatro minutos para que las papas esten listas, comienza a freir los dos huevos abajo a la derecha."
   }
@@ -393,6 +404,63 @@ const phase4SimpleSteps = [
   }
 ];
 
+const phase4DoubleSteps = [
+  {
+    id: "sal-lentejas-doble",
+    title: "Paso 1 de 5",
+    instruction: "Agrega una pizca de sal a las lentejas.",
+    targetId: "lentejas",
+    note: "Lentejas: agregar 1 pizca de sal.",
+    success: "Sal agregada a las lentejas.",
+    timer: "Faltan 10 min",
+    progress: 20
+  },
+  {
+    id: "guiso-f4-doble-on",
+    title: "Paso 2 de 5",
+    instruction: "Enciende la hornilla del guiso.",
+    targetId: "guiso-f4",
+    note: "Guiso: sofreir 1 minuto.",
+    success: "Guiso encendido.",
+    timer: "Faltan 9 min",
+    progress: 40,
+    turnOn: "guiso-f4"
+  },
+  {
+    id: "pollo-f4-doble-on",
+    title: "Paso 3 de 5",
+    instruction: "Enciende la hornilla para freir el pollo.",
+    targetId: "pollo-f4",
+    note: "Pollo: comenzar a freir.",
+    success: "Pollo encendido.",
+    timer: "Faltan 8 min",
+    progress: 60,
+    turnOn: "pollo-f4"
+  },
+  {
+    id: "guiso-f4-doble-off",
+    title: "Paso 4 de 5",
+    instruction: "Apaga la hornilla del guiso.",
+    targetId: "guiso-f4",
+    note: "Guiso: apagar pasado el minuto.",
+    success: "Guiso apagado a tiempo.",
+    timer: "Faltan 6 min",
+    progress: 78,
+    turnOff: "guiso-f4"
+  },
+  {
+    id: "platano-tajadas-doble-on",
+    title: "Paso 5 de 5",
+    instruction: "Enciende la hornilla para freir las tajadas de platano.",
+    targetId: "platano-tajadas",
+    note: "Platano: comenzar a freir.",
+    success: "Tajadas de platano encendidas.",
+    timer: "Faltan 4 min",
+    progress: 100,
+    turnOn: "platano-tajadas"
+  }
+];
+
 const burnerLabels = {
   arroz: "Arroz",
   carne: "Carne molida",
@@ -448,6 +516,17 @@ const phase2ShoppingOptions = [
   "Lentejas",
   "Pollo",
   "Huevos"
+];
+
+const phase4VehicleOptions = [
+  { id: "auto_rojo", label: "Auto", type: "auto" },
+  { id: "moto_azul", label: "Moto", type: "moto" },
+  { id: "bicicleta_verde", label: "Bicicleta", type: "bicicleta" },
+  { id: "camion_amarillo", label: "Camion", type: "camion" },
+  { id: "auto_blanco", label: "Auto", type: "auto" },
+  { id: "moto_negra", label: "Moto", type: "moto" },
+  { id: "bicicleta_roja", label: "Bicicleta", type: "bicicleta" },
+  { id: "camion_azul", label: "Camion", type: "camion" }
 ];
 
 const cookingScenarioConfigs = {
@@ -527,6 +606,7 @@ const cookingScenarioConfigs = {
       prompt: "Escucha y recuerda esta lista para repetirla al final.",
       question: "¿Qué productos pidió recordar tu hija?",
       instruction: "Selecciona todos los productos que recuerdes de la lista.",
+      audioSrc: "../Audio/PrepararComida/Fase1/fase 1 tarea doble comida preparar.mp3",
       audioText:
         "Hola, recuerda comprar una libra de lentejas, dos de garbanzo, cinco tomates, dos cebollas, una cabeza de lechuga, espinaca y menudencias en carnicería.",
       list: daughterShoppingList,
@@ -551,7 +631,7 @@ const cookingScenarioConfigs = {
     introCopy:
       "La cocina se guiará por claves de significado auditivo-verbal sobre ubicación, orden y tiempo de cocción.",
     introSmall:
-      "Se prepararán pasta, pechuga, verduras y plátano con apoyo de avisos escritos y voz del navegador.",
+      "Se prepararán pasta, pechuga, verduras y plátano con apoyo de avisos escritos y audio grabado.",
     steps: phase2SimpleSteps,
     burnerLabels: {
       pasta: "Pasta",
@@ -581,6 +661,7 @@ const cookingScenarioConfigs = {
     },
     openingAudioText:
       "Hola, soy tu hija. Recuerda: la pasta está arriba a la izquierda a fuego medio. A su derecha está la pechuga esperando que la enciendas. Abajo a la izquierda están las verduras para sofreír: zanahoria, habichuela y cebolla. Abajo a la derecha están las rodajas de plátano para freír cuando sea el momento.",
+    openingAudioSrc: "../Audio/PrepararComida/Fase2/F2_B_SIMPLE_01_pista_inicial_hija.mp3",
     memory: null,
     timeColumns: [
       ["tiempo_sal_pasta", "sal-pasta"],
@@ -630,11 +711,13 @@ const cookingScenarioConfigs = {
     },
     openingAudioText:
       "Hola, soy tu hija. Recuerda: arriba a la izquierda hay una olla con papas cocinandose en agua a fuego medio. Arriba a la derecha estan los filetes de pollo en un sarten con aceite, todavia apagados. Abajo a la izquierda esta el guiso de cebolla, tomate y ajo listo para sofreir. Abajo a la derecha hay dos huevos listos para freirse en el sarten pequeno.",
+    openingAudioSrc: "../Audio/PrepararComida/Fase2/F2_B_DOBLE_01_pista_inicial_hija.mp3",
     memory: {
       title: "Interferencia de compras",
       prompt: "Escucha el mensaje del familiar y recuerda los productos para responder ahora.",
       question: "Que productos pidio comprar el familiar?",
       instruction: "Selecciona todos los productos mencionados en el mensaje.",
+      audioSrc: "../Audio/PrepararComida/Fase2/F2_B_DOBLE_07_interferencia_familiar.mp3",
       audioText:
         "Hola, soy yo. Pasaba por aqui para recordarte que hay que comprar para manana cebollas, pan, azucar, sal, envueltos, tomates y papas.",
       list: phase2ShoppingList,
@@ -740,6 +823,7 @@ const cookingScenarioConfigs = {
       prompt: "Escucha y recuerda esta lista de compras para responder ahora.",
       question: "Que alimentos pidio recordar tu hija?",
       instruction: "Selecciona todos los alimentos y provisiones mencionados.",
+      audioSrc: "../Audio/PrepararComida/Fase3/F3_A_DOBLE_01_interferencia_hija.mp3",
       audioText:
         "Hola, recuerda una libra de lentejas, dos libras de garbanzo, cinco tomates, dos cebollas para cocinar, una cabeza de lechuga, espinaca y menudencias en carniceria.",
       list: daughterShoppingList,
@@ -804,18 +888,64 @@ const cookingScenarioConfigs = {
     ]
   },
   "4-double": {
-    enabled: false,
+    enabled: true,
     phaseNumber: 4,
-    structure: "Estructura D",
+    structure: "Estructura B",
     taskLabel: "Tarea doble",
-    taskType: "estructura_d_tarea_doble",
-    introTitle: "Preparar comida",
-    introCopy: "Estructura doble pendiente para la fase 4.",
-    introSmall: "Queda lista para configurar una segunda demanda de memoria.",
-    steps: [],
-    burnerLabels: {},
-    memory: null,
-    timeColumns: []
+    taskType: "fase_4_estructura_b_tarea_doble",
+    introTitle: "Preparar comida con claves visoespaciales",
+    introCopy:
+      "Coordina lentejas, pollo, guiso y tajadas de platano mientras atiendes una interferencia visual.",
+    introSmall:
+      "Durante la coccion aparece una noticia breve y luego una pregunta tipo captcha sobre imagenes de vehiculos.",
+    steps: phase4DoubleSteps,
+    burnerLabels: {
+      lentejas: "Lentejas",
+      "pollo-f4": "Pollo",
+      "guiso-f4": "Guiso",
+      "platano-tajadas": "Tajadas de platano"
+    },
+    visualVariant: "phase4",
+    visualCueMode: true,
+    kitchenSlots: {
+      topLeft: "lentejas",
+      topRight: "pollo-f4",
+      bottomLeft: "guiso-f4",
+      bottomRight: "platano-tajadas"
+    },
+    recipeNotes: [
+      ["sal-lentejas-doble", 220, "Sal a", "lentejas"],
+      ["guiso-f4-doble-on", 294, "Sofreir", "guiso"],
+      ["pollo-f4-doble-on", 368, "Freir", "pollo"],
+      ["guiso-f4-doble-off", 442, "Apagar", "guiso"],
+      ["platano-tajadas-doble-on", 516, "Freir", "platano"]
+    ],
+    initialBurnersOn: {
+      lentejas: true,
+      "pollo-f4": false,
+      "guiso-f4": false,
+      "platano-tajadas": false
+    },
+    memory: {
+      kind: "image-captcha",
+      title: "Noticia en el celular",
+      prompt:
+        "Observa el reel: la noticia muestra un accidente de automovil. Luego responde la pregunta visual.",
+      question: "Selecciona las dos imagenes que muestran autos.",
+      instruction: "Marca solo las imagenes de autos entre las ocho opciones.",
+      audioText: "",
+      list: ["auto_rojo", "auto_blanco"],
+      options: phase4VehicleOptions,
+      interruptAfterStepId: "pollo-f4-doble-on",
+      askAfterInterrupt: true
+    },
+    timeColumns: [
+      ["tiempo_sal_lentejas", "sal-lentejas-doble"],
+      ["tiempo_guiso_encender", "guiso-f4-doble-on"],
+      ["tiempo_pollo_encender", "pollo-f4-doble-on"],
+      ["tiempo_guiso_apagar", "guiso-f4-doble-off"],
+      ["tiempo_platano_encender", "platano-tajadas-doble-on"]
+    ]
   }
 };
 
@@ -1118,8 +1248,8 @@ function renderScene() {
 
   const actions = `
     ${
-      step.audioText
-        ? `<button class="memory-button button-one cooking-action-button" type="button" data-cooking-speak="${step.audioText}">
+      step.audioText || step.audioSrc
+        ? `<button class="memory-button button-one cooking-action-button" type="button" data-cooking-speak="${step.audioText || ""}" data-cooking-audio-src="${step.audioSrc || ""}">
             Escuchar pista de la hija
           </button>`
         : ""
@@ -1134,22 +1264,40 @@ function renderScene() {
 
 function renderDaughterMessage() {
   const memory = getCurrentMemoryConfig();
+  const audioButton = memory.audioText || memory.audioSrc
+    ? `<button class="daughter-audio-cue" type="button" data-cooking-speak="${memory.audioText || ""}" data-cooking-audio-src="${memory.audioSrc || ""}">
+        Repetir audio
+      </button>`
+    : "";
+  const listMarkup =
+    memory.kind === "image-captcha"
+      ? `<div class="news-reel-card" aria-hidden="true">
+          <div class="news-phone">
+            <div class="news-screen">
+              <span>REEL</span>
+              <strong>Accidente de automovil</strong>
+              <div class="news-road">
+                <span class="news-car news-car-one"></span>
+                <span class="news-car news-car-two"></span>
+              </div>
+            </div>
+          </div>
+        </div>`
+      : `<ul>
+          ${memory.list.map((product) => `<li>${product}</li>`).join("")}
+        </ul>`;
   const body = `
     <section class="daughter-message-card">
       <h2>${memory.title}</h2>
       <p>${memory.prompt}</p>
-      <button class="daughter-audio-cue" type="button" data-cooking-speak="${memory.audioText}">
-        Voz del navegador
-      </button>
-      <ul>
-        ${memory.list.map((product) => `<li>${product}</li>`).join("")}
-      </ul>
+      ${audioButton}
+      ${listMarkup}
     </section>
   `;
 
   const actions = `
     <button class="memory-button button-one cooking-action-button" type="button" data-cooking-continue-daughter>
-      Continuar cocinando
+      ${memory.askAfterInterrupt ? "Responder pregunta" : "Continuar cocinando"}
     </button>
   `;
 
@@ -1158,23 +1306,39 @@ function renderDaughterMessage() {
 
 function renderMemoryQuestion() {
   const memory = getCurrentMemoryConfig();
+  const optionsMarkup =
+    memory.kind === "image-captcha"
+      ? `<div class="vehicle-captcha-grid">
+          ${memory.options
+            .map((option) => {
+              const selected = gameState.selectedProducts.includes(option.id) ? " is-selected" : "";
+              return `
+                <button class="vehicle-captcha-option${selected}" type="button" data-cooking-memory-product="${option.id}">
+                  ${renderVehicleIcon(option.type)}
+                  <span>${option.label}</span>
+                </button>
+              `;
+            })
+            .join("")}
+        </div>`
+      : `<div class="memory-product-grid">
+          ${memory.options
+            .map((product) => {
+              const selected = gameState.selectedProducts.includes(product) ? " is-selected" : "";
+              return `
+                <button class="memory-product${selected}" type="button" data-cooking-memory-product="${product}">
+                  ${product}
+                </button>
+              `;
+            })
+            .join("")}
+        </div>`;
   const body = `
     <section class="cooking-instruction">
       <h2>${memory.question}</h2>
       <p>${memory.instruction}</p>
     </section>
-    <div class="memory-product-grid">
-      ${memory.options
-        .map((product) => {
-          const selected = gameState.selectedProducts.includes(product) ? " is-selected" : "";
-          return `
-            <button class="memory-product${selected}" type="button" data-cooking-memory-product="${product}">
-              ${product}
-            </button>
-          `;
-        })
-        .join("")}
-    </div>
+    ${optionsMarkup}
     ${
       gameState.feedback && gameState.feedbackType === "neutral"
         ? `<p class="cooking-feedback is-neutral">${gameState.feedback}</p>`
@@ -1184,11 +1348,48 @@ function renderMemoryQuestion() {
 
   const actions = `
     <button class="memory-button button-one cooking-action-button" type="button" data-cooking-confirm-memory>
-      Confirmar lista
+      ${memory.kind === "image-captcha" ? "Confirmar imagenes" : "Confirmar lista"}
     </button>
   `;
 
   return createShell("Pregunta de memoria", body, actions);
+}
+
+function renderVehicleIcon(type) {
+  const iconMarkup = {
+    auto: `
+      <svg viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+        <path class="vehicle-body vehicle-auto" d="M18 48 L30 30 H78 L94 48 H104 V62 H16 V48 Z" />
+        <circle cx="36" cy="64" r="8" />
+        <circle cx="86" cy="64" r="8" />
+        <path class="vehicle-window" d="M36 34 H58 V48 H28 Z M62 34 H76 L88 48 H62 Z" />
+      </svg>
+    `,
+    moto: `
+      <svg viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+        <circle cx="30" cy="58" r="13" />
+        <circle cx="88" cy="58" r="13" />
+        <path class="vehicle-body vehicle-moto" d="M32 56 L50 42 H72 L88 56 M52 42 L44 28 M70 42 L82 30" />
+      </svg>
+    `,
+    bicicleta: `
+      <svg viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+        <circle cx="30" cy="58" r="14" />
+        <circle cx="88" cy="58" r="14" />
+        <path class="vehicle-body vehicle-bike" d="M30 58 L48 36 L62 58 L88 58 L70 36 H48 M62 58 L72 36" />
+      </svg>
+    `,
+    camion: `
+      <svg viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+        <path class="vehicle-body vehicle-truck" d="M14 34 H70 V62 H14 Z M70 44 H92 L106 58 V62 H70 Z" />
+        <circle cx="34" cy="64" r="8" />
+        <circle cx="88" cy="64" r="8" />
+        <path class="vehicle-window" d="M76 48 H90 L98 58 H76 Z" />
+      </svg>
+    `
+  };
+
+  return iconMarkup[type] || iconMarkup.auto;
 }
 
 function renderResult() {
@@ -1257,12 +1458,15 @@ function startGame() {
   renderScreen();
 
   if (scenario.phaseNumber === 2) {
-    speakTextSequenceWithBrowserVoice([scenario.openingAudioText, getAutoStepAudioText()]);
+    playCookingCueSequence([
+      { audioSrc: scenario.openingAudioSrc, text: scenario.openingAudioText },
+      getAutoStepAudioCue()
+    ]);
     return;
   }
 
-  if (scenario.openingAudioText) {
-    speakWithBrowserVoice(scenario.openingAudioText);
+  if (scenario.openingAudioText || scenario.openingAudioSrc) {
+    playCookingCue({ audioSrc: scenario.openingAudioSrc, text: scenario.openingAudioText });
   }
 }
 
@@ -1339,7 +1543,7 @@ function handleCookingTarget(targetId) {
       gameState.isStepLocked = false;
       gameState.resolvedStepId = null;
       renderScreen();
-      speakWithBrowserVoice(memory.audioText);
+      playCookingCue({ audioSrc: memory.audioSrc, text: memory.audioText });
       return;
     }
 
@@ -1368,60 +1572,52 @@ function repeatCurrentInstruction() {
 function cancelBrowserVoice() {
   voiceSequenceToken++;
 
+  cookingAudioPlayer.pause();
+  cookingAudioPlayer.currentTime = 0;
+  cookingAudioPlayer.onended = null;
+  cookingAudioPlayer.onerror = null;
+
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
 }
 
-function speakTextSequenceWithBrowserVoice(texts) {
-  const queue = texts.filter(Boolean);
+function playCookingCueSequence(cues) {
+  const queue = cues.filter((cue) => cue && (cue.audioSrc || cue.text));
 
-  if (!("speechSynthesis" in window) || queue.length === 0) return;
+  if (queue.length === 0) return;
 
-  cancelBrowserVoice();
-  const sequenceToken = voiceSequenceToken;
+  const playNext = () => {
+    const cue = queue.shift();
 
-  const speakNext = () => {
-    if (sequenceToken !== voiceSequenceToken) return;
-
-    const text = queue.shift();
-
-    if (!text) return;
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "es-CO";
-    utterance.rate = 0.88;
-    utterance.pitch = 1;
-    utterance.onend = () => {
-      if (sequenceToken === voiceSequenceToken) speakNext();
-    };
-    window.speechSynthesis.speak(utterance);
+    if (!cue) return;
+    playCookingCue(cue, playNext);
   };
 
-  speakNext();
+  playNext();
 }
 
-function getAutoStepAudioText() {
+function getAutoStepAudioCue() {
   const scenario = getCurrentScenario();
   const step = getCurrentStep();
 
-  if (scenario.phaseNumber !== 2 || gameState.screen !== "scene" || !step.audioText) {
-    return "";
+  if (scenario.phaseNumber !== 2 || gameState.screen !== "scene" || (!step.audioText && !step.audioSrc)) {
+    return null;
   }
 
   if (gameState.autoSpokenStepIds.includes(step.id)) {
-    return "";
+    return null;
   }
 
   gameState.autoSpokenStepIds.push(step.id);
-  return step.audioText;
+  return { audioSrc: step.audioSrc, text: step.audioText };
 }
 
 function speakCurrentStepHelpIfNeeded() {
-  const audioText = getAutoStepAudioText();
+  const cue = getAutoStepAudioCue();
 
-  if (audioText) {
-    speakWithBrowserVoice(audioText);
+  if (cue) {
+    playCookingCue(cue);
   }
 }
 
@@ -1498,14 +1694,59 @@ function confirmMemoryProducts() {
   finishGame();
 }
 
-function speakWithBrowserVoice(text) {
-  if (!("speechSynthesis" in window) || !text) return;
+function getMemorySelectionLabels(memory, selectedItems) {
+  if (!memory || memory.kind !== "image-captcha") return selectedItems;
+
+  const optionMap = new Map(memory.options.map((option) => [option.id, option.label]));
+  return selectedItems.map((item) => optionMap.get(item) || item);
+}
+
+function playCookingCue(cue = {}, onComplete) {
+  const audioSrc = cue.audioSrc || "";
+  const text = cue.text || "";
+
+  if (audioSrc) {
+    cancelBrowserVoice();
+    cookingAudioPlayer.src = audioSrc;
+    cookingAudioPlayer.currentTime = 0;
+    cookingAudioPlayer.onended = () => {
+      cookingAudioPlayer.onended = null;
+      cookingAudioPlayer.onerror = null;
+      if (onComplete) onComplete();
+    };
+    cookingAudioPlayer.onerror = () => {
+      cookingAudioPlayer.onended = null;
+      cookingAudioPlayer.onerror = null;
+      speakWithBrowserVoice(text, onComplete);
+    };
+    cookingAudioPlayer.play().catch(() => {
+      cookingAudioPlayer.onended = null;
+      cookingAudioPlayer.onerror = null;
+      speakWithBrowserVoice(text, onComplete);
+    });
+    return;
+  }
+
+  speakWithBrowserVoice(text, onComplete);
+}
+
+function speakWithBrowserVoice(text, onComplete) {
+  if (!("speechSynthesis" in window) || !text) {
+    if (onComplete) onComplete();
+    return;
+  }
 
   cancelBrowserVoice();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "es-CO";
   utterance.rate = 0.88;
   utterance.pitch = 1;
+  utterance.onend = () => {
+    if (onComplete) onComplete();
+  };
+  utterance.onerror = () => {
+    if (onComplete) onComplete();
+  };
   window.speechSynthesis.speak(utterance);
 }
 
@@ -1532,6 +1773,7 @@ function finishGame() {
     memoryList: scenario.memory?.list ? [...scenario.memory.list] : [],
     memoryProductTimings: { ...gameState.memoryProductTimings },
     selectedProducts: [...gameState.selectedProducts],
+    selectedProductLabels: getMemorySelectionLabels(scenario.memory, gameState.selectedProducts),
     timeColumns: [...scenario.timeColumns],
     stepTimings: [...gameState.stepTimings],
     completed: true
@@ -1574,10 +1816,14 @@ function exportResultsCSV() {
     ? session.timeColumns
     : cookingScenarioConfigs["1-simple"].timeColumns;
   const memoryProducts = session.memoryList || [];
+  const memoryColumnPrefix =
+    session.taskType === "fase_4_estructura_b_tarea_doble"
+      ? "tiempo_interferencia"
+      : "tiempo_compra";
   const memoryTimeColumns = memoryProducts.length
     ? [
         "tiempo_memoria_total",
-        ...memoryProducts.map((product) => `tiempo_compra_${toCSVColumnKey(product)}`)
+        ...memoryProducts.map((product) => `${memoryColumnPrefix}_${toCSVColumnKey(product)}`)
       ]
     : [];
   const rows = [
@@ -1616,7 +1862,7 @@ function exportResultsCSV() {
           ]
         : []),
       memoryProducts.length ? session.memoryCorrectCount : "No aplica",
-      session.selectedProducts?.join(", ") || "No aplica"
+      session.selectedProductLabels?.join(", ") || session.selectedProducts?.join(", ") || "No aplica"
     ]
   ];
 
@@ -1691,7 +1937,10 @@ document.addEventListener("click", (event) => {
   }
 
   if (speakButton) {
-    speakWithBrowserVoice(speakButton.dataset.cookingSpeak);
+    playCookingCue({
+      audioSrc: speakButton.dataset.cookingAudioSrc,
+      text: speakButton.dataset.cookingSpeak
+    });
     return;
   }
 

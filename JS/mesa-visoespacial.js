@@ -9,18 +9,21 @@ const sceneStatus = document.getElementById("scene-status");
 const sceneInstruction = document.getElementById("scene-instruction");
 const sceneFoundCount = document.getElementById("scene-found-count");
 const sceneSequence = document.getElementById("scene-sequence");
-const distractorStatus = document.getElementById("distractor-status");
 const weatherQuestion = document.getElementById("weather-question");
 const weatherQuestionText = document.getElementById("weather-question-text");
 const weatherFeedback = document.getElementById("weather-feedback");
+const sceneInstructionAudio = new Audio();
 
 const resultCorrect = document.getElementById("result-correct");
 const resultErrors = document.getElementById("result-errors");
 const resultTime = document.getElementById("result-time");
 
+sceneInstructionAudio.preload = "auto";
+
 const sceneConfig = {
   instruction:
     "Hija: ya tengo la carpeta y recuerdo la cita de las dos de la tarde. Busca la autorización médica y la nota con la ruta del bus.",
+  audioSrc: "../Audio/CitaMedica/Fase4/estructura_b_simple_instruccion.mp3",
   targetIds: ["autorizacion", "nota-bus"],
   previewDelayMs: 900,
   previewGapMs: 1050,
@@ -91,6 +94,8 @@ const doubleTaskConfig = {
   distractorDurationMs: 7600,
   distractorText:
     "Noticias del clima: esta tarde se esperan fuertes lluvias en la ciudad, con viento moderado y calles mojadas. Se recomienda salir con paraguas y caminar con cuidado.",
+  distractorAudioSrc: "../Audio/CitaMedica/Fase4/estructura_b_doble_05_noticia_clima.mp3",
+  weatherQuestionAudioSrc: "",
   weatherQuestionText: "¿Cómo va a estar el clima en la ciudad?",
   weatherCorrectAnswer: "lluvias",
   weatherQuestionDelayAfterAnswerMs: 850,
@@ -100,21 +105,25 @@ const doubleTaskConfig = {
     {
       targetId: "calendario-hora",
       instruction: "Hija: ¿recuerdas la hora de la cita?",
+      audioSrc: "../Audio/CitaMedica/Fase4/estructura_b_doble_01_hora_cita.mp3",
       status: "Observa la hora de la cita."
     },
     {
       targetId: "carpeta-documentos",
       instruction: "Hija: ¿tienes la carpeta con los documentos?",
+      audioSrc: "../Audio/CitaMedica/Fase4/estructura_b_doble_02_carpeta_documentos.mp3",
       status: "Observa dónde está la carpeta."
     },
     {
       targetId: "autorizacion",
       instruction: "Hija: ¿recuerdas la autorización pendiente de llevar?",
+      audioSrc: "../Audio/CitaMedica/Fase4/estructura_b_doble_03_autorizacion_medica.mp3",
       status: "Observa dónde está la autorización."
     },
     {
       targetId: "nota-bus",
       instruction: "Hija: ¿recuerdas dónde está la nota con la ruta del bus?",
+      audioSrc: "../Audio/CitaMedica/Fase4/estructura_b_doble_04_nota_ruta_bus.mp3",
       status: "Observa dónde está la nota de la ruta."
     }
   ]
@@ -123,6 +132,7 @@ const doubleTaskConfig = {
 const sceneState = {
   mode: "simple",
   currentInstruction: sceneConfig.instruction,
+  currentAudioSrc: sceneConfig.audioSrc,
   startedAt: null,
   lastFoundAt: null,
   found: [],
@@ -196,6 +206,7 @@ function showWeatherQuestion(runId) {
 
   sceneState.phase = "weather-question";
   sceneState.currentInstruction = doubleTaskConfig.weatherQuestionText;
+  sceneState.currentAudioSrc = doubleTaskConfig.weatherQuestionAudioSrc;
   sceneState.weatherQuestionStartedAt = performance.now();
 
   if (weatherQuestionText) {
@@ -203,7 +214,10 @@ function showWeatherQuestion(runId) {
   }
 
   showSceneScreen("screen-scene-weather-question");
-  playInstruction({ runId });
+
+  if (sceneState.currentAudioSrc) {
+    playInstruction({ runId });
+  }
 }
 
 function finishWeatherQuestion(runId) {
@@ -325,6 +339,11 @@ function resetSceneState() {
     window.speechSynthesis.cancel();
   }
 
+  sceneInstructionAudio.pause();
+  sceneInstructionAudio.currentTime = 0;
+  sceneInstructionAudio.onended = null;
+  sceneInstructionAudio.onerror = null;
+
   sceneState.startedAt = null;
   sceneState.lastFoundAt = null;
   sceneState.found = [];
@@ -334,6 +353,7 @@ function resetSceneState() {
   sceneState.finalTimeMs = 0;
   sceneState.phase = "idle";
   sceneState.currentInstruction = sceneConfig.instruction;
+  sceneState.currentAudioSrc = sceneConfig.audioSrc;
   sceneState.currentCueIndex = null;
   sceneState.weatherQuestionStartedAt = null;
   sceneState.weatherAnswer = null;
@@ -435,6 +455,42 @@ function playInstruction({ onComplete, runId = sceneRunId } = {}) {
     }
   }
 
+  sceneInstructionAudio.pause();
+  sceneInstructionAudio.currentTime = 0;
+  sceneInstructionAudio.onended = null;
+  sceneInstructionAudio.onerror = null;
+
+  if (sceneState.currentAudioSrc) {
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    sceneInstructionAudio.src = sceneState.currentAudioSrc;
+    sceneInstructionAudio.onended = completeInstruction;
+    sceneInstructionAudio.onerror = () => {
+      sceneInstructionAudio.onended = null;
+      sceneInstructionAudio.onerror = null;
+
+      if ("speechSynthesis" in window) {
+        const utterance = new SpeechSynthesisUtterance(sceneState.currentInstruction);
+        utterance.lang = "es-CO";
+        utterance.rate = 0.92;
+        utterance.pitch = 1;
+        utterance.onend = completeInstruction;
+        utterance.onerror = completeInstruction;
+        window.speechSynthesis.speak(utterance);
+        return;
+      }
+
+      scheduleSceneTimer(completeInstruction, getInstructionFallbackDelayMs());
+    };
+
+    sceneInstructionAudio.play().catch(() => {
+      sceneInstructionAudio.onerror();
+    });
+    return;
+  }
+
   if (!("speechSynthesis" in window)) {
     scheduleSceneTimer(completeInstruction, getInstructionFallbackDelayMs());
     return;
@@ -498,6 +554,7 @@ function activateRecall(runId) {
   sceneState.isActive = true;
   sceneState.phase = "active";
   sceneState.currentInstruction = getRecallInstruction();
+  sceneState.currentAudioSrc = "";
 
   if (sceneInstruction) {
     sceneInstruction.textContent = sceneState.currentInstruction;
@@ -527,6 +584,7 @@ function runDoubleCueStep(stepIndex, runId) {
   sceneState.phase = "cue-instruction";
   sceneState.currentCueIndex = stepIndex;
   sceneState.currentInstruction = cue.instruction;
+  sceneState.currentAudioSrc = cue.audioSrc;
 
   if (sceneStatus) {
     sceneStatus.textContent = "Escucha la indicación completa.";
@@ -559,24 +617,19 @@ function startDistractor(runId) {
   sceneState.isActive = false;
   resetWeatherQuestion();
 
-  if (distractorStatus) {
-    distractorStatus.textContent = doubleTaskConfig.distractorText;
-  }
-
   showSceneScreen("screen-scene-distractor");
   sceneState.currentInstruction = doubleTaskConfig.distractorText;
-  playInstruction({ runId });
-
-  scheduleSceneTimer(() => {
-    if (runId !== sceneRunId) return;
-
-    showWeatherQuestion(runId);
-  }, doubleTaskConfig.distractorDurationMs);
+  sceneState.currentAudioSrc = doubleTaskConfig.distractorAudioSrc;
+  playInstruction({
+    runId,
+    onComplete: () => showWeatherQuestion(runId)
+  });
 }
 
 function startSimpleSceneActivity(runId) {
   sceneState.phase = "instruction";
   sceneState.currentInstruction = sceneConfig.instruction;
+  sceneState.currentAudioSrc = sceneConfig.audioSrc;
 
   if (sceneStatus) {
     sceneStatus.textContent = "Escucha la indicación completa.";
@@ -925,7 +978,9 @@ if (repeatInstructionButton) {
     }
 
     if (sceneState.phase === "weather-question") {
-      playInstruction();
+      if (sceneState.currentAudioSrc) {
+        playInstruction();
+      }
       return;
     }
 
@@ -949,6 +1004,9 @@ window.addEventListener("beforeunload", () => {
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
+
+  sceneInstructionAudio.pause();
+  sceneInstructionAudio.currentTime = 0;
 });
 
 window.addEventListener("load", resetSceneState);
