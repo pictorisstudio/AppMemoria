@@ -8,6 +8,7 @@ const foodModeCards = {
   simple: document.querySelector('[data-food-phase-mode="simple"]'),
   double: document.querySelector('[data-food-phase-mode="double"]')
 };
+const openingStepCountdownSeconds = 30;
 
 const foodPhaseModeCopy = {
   1: {
@@ -40,7 +41,7 @@ const cookingSteps = [
     targetId: "arroz",
     note: "Arroz: agregar 4 pizcas de sal.",
     success: "Sal agregada al arroz.",
-    timer: "Faltan 10 min",
+    timer: "Faltan 30 segundos",
     progress: 20
   },
   {
@@ -959,6 +960,7 @@ const gameState = {
   phaseNumber: 1,
   taskMode: "simple",
   currentStepIndex: 0,
+  runToken: 0,
   startedAt: null,
   endedAt: null,
   stepStartedAt: null,
@@ -981,16 +983,20 @@ const gameState = {
   memoryResponseTimeMs: null,
   memoryProductTimings: {},
   autoSpokenStepIds: [],
+  timeoutModalOpen: false,
   burnersOn: {
     arroz: true,
     carne: false,
     guiso: false,
     huevos: false
   },
+  countdownStepId: null,
+  stepCountdownRemaining: null,
   lastResult: null
 };
 
 let voiceSequenceToken = 0;
+let stepCountdownInterval = null;
 
 function showFoodScreen(screenId) {
   const targetScreen = document.getElementById(screenId);
@@ -1082,8 +1088,11 @@ function showEmptyFoodActivity(mode) {
 }
 
 function resetGame(mode = foodState.currentMode || "simple") {
+  clearStepCountdown();
+
   const scenario = getSelectedScenario(mode) || cookingScenarioConfigs["1-simple"];
 
+  gameState.runToken++;
   gameState.screen = "intro";
   gameState.phaseNumber = scenario.phaseNumber;
   gameState.taskMode = mode;
@@ -1110,8 +1119,11 @@ function resetGame(mode = foodState.currentMode || "simple") {
   gameState.memoryResponseTimeMs = null;
   gameState.memoryProductTimings = {};
   gameState.autoSpokenStepIds = [];
+  gameState.timeoutModalOpen = false;
   gameState.burnersOn = { ...scenario.initialBurnersOn };
   gameState.lastResult = null;
+  gameState.countdownStepId = null;
+  gameState.stepCountdownRemaining = null;
   renderScreen();
 }
 
@@ -1161,12 +1173,133 @@ function formatMilliseconds(milliseconds) {
 function getSymbolicTime() {
   if (gameState.screen === "result") return "0:00";
   if (gameState.screen === "intro") return "20:00";
+  if (isOpeningStepCountdownActive()) {
+    const remaining = gameState.stepCountdownRemaining ?? openingStepCountdownSeconds;
+    return getCountdownText(remaining);
+  }
   return getCurrentStep().timer;
+}
+
+function getCountdownText(seconds) {
+  const safeSeconds = Math.max(0, Number(seconds) || 0);
+  return `Faltan ${safeSeconds} ${safeSeconds === 1 ? "segundo" : "segundos"}`;
+}
+
+function isOpeningStepCountdownActive() {
+  return (
+    gameState.screen === "scene" &&
+    gameState.phaseNumber === 1 &&
+    gameState.taskMode === "simple"
+  );
+}
+
+function updateCountdownDisplay() {
+  const timerElement = cookingGameRoot?.querySelector(".cooking-status strong");
+  const progressElement = cookingGameRoot?.querySelector(".cooking-progress span");
+
+  if (timerElement) {
+    timerElement.textContent = getCountdownText(gameState.stepCountdownRemaining);
+  }
+
+  if (progressElement) {
+    progressElement.style.width = `${getCountdownProgress()}%`;
+    progressElement.style.backgroundColor = getCountdownProgressColor();
+  }
+}
+
+function getCountdownProgress() {
+  const remaining = gameState.stepCountdownRemaining ?? openingStepCountdownSeconds;
+  const elapsedSeconds = openingStepCountdownSeconds - remaining;
+
+  return Math.min(100, Math.max(0, (elapsedSeconds / openingStepCountdownSeconds) * 100));
+}
+
+function getCountdownProgressColor() {
+  const remaining = gameState.stepCountdownRemaining ?? openingStepCountdownSeconds;
+
+  if (remaining <= 10) return "#dc2626";
+  if (remaining <= 15) return "#f97316";
+  return "#16a34a";
+}
+
+function stopStepCountdownInterval() {
+  if (stepCountdownInterval) {
+    window.clearInterval(stepCountdownInterval);
+    stepCountdownInterval = null;
+  }
+}
+
+function clearStepCountdown() {
+  stopStepCountdownInterval();
+
+  if (gameState) {
+    gameState.countdownStepId = null;
+    gameState.stepCountdownRemaining = null;
+  }
+}
+
+function syncOpeningStepCountdown() {
+  if (!isOpeningStepCountdownActive()) {
+    clearStepCountdown();
+    return;
+  }
+
+  const countdownId = `${gameState.phaseNumber}-${gameState.taskMode}`;
+
+  if (
+    gameState.countdownStepId !== countdownId ||
+    gameState.stepCountdownRemaining === null ||
+    gameState.stepCountdownRemaining === undefined
+  ) {
+    gameState.countdownStepId = countdownId;
+    gameState.stepCountdownRemaining = openingStepCountdownSeconds;
+  }
+
+  updateCountdownDisplay();
+
+  if (gameState.timeoutModalOpen) return;
+  if (stepCountdownInterval) return;
+
+  const runToken = gameState.runToken;
+  stepCountdownInterval = window.setInterval(() => {
+    if (runToken !== gameState.runToken || !isOpeningStepCountdownActive()) {
+      clearStepCountdown();
+      return;
+    }
+
+    gameState.stepCountdownRemaining = Math.max(0, gameState.stepCountdownRemaining - 1);
+    updateCountdownDisplay();
+
+    if (
+      gameState.stepCountdownRemaining === 15 &&
+      !hasCompletedCookingStep("guiso-on")
+    ) {
+      stopStepCountdownInterval();
+      gameState.timeoutModalOpen = true;
+      gameState.isStepLocked = true;
+      gameState.feedback = "";
+      gameState.feedbackType = "";
+      gameState.feedbackTarget = "";
+      renderScreen();
+      return;
+    }
+
+    if (gameState.stepCountdownRemaining <= 0) {
+      clearStepCountdown();
+      cancelBrowserVoice();
+      resetGame(gameState.taskMode);
+    }
+  }, 1000);
+}
+
+function hasCompletedCookingStep(stepId) {
+  return gameState.stepTimings.some((entry) => entry.id === stepId);
 }
 
 function getProgress() {
   if (gameState.screen === "result") return 100;
   if (gameState.screen === "intro") return 0;
+  if (isOpeningStepCountdownActive()) return getCountdownProgress();
   return getCurrentStep().progress;
 }
 
@@ -1192,6 +1325,19 @@ function createShell(title, body, actions = "") {
     </div>
   `
       : "";
+  const timeoutModalMarkup = gameState.timeoutModalOpen
+    ? `
+    <div class="cooking-timeout-modal" role="dialog" aria-modal="true" aria-labelledby="cooking-timeout-title">
+      <div class="cooking-timeout-card">
+        <h2 id="cooking-timeout-title">Se te acabó el tiempo</h2>
+        <p>Se reinicia la actividad general.</p>
+        <button class="memory-button button-one cooking-action-button" type="button" data-cooking-timeout-reset>
+          Entendido, reiniciar
+        </button>
+      </div>
+    </div>
+  `
+    : "";
 
   return `
     <header class="cooking-header">
@@ -1213,6 +1359,8 @@ function createShell(title, body, actions = "") {
     <div class="${actionsClass}">
       ${actions}
     </div>
+
+    ${timeoutModalMarkup}
   `;
 }
 
@@ -1492,6 +1640,7 @@ function renderScreen() {
   cookingGameRoot.dataset.cookingScreen = gameState.screen;
   cookingGameRoot.closest(".cooking-card")?.setAttribute("data-cooking-screen", gameState.screen);
   cookingGameRoot.innerHTML = screens[gameState.screen]();
+  syncOpeningStepCountdown();
 }
 
 function startGame() {
@@ -1573,7 +1722,10 @@ function handleCookingTarget(targetId) {
   applyStepEffect(step);
   renderScreen();
 
+  const runToken = gameState.runToken;
   window.setTimeout(() => {
+    if (runToken !== gameState.runToken) return;
+
     if (gameState.currentStepIndex >= getCurrentSteps().length - 1) {
       if (getCurrentMemoryConfig() && !gameState.memoryAnswered) {
         showMemoryQuestionScreen();
@@ -1982,6 +2134,13 @@ document.addEventListener("click", (event) => {
   const repeatButton = event.target.closest("[data-cooking-repeat]");
   const exportButton = event.target.closest("[data-cooking-export]");
   const navButton = event.target.closest("[data-cooking-nav]");
+  const timeoutResetButton = event.target.closest("[data-cooking-timeout-reset]");
+
+  if (timeoutResetButton) {
+    cancelBrowserVoice();
+    resetGame(gameState.taskMode);
+    return;
+  }
 
   if (phaseButton) {
     cancelBrowserVoice();

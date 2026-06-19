@@ -2370,6 +2370,37 @@ a:focus-visible {
   transition: width 0.28s ease;
 }
 
+.cooking-timeout-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(17, 24, 39, 0.52);
+}
+
+.cooking-timeout-card {
+  width: min(100%, 360px);
+  padding: 24px;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+  text-align: center;
+}
+
+.cooking-timeout-card h2 {
+  margin: 0 0 10px;
+  color: #991b1b;
+  font-size: 1.45rem;
+}
+
+.cooking-timeout-card p {
+  margin: 0 0 18px;
+  color: #374151;
+  font-size: 1rem;
+}
+
 .cooking-body {
   width: 100%;
   display: grid;

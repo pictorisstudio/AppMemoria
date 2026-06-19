@@ -433,7 +433,9 @@ function renderLentils(cx, cy) {
 function getPhoneTimerText() {
   const symbolicTime = getSymbolicTime();
   if (symbolicTime === "Finalizando") return "0 min";
-  return symbolicTime.replace("Faltan ", "");
+  return symbolicTime
+    .replace("Faltan ", "")
+    .replace(/\bsegundos?\b/, "seg.");
 }
 
 function renderRecipeNote(id, y, lineOne, lineTwo, activeNoteId) {
