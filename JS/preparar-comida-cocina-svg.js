@@ -110,10 +110,12 @@ function getFoodFeedbackClass(targetId) {
 }
 
 function renderKitchenFoods(variant, slots) {
+  if (variant === "phase4-double") return renderPhase3Foods(slots);
   if (variant === "phase4") return renderPhase4Foods(slots);
   if (variant === "phase3") return renderPhase3Foods(slots);
   if (variant === "phase2-double") return renderPhase2DoubleFoods(slots);
   if (variant === "phase2") return renderPhase2Foods(slots);
+  if (variant === "phase1-double") return renderPhase1DoubleFoods(slots);
   return renderPhase1Foods(slots);
 }
 
@@ -162,6 +164,52 @@ function renderPhase1Foods(slots) {
       <path class="meat-cut meat-cut-one" d="M759 438 C775 408 819 414 837 448 C821 486 769 484 759 438 Z" />
       <path class="meat-cut meat-cut-two" d="M749 466 C769 442 807 454 817 486 C793 510 753 500 749 466 Z" />
       <path class="meat-line" d="M771 432 C783 446 801 452 827 448 M765 468 C783 476 797 484 807 496 M789 422 C779 446 773 466 765 484" />
+    </g>
+  `;
+}
+
+function renderPhase1DoubleFoods(slots) {
+  return `
+    <g class="food-pan food-sopa ${getFoodFeedbackClass(slots.topLeft)}">
+      <circle class="pot-handle" cx="438" cy="312" r="18" />
+      <circle class="pot-handle" cx="562" cy="312" r="18" />
+      <circle class="pot-rim" cx="500" cy="312" r="65" />
+      <circle class="pasta-water" cx="500" cy="312" r="50" />
+      <circle class="tomato" cx="478" cy="300" r="9" />
+      <circle class="pepper" cx="520" cy="326" r="8" />
+      <circle class="guiso-corn" cx="502" cy="306" r="6" />
+      <path class="herb" d="M462 324 l18 -9 M508 286 l16 -8 M530 312 l20 -7" />
+      <path class="pasta-noodles-light" d="M456 314 C480 296 510 332 540 306 M464 336 C494 318 512 346 540 328" />
+    </g>
+
+    <g class="food-pan food-carne-doble ${getFoodFeedbackClass(slots.topRight)}">
+      <path class="pan-handle angled-handle" d="M843 354 L927 430" />
+      <circle class="pan-rim black-pan" cx="795" cy="312" r="66" />
+      <circle class="pan-inner tomato-sauce" cx="795" cy="312" r="48" />
+      <path class="meat-cut meat-cut-one" d="M758 296 C774 270 820 276 838 308 C822 344 770 342 758 296 Z" />
+      <path class="meat-cut meat-cut-two" d="M748 324 C770 300 808 312 818 344 C792 368 754 358 748 324 Z" />
+      <path class="meat-line" d="M770 290 C786 306 804 312 828 308 M764 326 C784 334 800 342 810 352 M790 282 C780 306 774 326 766 344" />
+    </g>
+
+    <g class="food-pan food-verdura ${getFoodFeedbackClass(slots.bottomLeft)}">
+      <circle class="guiso-pot" cx="500" cy="458" r="64" />
+      <circle class="guiso-cream" cx="500" cy="458" r="50" />
+      <circle class="guiso-base" cx="500" cy="458" r="42" />
+      <path class="pot-side-handle" d="M438 458 C418 438 418 478 438 458" />
+      <path class="pot-side-handle" d="M562 458 C582 438 582 478 562 458" />
+      <circle class="pepper" cx="476" cy="444" r="10" />
+      <circle class="onion" cx="524" cy="468" r="10" />
+      <circle class="guiso-olive" cx="510" cy="436" r="8" />
+      <path class="herb" d="M466 472 l25 -16 M500 484 l32 -18 M488 438 l-24 -14 M520 450 l24 -12" />
+    </g>
+
+    <g class="food-pan food-cerdo ${getFoodFeedbackClass(slots.bottomRight)}">
+      <circle class="plate-rim" cx="795" cy="458" r="65" />
+      <circle class="plate-inner" cx="795" cy="458" r="52" />
+      <path class="meat-cut meat-cut-one" d="M756 440 C776 410 820 416 842 448 C824 486 770 486 756 440 Z" />
+      <path class="meat-cut meat-cut-two" d="M750 466 C770 444 808 454 820 486 C794 510 754 500 750 466 Z" />
+      <circle class="egg-yolk" cx="820" cy="436" r="7" />
+      <path class="meat-line" d="M770 432 C788 448 804 452 830 448 M764 468 C784 476 800 484 810 496 M792 422 C782 446 774 466 766 484" />
     </g>
   `;
 }
@@ -268,14 +316,16 @@ function renderPhase2DoubleFoods(slots) {
       <path class="guiso-strip" d="M470 470 l20 -18 M508 484 l24 -14 M490 438 l-18 -14" />
     </g>
 
-    <g class="food-pan food-huevos-dos ${getFoodFeedbackClass(slots.bottomRight)}">
+    <g class="food-pan food-platano-doble ${getFoodFeedbackClass(slots.bottomRight)}">
       <path class="pan-handle angled-handle" d="M843 500 L922 574" />
       <circle class="pan-rim black-pan" cx="795" cy="458" r="66" />
       <circle class="pan-inner oil-pan" cx="795" cy="458" r="48" />
-      <path class="egg-white egg-blob" d="M768 438 C790 420 816 438 806 464 C798 486 762 480 754 456 C750 448 756 442 768 438 Z" />
-      <path class="egg-white egg-blob" d="M812 468 C832 452 858 468 848 492 C840 514 806 506 800 486 C798 478 804 472 812 468 Z" />
-      <circle class="egg-yolk" cx="782" cy="454" r="11" />
-      <circle class="egg-yolk" cx="826" cy="484" r="11" />
+      <ellipse class="plantain-slice" cx="766" cy="438" rx="14" ry="26" transform="rotate(-34 766 438)" />
+      <ellipse class="plantain-slice" cx="790" cy="448" rx="14" ry="26" transform="rotate(-14 790 448)" />
+      <ellipse class="plantain-slice" cx="816" cy="450" rx="14" ry="25" transform="rotate(14 816 450)" />
+      <ellipse class="plantain-slice plantain-front" cx="780" cy="482" rx="15" ry="27" transform="rotate(60 780 482)" />
+      <ellipse class="plantain-slice plantain-front" cx="824" cy="480" rx="15" ry="27" transform="rotate(48 824 480)" />
+      <path class="plantain-seeds" d="M766 438 l5 5 M790 448 l5 5 M816 450 l5 5 M780 482 l5 5 M824 480 l5 5" />
     </g>
   `;
 }
