@@ -2343,6 +2343,7 @@ function finishGame() {
     memoryCorrectCount: gameState.memoryCorrectCount,
     memoryResponseTimeMs: gameState.memoryResponseTimeMs,
     memoryList: scenario.memory?.list ? [...scenario.memory.list] : [],
+    memoryCorrectLabels: getMemorySelectionLabels(scenario.memory, scenario.memory?.list || []),
     memoryProductTimings: { ...gameState.memoryProductTimings },
     selectedProducts: [...gameState.selectedProducts],
     selectedProductLabels: getMemorySelectionLabels(scenario.memory, gameState.selectedProducts),
@@ -2394,7 +2395,7 @@ function exportResultsCSV() {
       : "tiempo_compra";
   const memoryTimeColumns = memoryProducts.length
     ? [
-        "tiempo_memoria_total",
+        "tiempo_respuesta",
         ...memoryProducts.map((product) => `${memoryColumnPrefix}_${toCSVColumnKey(product)}`)
       ]
     : [];
@@ -2407,7 +2408,7 @@ function exportResultsCSV() {
       "estructura",
       "aciertos",
       "errores",
-      "errores_temporales",
+      "fallos_de_tiempo",
       "pasos_fuera_de_tiempo",
       "tiempo_total",
       "tiempo_total_sesion",
@@ -2416,6 +2417,7 @@ function exportResultsCSV() {
       ...timeColumns.map(([columnName]) => columnName),
       ...memoryTimeColumns,
       "aciertos_memoria",
+      "productos_correctos",
       "productos_seleccionados"
     ],
     [
@@ -2454,6 +2456,7 @@ function exportResultsCSV() {
           ]
         : []),
       memoryProducts.length ? session.memoryCorrectCount : "No aplica",
+      session.memoryCorrectLabels?.join(", ") || memoryProducts.join(", ") || "No aplica",
       session.selectedProductLabels?.join(", ") || session.selectedProducts?.join(", ") || "No aplica"
     ]
   ];
@@ -2536,10 +2539,20 @@ document.addEventListener("click", (event) => {
   }
 
   if (speakButton) {
-    playCookingCue({
-      audioSrc: speakButton.dataset.cookingAudioSrc,
-      text: speakButton.dataset.cookingSpeak
-    });
+    const shouldAdvanceAfterRepeatedDaughterAudio =
+      gameState.screen === "daughter" && getCurrentMemoryConfig()?.immediateQuestionAfterAudio;
+
+    playCookingCue(
+      {
+        audioSrc: speakButton.dataset.cookingAudioSrc,
+        text: speakButton.dataset.cookingSpeak
+      },
+      () => {
+        if (shouldAdvanceAfterRepeatedDaughterAudio && gameState.screen === "daughter") {
+          showMemoryQuestionScreen();
+        }
+      }
+    );
     return;
   }
 

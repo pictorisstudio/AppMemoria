@@ -206,10 +206,14 @@ function renderPhase1DoubleFoods(slots) {
     <g class="food-pan food-cerdo ${getFoodFeedbackClass(slots.bottomRight)}">
       <circle class="plate-rim" cx="795" cy="458" r="65" />
       <circle class="plate-inner" cx="795" cy="458" r="52" />
-      <path class="meat-cut meat-cut-one" d="M756 440 C776 410 820 416 842 448 C824 486 770 486 756 440 Z" />
-      <path class="meat-cut meat-cut-two" d="M750 466 C770 444 808 454 820 486 C794 510 754 500 750 466 Z" />
-      <circle class="egg-yolk" cx="820" cy="436" r="7" />
-      <path class="meat-line" d="M770 432 C788 448 804 452 830 448 M764 468 C784 476 800 484 810 496 M792 422 C782 446 774 466 766 484" />
+      <g class="pork-chop-mini" transform="translate(795 458) scale(0.68) translate(-795 -458)">
+        <path class="pork-chop-base" d="M746 474 C732 450 744 424 774 416 C792 412 804 416 820 406 C846 388 880 414 880 448 C880 490 846 518 798 518 C770 518 756 492 746 474 Z" />
+        <path class="pork-chop-fat-edge" d="M746 474 C732 450 744 424 774 416 C792 412 804 416 820 406 C846 388 880 414 880 448 C880 490 846 518 798 518 C770 518 756 492 746 474 Z" />
+        <path class="pork-chop-large-section" d="M810 426 C832 394 868 416 866 450 C864 486 838 502 802 500 C794 474 794 446 810 426 Z" />
+        <path class="pork-chop-left-section" d="M756 438 C772 424 794 426 806 424 C792 446 778 458 758 468 C750 456 750 446 756 438 Z" />
+        <path class="pork-chop-bottom-section" d="M766 484 C786 470 796 456 806 446 C806 464 808 480 812 500 C790 500 774 494 766 484 Z" />
+        <path class="pork-chop-divider" d="M806 424 C788 446 776 458 758 468 M806 446 C806 466 808 482 812 500" />
+      </g>
     </g>
   `;
 }

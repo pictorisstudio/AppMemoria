@@ -355,6 +355,40 @@
   stroke-linecap: round;
 }
 
+.pork-chop-base {
+  fill: #fbc994;
+  stroke: none;
+}
+
+.pork-chop-fat-edge {
+  fill: #fde2e7;
+  stroke: none;
+  transform: translateY(-8px);
+}
+
+.pork-chop-large-section {
+  fill: #fb8c8d;
+  stroke: none;
+}
+
+.pork-chop-left-section {
+  fill: #fb8c8d;
+  stroke: none;
+}
+
+.pork-chop-bottom-section {
+  fill: #e9787c;
+  stroke: none;
+}
+
+.pork-chop-divider {
+  fill: none;
+  stroke: #fde2e7;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .beef-piece {
   fill: #a33f2b;
   stroke: #5f1d14;
