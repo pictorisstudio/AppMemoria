@@ -69,22 +69,22 @@ const phaseFourDoubleStepDeadlinesMs = {
 const foodPhaseModeCopy = {
   1: {
     structure: "Estructura A",
-    simpleDescription: "Linea base con arroz, carne molida, guiso y huevos.",
-    doubleDescription: "Linea base con la misma receta y una lista de compras para recordar."
+    simpleDescription: "Línea base con arroz, carne molida, guiso y huevos.",
+    doubleDescription: "Línea base con la misma receta y una lista de compras para recordar."
   },
   2: {
     structure: "Estructura B",
-    simpleDescription: "Claves auditivo-verbales para pasta, pechuga, verduras y platano.",
+    simpleDescription: "Claves auditivo-verbales para pasta, pechuga, verduras y plátano.",
     doubleDescription: "Claves auditivas con papas, pollo, guiso, huevos e interferencia de compras."
   },
   3: {
     structure: "Estructura A",
-    simpleDescription: "Linea base con arroz, carne de res, verduras salteadas y rodajas de papa.",
-    doubleDescription: "Linea base con la misma receta y recuerdo de alimentos durante la coccion."
+    simpleDescription: "Línea base con arroz, carne de res, verduras salteadas y rodajas de papa.",
+    doubleDescription: "Línea base con la misma receta y recuerdo de alimentos durante la cocción."
   },
   4: {
     structure: "Estructura B",
-    simpleDescription: "Claves visoespaciales para lentejas, pollo, guiso y tajadas de platano.",
+    simpleDescription: "Claves visoespaciales para lentejas, pollo, guiso y tajadas de plátano.",
     doubleDescription: "Claves visoespaciales con arroz, verduras, carne, papas e interferencia visual."
   }
 };
@@ -610,7 +610,7 @@ const memoryProductOptions = [
 const phase2ShoppingList = [
   "Cebollas",
   "Pan",
-  "Azucar",
+  "Azúcar",
   "Sal",
   "Envueltos",
   "Tomates",
@@ -620,7 +620,7 @@ const phase2ShoppingList = [
 const phase2ShoppingOptions = [
   "Cebollas",
   "Pan",
-  "Azucar",
+  "Azúcar",
   "Arroz",
   "Sal",
   "Lechuga",
@@ -1888,7 +1888,7 @@ function getMemoryProductIcon(product) {
     Menudencias: "🥩",
     Queso: "🧀",
     Papas: "🥔",
-    Azucar: "🧂",
+    Azúcar: "🧂",
     Sal: "🧂",
     Envueltos: "🌽",
     Pollo: "🍗",
@@ -2432,7 +2432,7 @@ function exportResultsCSV() {
       session.temporalErrorSteps?.length
         ? session.temporalErrorSteps
             .map((entry) =>
-              `${entry.id}: ${formatMilliseconds(entry.elapsedMs)} / limite ${formatMilliseconds(entry.deadlineMs)}`
+              `${entry.id}: ${formatMilliseconds(entry.elapsedMs)} / límite ${formatMilliseconds(entry.deadlineMs)}`
             )
             .join(", ")
         : "No aplica",
