@@ -496,6 +496,12 @@
   stroke-width: 4;
 }
 
+.potato-pot-fill {
+  fill: #f4dfb8;
+  stroke: #c28a4a;
+  stroke-width: 4;
+}
+
 .lentil-water {
   fill: #d6c3a5;
   stroke: #a87945;
@@ -509,9 +515,47 @@
 }
 
 .potato-piece {
-  fill: #f7d58a;
-  stroke: #b7791f;
+  fill: #d8a45c;
+  stroke: #7c4a25;
   stroke-width: 3;
+}
+
+.whole-potato {
+  fill: #e9a85f;
+  stroke: #8a4f13;
+  stroke-width: 7;
+  stroke-linejoin: round;
+}
+
+.potato-in-pot {
+  stroke-width: 4.5;
+}
+
+.whole-potato-back {
+  fill: #f0b56d;
+}
+
+.whole-potato-front {
+  fill: #e49e52;
+}
+
+.potato-piece-light {
+  fill: #e8bd78;
+}
+
+.potato-skin-mark {
+  fill: none;
+  stroke: #8a5a2a;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.potato-skin-mark-small {
+  stroke-width: 3.5;
+}
+
+.potato-eye {
+  fill: #6b3f1d;
 }
 
 .water-bubble {
@@ -645,14 +689,19 @@
 }
 
 .fried-potato-slice {
-  fill: #f8d36b;
-  stroke: #b7791f;
+  fill: #f4cf87;
+  stroke: #8a5a2a;
   stroke-width: 5;
+  stroke-linejoin: round;
+}
+
+.potato-slice-light {
+  fill: #ffe0a3;
 }
 
 .potato-fry-marks {
   fill: none;
-  stroke: #92400e;
+  stroke: #8a5a2a;
   stroke-width: 3;
   stroke-linecap: round;
 }

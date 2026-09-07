@@ -9,6 +9,7 @@ const foodModeCards = {
   double: document.querySelector('[data-food-phase-mode="double"]')
 };
 const openingStepCountdownSeconds = 25;
+const stepAudioDelayMs = 550;
 const phaseOneSimpleStepDeadlinesMs = {
   "sal-arroz": 5000,
   carne: 10000,
@@ -75,7 +76,7 @@ const foodPhaseModeCopy = {
   2: {
     structure: "Estructura B",
     simpleDescription: "Claves auditivo-verbales para pasta, pechuga, verduras y plátano.",
-    doubleDescription: "Claves auditivas con papas, pollo, guiso, huevos e interferencia de compras."
+    doubleDescription: "Claves auditivas con papas, pollo, guiso, plátano e interferencia de compras."
   },
   3: {
     structure: "Estructura A",
@@ -160,10 +161,10 @@ const phaseOneDoubleSteps = [
   {
     id: "cerdo",
     title: "Paso 2 de 5",
-    instruction: "Enciende la hornilla del cerdo.",
+    instruction: "Enciende la hornilla de la carne.",
     targetId: "cerdo",
-    note: "Cerdo: poner a freír.",
-    success: "Cerdo encendido.",
+    note: "Carne: poner a freír.",
+    success: "Carne encendida.",
     timer: "Faltan 15 segundos",
     progress: 40,
     turnOn: "cerdo"
@@ -341,7 +342,7 @@ const phase2DoubleSteps = [
     timer: "Faltan 89 segundos",
     progress: 100,
     turnOn: "platano-doble",
-    audioSrc: "../Audio/PrepararComida/Fase2/F2_B_DOBLE_06_encender_huevos.mp3",
+    audioSrc: "../Audio/PrepararComida/Fase2/F2_B_DOBLE_06_encender_platano.mp3",
     audioText:
       "Antes de un minuto con veintinueve segundos, comienza a freír las rodajas de plátano abajo a la derecha."
   }
@@ -690,6 +691,12 @@ const cookingScenarioConfigs = {
       bottomLeft: "guiso",
       bottomRight: "carne"
     },
+    previewItems: [
+      { id: "preview-arroz", label: "Arroz", foodId: "arroz" },
+      { id: "preview-carne", label: "Carne", foodId: "carne" },
+      { id: "preview-huevos", label: "Huevos", foodId: "huevos" },
+      { id: "preview-guiso", label: "Guiso", foodId: "guiso" }
+    ],
     recipeNotes: [
       ["sal-arroz", 220, "Sal", "al arroz"],
       ["carne", 294, "Freír", "carne"],
@@ -724,7 +731,7 @@ const cookingScenarioConfigs = {
     steps: phaseOneDoubleSteps,
     burnerLabels: {
       sopa: "Sopa",
-      cerdo: "Cerdo",
+      cerdo: "Carne",
       verdura: "Verdura",
       "carne-doble": "Carne"
     },
@@ -741,9 +748,15 @@ const cookingScenarioConfigs = {
       bottomLeft: "verdura",
       bottomRight: "cerdo"
     },
+    previewItems: [
+      { id: "preview-sopa", label: "Sopa", foodId: "sopa" },
+      { id: "preview-carne-doble", label: "Carne", foodId: "carne-doble" },
+      { id: "preview-verdura", label: "Verdura", foodId: "verdura" },
+      { id: "preview-carne-sarten", label: "Carne en sartén", foodId: "cerdo" }
+    ],
     recipeNotes: [
       ["sal-sopa", 220, "Sal", "a sopa"],
-      ["cerdo", 294, "Freír", "cerdo"],
+      ["cerdo", 294, "Freír", "carne"],
       ["verdura-on", 368, "Sofreír", "verdura"],
       ["verdura-off", 442, "Apagar", "verdura"],
       ["carne-doble", 516, "Freír", "carne"]
@@ -807,6 +820,12 @@ const cookingScenarioConfigs = {
       bottomLeft: "verduras",
       bottomRight: "platano"
     },
+    previewItems: [
+      { id: "preview-verduras", label: "Verduras", foodId: "verduras" },
+      { id: "preview-pasta", label: "Pasta", foodId: "pasta" },
+      { id: "preview-pollo", label: "Pollo", foodId: "pollo" },
+      { id: "preview-platano", label: "Plátano", foodId: "platano" }
+    ],
     recipeNotes: [
       ["sal-pasta", 220, "Sal a", "pasta"],
       ["verduras-on", 294, "Sofreír", "verduras"],
@@ -863,6 +882,12 @@ const cookingScenarioConfigs = {
       bottomLeft: "guiso-cebolla",
       bottomRight: "platano-doble"
     },
+    previewItems: [
+      { id: "preview-guiso-cebolla", label: "Guiso", foodId: "guiso-cebolla" },
+      { id: "preview-pollo-filetes", label: "Pollo", foodId: "pollo-filetes" },
+      { id: "preview-platano-doble", label: "Plátano", foodId: "platano-doble" },
+      { id: "preview-papas", label: "Papas", foodId: "papas" }
+    ],
     recipeNotes: [
       ["sal-papas", 220, "Sal a", "papas"],
       ["guiso-cebolla-on", 294, "Sofreír", "guiso"],
@@ -932,6 +957,12 @@ const cookingScenarioConfigs = {
       bottomLeft: "verduras-salteadas",
       bottomRight: "papa-rodajas"
     },
+    previewItems: [
+      { id: "preview-arroz-f3", label: "Arroz", foodId: "arroz-f3" },
+      { id: "preview-verduras-salteadas", label: "Verduras", foodId: "verduras-salteadas" },
+      { id: "preview-carne-res", label: "Carne", foodId: "carne-res" },
+      { id: "preview-papa-rodajas", label: "Papas", foodId: "papa-rodajas" }
+    ],
     recipeNotes: [
       ["sal-arroz-f3", 220, "Sal a", "arroz"],
       ["verduras-salteadas-on", 294, "Sofreír", "verduras"],
@@ -985,6 +1016,12 @@ const cookingScenarioConfigs = {
       bottomLeft: "guiso-f3-doble",
       bottomRight: "platano-f3-doble"
     },
+    previewItems: [
+      { id: "preview-guiso-f3-doble", label: "Guiso", foodId: "guiso-f3-doble" },
+      { id: "preview-pechuga-f3-doble", label: "Pechuga", foodId: "pechuga-f3-doble" },
+      { id: "preview-platano-f3-doble", label: "Plátanos", foodId: "platano-f3-doble" },
+      { id: "preview-papas-f3-doble", label: "Papas", foodId: "papas-f3-doble" }
+    ],
     recipeNotes: [
       ["sal-papas-f3-doble", 220, "Sal a", "papas"],
       ["pechuga-f3-doble-on", 294, "Freír", "pechuga"],
@@ -1052,6 +1089,12 @@ const cookingScenarioConfigs = {
       bottomLeft: "guiso-f4",
       bottomRight: "platano-tajadas"
     },
+    previewItems: [
+      { id: "preview-guiso-f4", label: "Guiso", foodId: "guiso-f4" },
+      { id: "preview-pollo-f4", label: "Pollo", foodId: "pollo-f4" },
+      { id: "preview-platano-tajadas", label: "Plátano", foodId: "platano-tajadas" },
+      { id: "preview-lentejas", label: "Lentejas", foodId: "lentejas" }
+    ],
     recipeNotes: [
       ["sal-lentejas", 220, "Sal a", "lentejas"],
       ["guiso-f4-on", 294, "Sofreír", "guiso"],
@@ -1106,6 +1149,12 @@ const cookingScenarioConfigs = {
       bottomLeft: "verduras-f4-doble",
       bottomRight: "papas-f4-doble"
     },
+    previewItems: [
+      { id: "preview-arroz-f4-doble", label: "Arroz", foodId: "arroz-f4-doble" },
+      { id: "preview-carne-f4-doble", label: "Carne", foodId: "carne-f4-doble" },
+      { id: "preview-papas-f4-doble", label: "Papas", foodId: "papas-f4-doble" },
+      { id: "preview-verduras-f4-doble", label: "Verduras", foodId: "verduras-f4-doble" }
+    ],
     recipeNotes: [
       ["sal-arroz-f4-doble", 220, "Sal a", "arroz"],
       ["verduras-f4-doble-on", 294, "Sofreír", "verduras"],
@@ -1183,6 +1232,9 @@ const gameState = {
   memoryResponseTimeMs: null,
   memoryProductTimings: {},
   autoSpokenStepIds: [],
+  openingAudioCompleted: false,
+  previewQueue: [],
+  previewIndex: 0,
   timeoutModalOpen: false,
   burnersOn: {
     arroz: true,
@@ -1197,6 +1249,7 @@ const gameState = {
 
 let voiceSequenceToken = 0;
 let stepCountdownInterval = null;
+let stepAudioTimeoutId = null;
 
 function showFoodScreen(screenId) {
   const targetScreen = document.getElementById(screenId);
@@ -1288,6 +1341,7 @@ function showEmptyFoodActivity(mode) {
 }
 
 function resetGame(mode = foodState.currentMode || "simple") {
+  cancelBrowserVoice();
   clearStepCountdown();
 
   const scenario = getSelectedScenario(mode) || cookingScenarioConfigs["1-simple"];
@@ -1325,6 +1379,9 @@ function resetGame(mode = foodState.currentMode || "simple") {
   gameState.memoryResponseTimeMs = null;
   gameState.memoryProductTimings = {};
   gameState.autoSpokenStepIds = [];
+  gameState.openingAudioCompleted = false;
+  gameState.previewQueue = [];
+  gameState.previewIndex = 0;
   gameState.timeoutModalOpen = false;
   gameState.burnersOn = { ...scenario.initialBurnersOn };
   gameState.lastResult = null;
@@ -1348,6 +1405,95 @@ function getCurrentBurnerLabels() {
 
 function getCurrentMemoryConfig() {
   return getCurrentScenario().memory;
+}
+
+function getCurrentPreviewItems(scenario = getCurrentScenario()) {
+  if (Array.isArray(scenario.previewItems) && scenario.previewItems.length > 0) {
+    return scenario.previewItems;
+  }
+
+  return Object.entries(scenario.burnerLabels || {}).map(([foodId, label]) => ({
+    id: `preview-${foodId}`,
+    label,
+    foodId
+  }));
+}
+
+function shufflePreviewItems(items) {
+  const queue = [...items];
+
+  for (let index = queue.length - 1; index > 0; index--) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [queue[index], queue[randomIndex]] = [queue[randomIndex], queue[index]];
+  }
+
+  return queue;
+}
+
+function startPreparationPreview() {
+  const scenario = getCurrentScenario();
+  const previewItems = getCurrentPreviewItems(scenario);
+
+  cancelBrowserVoice();
+  clearStepCountdown();
+  gameState.runToken++;
+  gameState.screen = "prep";
+  gameState.previewQueue = scenario.shufflePreview === false ? [...previewItems] : shufflePreviewItems(previewItems);
+  gameState.previewIndex = 0;
+  gameState.feedback = "";
+  gameState.feedbackType = "";
+  gameState.feedbackTarget = "";
+  gameState.openingAudioCompleted = false;
+  renderScreen();
+}
+
+function continuePreparationPreview() {
+  if (gameState.screen !== "prep") return;
+
+  const isLastItem = gameState.previewIndex >= gameState.previewQueue.length - 1;
+
+  if (!isLastItem) {
+    gameState.previewIndex++;
+    renderScreen();
+    return;
+  }
+
+  if (shouldPlayOpeningAudioBeforeStart()) {
+    startOpeningAudioIntro();
+    return;
+  }
+
+  startGame();
+}
+
+function shouldPlayOpeningAudioBeforeStart(scenario = getCurrentScenario()) {
+  return scenario.phaseNumber === 2 && Boolean(scenario.openingAudioSrc || scenario.openingAudioText);
+}
+
+function startOpeningAudioIntro() {
+  const scenario = getCurrentScenario();
+
+  gameState.runToken++;
+  gameState.screen = "audio-intro";
+  gameState.openingAudioCompleted = false;
+  gameState.feedback = "";
+  gameState.feedbackType = "";
+  renderScreen();
+
+  const runToken = gameState.runToken;
+  playCookingCue({ audioSrc: scenario.openingAudioSrc, text: scenario.openingAudioText }, () => {
+    if (runToken !== gameState.runToken || gameState.screen !== "audio-intro") return;
+
+    gameState.openingAudioCompleted = true;
+    renderScreen();
+  });
+}
+
+function continueAfterOpeningAudio() {
+  if (gameState.screen !== "audio-intro") return;
+
+  cancelBrowserVoice();
+  startGame();
 }
 
 function showMemoryQuestionScreen() {
@@ -1378,7 +1524,7 @@ function formatMilliseconds(milliseconds) {
 
 function getSymbolicTime() {
   if (gameState.screen === "result") return "0:00";
-  if (gameState.screen === "intro") return "20:00";
+  if (gameState.screen === "intro" || gameState.screen === "prep" || gameState.screen === "audio-intro") return "20:00";
   if (isOpeningStepCountdownActive()) {
     const remaining = gameState.stepCountdownRemaining ?? getCurrentCountdownSeconds();
     return getCountdownText(remaining);
@@ -1442,6 +1588,13 @@ function clearStepCountdown() {
   if (gameState) {
     gameState.countdownStepId = null;
     gameState.stepCountdownRemaining = null;
+  }
+}
+
+function clearStepAudioDelay() {
+  if (stepAudioTimeoutId) {
+    window.clearTimeout(stepAudioTimeoutId);
+    stepAudioTimeoutId = null;
   }
 }
 
@@ -1723,6 +1876,74 @@ function renderIntro() {
   return createShell(scenario.introTitle, body, actions);
 }
 
+function renderPreparationPreview() {
+  const queue =
+    gameState.previewQueue.length > 0
+      ? gameState.previewQueue
+      : getCurrentPreviewItems();
+  const item = queue[gameState.previewIndex] || queue[0];
+  const isLastItem = gameState.previewIndex >= queue.length - 1;
+  const previewSvg =
+    typeof renderFoodPreviewSvg === "function"
+      ? renderFoodPreviewSvg(item.foodId)
+      : `<div class="food-preview-fallback" aria-hidden="true">${item.label}</div>`;
+  const body = `
+    <section class="food-preview-card" aria-live="polite">
+      <div class="food-preview-counter">
+        ${gameState.previewIndex + 1} de ${queue.length}
+      </div>
+      <div class="food-preview-art">
+        ${previewSvg}
+      </div>
+      <h2>${item.label}</h2>
+      ${item.description ? `<p>${item.description}</p>` : ""}
+    </section>
+  `;
+
+  const actions = `
+    <button class="memory-button button-one cooking-action-button" type="button" data-cooking-next-preview>
+      ${isLastItem ? "Comenzar" : "Siguiente"}
+    </button>
+  `;
+
+  return createShell("Preparación visual", body, actions);
+}
+
+function renderOpeningAudioIntro() {
+  const scenario = getCurrentScenario();
+  const body = `
+    <section class="cooking-instruction cooking-audio-scene-note">
+      <h2>Escucha la instrucción inicial</h2>
+      <p>Observa la ubicación de los alimentos en la cocina. El cronómetro empieza cuando continúes.</p>
+    </section>
+    <section class="cooking-opening-stage">
+      ${renderKitchenSvg()}
+      ${
+        gameState.openingAudioCompleted
+          ? `<div class="cooking-start-modal" role="dialog" aria-modal="true" aria-labelledby="cooking-start-modal-title">
+              <div class="cooking-start-modal-card">
+                <h2 id="cooking-start-modal-title">Instrucción finalizada</h2>
+                <p>Ahora puedes iniciar la prueba de cocina.</p>
+                <div class="cooking-start-modal-actions">
+                  <button class="memory-button button-two cooking-action-button" type="button" data-cooking-repeat-opening-audio>
+                    Repetir audio
+                  </button>
+                  <button class="memory-button button-one cooking-action-button" type="button" data-cooking-continue-opening-audio>
+                    Continuar e iniciar
+                  </button>
+                </div>
+              </div>
+            </div>`
+          : `<button class="cooking-skip-audio-button" type="button" data-cooking-skip-opening-audio>
+              Saltar
+            </button>`
+      }
+    </section>
+  `;
+
+  return createShell("Instrucción inicial", body);
+}
+
 function renderScene() {
   const step = getCurrentStep();
   const body = `
@@ -1938,6 +2159,8 @@ function renderScreen() {
 
   const screens = {
     intro: renderIntro,
+    prep: renderPreparationPreview,
+    "audio-intro": renderOpeningAudioIntro,
     scene: renderScene,
     daughter: renderDaughterMessage,
     memory: renderMemoryQuestion,
@@ -1965,14 +2188,8 @@ function startGame() {
   renderScreen();
 
   if (scenario.phaseNumber === 2) {
-    playCookingCueSequence([
-      { audioSrc: scenario.openingAudioSrc, text: scenario.openingAudioText },
-      getAutoStepAudioCue()
-    ]);
-    return;
-  }
-
-  if (scenario.openingAudioText || scenario.openingAudioSrc) {
+    scheduleCurrentStepHelpIfNeeded();
+  } else if (scenario.openingAudioText || scenario.openingAudioSrc) {
     playCookingCue({ audioSrc: scenario.openingAudioSrc, text: scenario.openingAudioText });
   }
 }
@@ -2020,6 +2237,8 @@ function handleCookingTarget(targetId) {
   }
 
   if (gameState.resolvedStepId === step.id) return;
+
+  cancelBrowserVoice();
 
   const timingStatus = getPhaseOneSimpleTimingStatus(step, answeredAt);
 
@@ -2086,7 +2305,7 @@ function handleCookingTarget(targetId) {
     gameState.isStepLocked = false;
     gameState.resolvedStepId = null;
     renderScreen();
-    speakCurrentStepHelpIfNeeded();
+    scheduleCurrentStepHelpIfNeeded();
   }, 650);
 }
 
@@ -2102,6 +2321,7 @@ function repeatCurrentInstruction() {
 
 function cancelBrowserVoice() {
   voiceSequenceToken++;
+  clearStepAudioDelay();
 
   cookingAudioPlayer.pause();
   cookingAudioPlayer.currentTime = 0;
@@ -2111,21 +2331,6 @@ function cancelBrowserVoice() {
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
-}
-
-function playCookingCueSequence(cues) {
-  const queue = cues.filter((cue) => cue && (cue.audioSrc || cue.text));
-
-  if (queue.length === 0) return;
-
-  const playNext = () => {
-    const cue = queue.shift();
-
-    if (!cue) return;
-    playCookingCue(cue, playNext);
-  };
-
-  playNext();
 }
 
 function getAutoStepAudioCue() {
@@ -2152,6 +2357,19 @@ function speakCurrentStepHelpIfNeeded() {
   }
 }
 
+function scheduleCurrentStepHelpIfNeeded(delayMs = stepAudioDelayMs) {
+  clearStepAudioDelay();
+
+  const runToken = gameState.runToken;
+  stepAudioTimeoutId = window.setTimeout(() => {
+    stepAudioTimeoutId = null;
+
+    if (runToken !== gameState.runToken || gameState.screen !== "scene") return;
+
+    speakCurrentStepHelpIfNeeded();
+  }, delayMs);
+}
+
 function continueAfterDaughterMessage() {
   cancelBrowserVoice();
 
@@ -2170,6 +2388,7 @@ function continueAfterDaughterMessage() {
   gameState.isStepLocked = false;
   gameState.resolvedStepId = null;
   renderScreen();
+  scheduleCurrentStepHelpIfNeeded();
 }
 
 function toggleMemoryProduct(product) {
@@ -2248,7 +2467,7 @@ function continueAfterMemoryReview() {
     gameState.isStepLocked = false;
     gameState.resolvedStepId = null;
     renderScreen();
-    speakCurrentStepHelpIfNeeded();
+    scheduleCurrentStepHelpIfNeeded();
     return;
   }
 
@@ -2483,6 +2702,10 @@ document.addEventListener("click", (event) => {
   const modeButton = event.target.closest("[data-food-phase-mode]");
   const nextButton = event.target.closest("[data-next]");
   const startButton = event.target.closest("[data-cooking-start]");
+  const nextPreviewButton = event.target.closest("[data-cooking-next-preview]");
+  const repeatOpeningAudioButton = event.target.closest("[data-cooking-repeat-opening-audio]");
+  const continueOpeningAudioButton = event.target.closest("[data-cooking-continue-opening-audio]");
+  const skipOpeningAudioButton = event.target.closest("[data-cooking-skip-opening-audio]");
   const cookingTarget = event.target.closest("[data-cooking-target]");
   const repeatInstructionButton = event.target.closest("[data-cooking-repeat-instruction]");
   const continueDaughterButton = event.target.closest("[data-cooking-continue-daughter]");
@@ -2519,7 +2742,36 @@ document.addEventListener("click", (event) => {
   }
 
   if (startButton) {
-    startGame();
+    startPreparationPreview();
+    return;
+  }
+
+  if (nextPreviewButton) {
+    continuePreparationPreview();
+    return;
+  }
+
+  if (repeatOpeningAudioButton) {
+    const scenario = getCurrentScenario();
+    gameState.openingAudioCompleted = false;
+    renderScreen();
+    const runToken = gameState.runToken;
+    playCookingCue({ audioSrc: scenario.openingAudioSrc, text: scenario.openingAudioText }, () => {
+      if (runToken !== gameState.runToken || gameState.screen !== "audio-intro") return;
+
+      gameState.openingAudioCompleted = true;
+      renderScreen();
+    });
+    return;
+  }
+
+  if (continueOpeningAudioButton) {
+    continueAfterOpeningAudio();
+    return;
+  }
+
+  if (skipOpeningAudioButton) {
+    continueAfterOpeningAudio();
     return;
   }
 
