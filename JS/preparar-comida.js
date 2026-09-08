@@ -161,10 +161,10 @@ const phaseOneDoubleSteps = [
   {
     id: "cerdo",
     title: "Paso 2 de 5",
-    instruction: "Enciende la hornilla de la carne.",
+    instruction: "Enciende la hornilla del cerdo.",
     targetId: "cerdo",
-    note: "Carne: poner a freír.",
-    success: "Carne encendida.",
+    note: "Cerdo: poner a freír.",
+    success: "Cerdo encendido.",
     timer: "Faltan 15 segundos",
     progress: 40,
     turnOn: "cerdo"
@@ -731,7 +731,7 @@ const cookingScenarioConfigs = {
     steps: phaseOneDoubleSteps,
     burnerLabels: {
       sopa: "Sopa",
-      cerdo: "Carne",
+      cerdo: "Cerdo",
       verdura: "Verdura",
       "carne-doble": "Carne"
     },
@@ -752,11 +752,11 @@ const cookingScenarioConfigs = {
       { id: "preview-sopa", label: "Sopa", foodId: "sopa" },
       { id: "preview-carne-doble", label: "Carne", foodId: "carne-doble" },
       { id: "preview-verdura", label: "Verdura", foodId: "verdura" },
-      { id: "preview-carne-sarten", label: "Carne en sartén", foodId: "cerdo" }
+      { id: "preview-cerdo", label: "Cerdo", foodId: "cerdo" }
     ],
     recipeNotes: [
       ["sal-sopa", 220, "Sal", "a sopa"],
-      ["cerdo", 294, "Freír", "carne"],
+      ["cerdo", 294, "Freír", "cerdo"],
       ["verdura-on", 368, "Sofreír", "verdura"],
       ["verdura-off", 442, "Apagar", "verdura"],
       ["carne-doble", 516, "Freír", "carne"]

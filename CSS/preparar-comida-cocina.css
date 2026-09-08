@@ -558,6 +558,18 @@
   fill: #6b3f1d;
 }
 
+.potato-speck {
+  fill: #8a5a2a;
+}
+
+.food-carne-pieces,
+.vegetables-mix,
+.plantain-slices,
+.guiso-bowl {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .water-bubble {
   fill: #f8fafc;
   stroke: #93c5fd;

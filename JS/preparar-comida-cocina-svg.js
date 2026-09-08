@@ -119,6 +119,108 @@ function renderKitchenFoods(variant, slots) {
   return renderPhase1Foods(slots);
 }
 
+function renderCarnePieces(cx, cy, scale = 1) {
+  return `
+    <g class="food-carne-pieces" transform="translate(${cx} ${cy}) scale(${scale})">
+      <path class="meat-cut meat-cut-one" d="M-36 -20 C-20 -50 24 -44 42 -10 C26 28 -26 26 -36 -20 Z" />
+      <path class="meat-cut meat-cut-two" d="M-46 12 C-24 -16 18 -2 28 34 C4 58 -38 48 -46 12 Z" />
+      <path class="meat-line" d="M-24 -24 C-10 -8 10 -2 34 -8 M-30 14 C-10 22 6 30 18 42 M-4 -36 C-16 -10 -22 12 -30 32" />
+    </g>
+  `;
+}
+
+function renderPorkChop(cx, cy, scale = 0.68) {
+  return `
+    <g class="pork-chop-mini" transform="translate(${cx} ${cy}) scale(${scale}) translate(-795 -458)">
+      <path class="pork-chop-base" d="M746 474 C732 450 744 424 774 416 C792 412 804 416 820 406 C846 388 880 414 880 448 C880 490 846 518 798 518 C770 518 756 492 746 474 Z" />
+      <path class="pork-chop-fat-edge" d="M746 474 C732 450 744 424 774 416 C792 412 804 416 820 406 C846 388 880 414 880 448 C880 490 846 518 798 518 C770 518 756 492 746 474 Z" />
+      <path class="pork-chop-large-section" d="M810 426 C832 394 868 416 866 450 C864 486 838 502 802 500 C794 474 794 446 810 426 Z" />
+      <path class="pork-chop-left-section" d="M756 438 C772 424 794 426 806 424 C792 446 778 458 758 468 C750 456 750 446 756 438 Z" />
+      <path class="pork-chop-bottom-section" d="M766 484 C786 470 796 456 806 446 C806 464 808 480 812 500 C790 500 774 494 766 484 Z" />
+      <path class="pork-chop-divider" d="M806 424 C788 446 776 458 758 468 M806 446 C806 466 808 482 812 500" />
+    </g>
+  `;
+}
+
+function renderGuisoBowl(cx, cy, scale = 1) {
+  return `
+    <g class="guiso-bowl" transform="translate(${cx} ${cy}) scale(${scale}) translate(-500 -458)">
+      <circle class="guiso-pot" cx="500" cy="458" r="64" />
+      <circle class="guiso-cream" cx="500" cy="458" r="50" />
+      <circle class="guiso-base" cx="500" cy="458" r="42" />
+      <path class="pot-side-handle" d="M438 458 C418 438 418 478 438 458" />
+      <path class="pot-side-handle" d="M562 458 C582 438 582 478 562 458" />
+      <circle class="tomato" cx="476" cy="444" r="10" />
+      <circle class="tomato" cx="526" cy="474" r="10" />
+      <circle class="onion" cx="506" cy="452" r="10" />
+      <circle class="garlic-piece" cx="488" cy="476" r="7" />
+      <circle class="garlic-piece" cx="532" cy="440" r="6" />
+      <path class="guiso-strip" d="M470 470 l20 -18 M508 484 l24 -14 M490 438 l-18 -14" />
+    </g>
+  `;
+}
+
+function renderVegetablesMix(cx, cy, scale = 1) {
+  return `
+    <g class="vegetables-mix" transform="translate(${cx} ${cy}) scale(${scale})">
+      <circle class="veggie-tomato" cx="-34" cy="-20" r="12" />
+      <circle class="veggie-tomato" cx="36" cy="30" r="11" />
+      <circle class="veggie-onion" cx="0" cy="6" r="14" />
+      <circle class="veggie-corn" cx="32" cy="-18" r="9" />
+      <circle class="veggie-olive" cx="-18" cy="40" r="10" />
+      <path class="veggie-broccoli" d="M-54 28 C-70 20 -66 0 -48 -2 C-40 -18 -18 -12 -22 6 C-8 14 -16 34 -34 32 Z" />
+      <path class="veggie-broccoli" d="M34 10 C18 2 22 -18 40 -18 C48 -34 70 -28 66 -8 C80 0 72 20 54 18 Z" />
+      <rect class="carrot-piece" x="-24" y="-30" width="15" height="38" rx="6" transform="rotate(-36 -16 -11)" />
+      <rect class="bell-pepper-piece" x="14" y="40" width="15" height="34" rx="6" transform="rotate(48 22 57)" />
+      <rect class="green-bean" x="-58" y="4" width="11" height="46" rx="6" transform="rotate(30 -52 27)" />
+    </g>
+  `;
+}
+
+function renderWholePotatoes(cx, cy, scale = 1) {
+  return `
+    <g class="potatoes-in-pot" transform="translate(${cx} ${cy}) scale(${scale})">
+      <g transform="translate(-38 -28) rotate(-18)">
+        <path class="whole-potato potato-in-pot" d="M0 20 C2 4 22 -4 36 8 C50 20 44 44 26 50 C10 54 -4 38 0 20 Z" />
+        <path class="potato-skin-mark potato-skin-mark-small" d="M10 38 C18 40 25 39 32 35" />
+        <ellipse class="potato-speck" cx="14" cy="17" rx="2.4" ry="3.4" />
+        <ellipse class="potato-speck" cx="28" cy="27" rx="1.7" ry="2.5" />
+      </g>
+      <g transform="translate(8 -38) rotate(14)">
+        <path class="whole-potato whole-potato-back potato-in-pot" d="M0 18 C4 2 24 -3 38 8 C54 21 48 45 30 51 C12 56 -4 36 0 18 Z" />
+        <path class="potato-skin-mark potato-skin-mark-small" d="M28 37 C36 33 40 27 42 20" />
+        <ellipse class="potato-speck" cx="18" cy="15" rx="1.8" ry="2.6" />
+        <ellipse class="potato-speck" cx="31" cy="28" rx="2.2" ry="3.1" />
+      </g>
+      <g transform="translate(-28 14) rotate(20)">
+        <path class="whole-potato whole-potato-front potato-in-pot" d="M0 18 C5 2 25 -3 39 8 C52 20 47 43 30 50 C12 56 -5 36 0 18 Z" />
+        <path class="potato-skin-mark potato-skin-mark-small" d="M9 36 C17 39 26 38 34 34" />
+        <ellipse class="potato-speck" cx="15" cy="17" rx="2.1" ry="3" />
+        <ellipse class="potato-speck" cx="30" cy="29" rx="1.6" ry="2.5" />
+      </g>
+      <g transform="translate(22 16) rotate(-10)">
+        <path class="whole-potato potato-in-pot" d="M0 17 C4 2 22 -4 36 7 C50 19 45 42 28 49 C12 55 -4 35 0 17 Z" />
+        <path class="potato-skin-mark potato-skin-mark-small" d="M27 36 C35 32 39 26 41 19" />
+        <ellipse class="potato-speck" cx="12" cy="17" rx="1.7" ry="2.6" />
+        <ellipse class="potato-speck" cx="27" cy="24" rx="2.2" ry="3" />
+      </g>
+    </g>
+  `;
+}
+
+function renderPlantainSlices(cx, cy, scale = 1) {
+  return `
+    <g class="plantain-slices" transform="translate(${cx} ${cy}) scale(${scale})">
+      <ellipse class="plantain-slice" cx="-29" cy="-20" rx="14" ry="26" transform="rotate(-34 -29 -20)" />
+      <ellipse class="plantain-slice" cx="-5" cy="-10" rx="14" ry="26" transform="rotate(-14 -5 -10)" />
+      <ellipse class="plantain-slice" cx="21" cy="-8" rx="14" ry="25" transform="rotate(14 21 -8)" />
+      <ellipse class="plantain-slice plantain-front" cx="-15" cy="24" rx="15" ry="27" transform="rotate(60 -15 24)" />
+      <ellipse class="plantain-slice plantain-front" cx="29" cy="22" rx="15" ry="27" transform="rotate(48 29 22)" />
+      <path class="plantain-seeds" d="M-29 -20 l5 5 M-5 -10 l5 5 M21 -8 l5 5 M-15 24 l5 5 M29 22 l5 5" />
+    </g>
+  `;
+}
+
 function renderPhase1Foods(slots) {
   return `
     <g class="food-pan food-arroz ${getFoodFeedbackClass(slots.topLeft)}">
@@ -161,9 +263,7 @@ function renderPhase1Foods(slots) {
     <g class="food-pan food-carne ${getFoodFeedbackClass(slots.bottomRight)}">
       <circle class="plate-rim" cx="795" cy="458" r="65" />
       <circle class="plate-inner" cx="795" cy="458" r="52" />
-      <path class="meat-cut meat-cut-one" d="M759 438 C775 408 819 414 837 448 C821 486 769 484 759 438 Z" />
-      <path class="meat-cut meat-cut-two" d="M749 466 C769 442 807 454 817 486 C793 510 753 500 749 466 Z" />
-      <path class="meat-line" d="M771 432 C783 446 801 452 827 448 M765 468 C783 476 797 484 807 496 M789 422 C779 446 773 466 765 484" />
+      ${renderCarnePieces(795, 458)}
     </g>
   `;
 }
@@ -186,34 +286,20 @@ function renderPhase1DoubleFoods(slots) {
       <path class="pan-handle angled-handle" d="M843 354 L927 430" />
       <circle class="pan-rim black-pan" cx="795" cy="312" r="66" />
       <circle class="pan-inner tomato-sauce" cx="795" cy="312" r="48" />
-      <path class="meat-cut meat-cut-one" d="M758 296 C774 270 820 276 838 308 C822 344 770 342 758 296 Z" />
-      <path class="meat-cut meat-cut-two" d="M748 324 C770 300 808 312 818 344 C792 368 754 358 748 324 Z" />
-      <path class="meat-line" d="M770 290 C786 306 804 312 828 308 M764 326 C784 334 800 342 810 352 M790 282 C780 306 774 326 766 344" />
+      ${renderCarnePieces(795, 312, 0.9)}
     </g>
 
     <g class="food-pan food-verdura ${getFoodFeedbackClass(slots.bottomLeft)}">
-      <circle class="guiso-pot" cx="500" cy="458" r="64" />
-      <circle class="guiso-cream" cx="500" cy="458" r="50" />
-      <circle class="guiso-base" cx="500" cy="458" r="42" />
-      <path class="pot-side-handle" d="M438 458 C418 438 418 478 438 458" />
-      <path class="pot-side-handle" d="M562 458 C582 438 582 478 562 458" />
-      <circle class="pepper" cx="476" cy="444" r="10" />
-      <circle class="onion" cx="524" cy="468" r="10" />
-      <circle class="guiso-olive" cx="510" cy="436" r="8" />
-      <path class="herb" d="M466 472 l25 -16 M500 484 l32 -18 M488 438 l-24 -14 M520 450 l24 -12" />
+      <path class="pan-handle" d="M438 458 H390" />
+      <circle class="pan-rim vegetable-pan" cx="500" cy="458" r="64" />
+      <circle class="pan-inner vegetable-base" cx="500" cy="458" r="46" />
+      ${renderVegetablesMix(500, 458, 0.72)}
     </g>
 
-    <g class="food-pan food-carne-generica ${getFoodFeedbackClass(slots.bottomRight)}">
+    <g class="food-pan food-cerdo ${getFoodFeedbackClass(slots.bottomRight)}">
       <circle class="plate-rim" cx="795" cy="458" r="65" />
       <circle class="plate-inner" cx="795" cy="458" r="52" />
-      <g class="pork-chop-mini" transform="translate(795 458) scale(0.68) translate(-795 -458)">
-        <path class="pork-chop-base" d="M746 474 C732 450 744 424 774 416 C792 412 804 416 820 406 C846 388 880 414 880 448 C880 490 846 518 798 518 C770 518 756 492 746 474 Z" />
-        <path class="pork-chop-fat-edge" d="M746 474 C732 450 744 424 774 416 C792 412 804 416 820 406 C846 388 880 414 880 448 C880 490 846 518 798 518 C770 518 756 492 746 474 Z" />
-        <path class="pork-chop-large-section" d="M810 426 C832 394 868 416 866 450 C864 486 838 502 802 500 C794 474 794 446 810 426 Z" />
-        <path class="pork-chop-left-section" d="M756 438 C772 424 794 426 806 424 C792 446 778 458 758 468 C750 456 750 446 756 438 Z" />
-        <path class="pork-chop-bottom-section" d="M766 484 C786 470 796 456 806 446 C806 464 808 480 812 500 C790 500 774 494 766 484 Z" />
-        <path class="pork-chop-divider" d="M806 424 C788 446 776 458 758 468 M806 446 C806 466 808 482 812 500" />
-      </g>
+      ${renderPorkChop(795, 458, 0.68)}
     </g>
   `;
 }
@@ -285,32 +371,7 @@ function renderPhase2DoubleFoods(slots) {
       <circle class="pot-handle" cx="562" cy="312" r="18" />
       <circle class="pot-rim" cx="500" cy="312" r="65" />
       <circle class="potato-pot-fill" cx="500" cy="312" r="50" />
-      <g class="potatoes-in-pot" transform="translate(500 312) scale(0.72) translate(-500 -312)">
-        <g transform="translate(462 286) rotate(-18)">
-          <path class="whole-potato potato-in-pot" d="M0 20 C2 4 22 -4 36 8 C50 20 44 44 26 50 C10 54 -4 38 0 20 Z" />
-          <path class="potato-skin-mark potato-skin-mark-small" d="M10 38 C18 40 25 39 32 35" />
-          <circle class="potato-eye" cx="14" cy="17" r="2.6" />
-          <circle class="potato-eye" cx="26" cy="23" r="2.4" />
-        </g>
-        <g transform="translate(504 276) rotate(14)">
-          <path class="whole-potato whole-potato-back potato-in-pot" d="M0 18 C4 2 24 -3 38 8 C54 21 48 45 30 51 C12 56 -4 36 0 18 Z" />
-          <path class="potato-skin-mark potato-skin-mark-small" d="M28 37 C36 33 40 27 42 20" />
-          <circle class="potato-eye" cx="16" cy="15" r="2.4" />
-          <circle class="potato-eye" cx="29" cy="24" r="2.8" />
-        </g>
-        <g transform="translate(476 318) rotate(20)">
-          <path class="whole-potato whole-potato-front potato-in-pot" d="M0 18 C5 2 25 -3 39 8 C52 20 47 43 30 50 C12 56 -5 36 0 18 Z" />
-          <path class="potato-skin-mark potato-skin-mark-small" d="M9 36 C17 39 26 38 34 34" />
-          <circle class="potato-eye" cx="16" cy="17" r="2.4" />
-          <circle class="potato-eye" cx="30" cy="26" r="2.7" />
-        </g>
-        <g transform="translate(520 318) rotate(-10)">
-          <path class="whole-potato potato-in-pot" d="M0 17 C4 2 22 -4 36 7 C50 19 45 42 28 49 C12 55 -4 35 0 17 Z" />
-          <path class="potato-skin-mark potato-skin-mark-small" d="M27 36 C35 32 39 26 41 19" />
-          <circle class="potato-eye" cx="13" cy="16" r="2.4" />
-          <circle class="potato-eye" cx="27" cy="23" r="2.6" />
-        </g>
-      </g>
+      ${renderWholePotatoes(500, 312, 0.62)}
     </g>
 
     <g class="food-pan food-pollo ${getFoodFeedbackClass(slots.topRight)}">
@@ -344,12 +405,7 @@ function renderPhase2DoubleFoods(slots) {
       <path class="pan-handle angled-handle" d="M843 500 L922 574" />
       <circle class="pan-rim black-pan" cx="795" cy="458" r="66" />
       <circle class="pan-inner oil-pan" cx="795" cy="458" r="48" />
-      <ellipse class="plantain-slice" cx="766" cy="438" rx="14" ry="26" transform="rotate(-34 766 438)" />
-      <ellipse class="plantain-slice" cx="790" cy="448" rx="14" ry="26" transform="rotate(-14 790 448)" />
-      <ellipse class="plantain-slice" cx="816" cy="450" rx="14" ry="25" transform="rotate(14 816 450)" />
-      <ellipse class="plantain-slice plantain-front" cx="780" cy="482" rx="15" ry="27" transform="rotate(60 780 482)" />
-      <ellipse class="plantain-slice plantain-front" cx="824" cy="480" rx="15" ry="27" transform="rotate(48 824 480)" />
-      <path class="plantain-seeds" d="M766 438 l5 5 M790 448 l5 5 M816 450 l5 5 M780 482 l5 5 M824 480 l5 5" />
+      ${renderPlantainSlices(795, 458)}
     </g>
   `;
 }
@@ -368,10 +424,7 @@ function renderPhase3Foods(slots) {
       <path class="pan-handle angled-handle" d="M843 354 L927 430" />
       <circle class="pan-rim black-pan" cx="795" cy="312" r="66" />
       <circle class="pan-inner oil-pan" cx="795" cy="312" r="48" />
-      <path class="beef-piece" d="M760 298 C772 274 806 276 818 300 C806 326 770 328 760 298 Z" />
-      <path class="beef-piece beef-piece-two" d="M810 322 C824 298 856 304 864 332 C846 354 816 348 810 322 Z" />
-      <path class="beef-piece beef-piece-three" d="M766 342 C782 322 812 334 812 360 C792 374 766 366 766 342 Z" />
-      <path class="beef-line" d="M772 296 C788 306 800 310 812 304 M820 324 C836 330 848 332 858 326 M778 344 C790 352 800 354 808 350" />
+      ${renderCarnePieces(795, 312, 0.86)}
       <circle class="seasoning-dot" cx="790" cy="288" r="4" />
       <circle class="seasoning-dot" cx="836" cy="344" r="4" />
     </g>
@@ -380,12 +433,7 @@ function renderPhase3Foods(slots) {
       <path class="pan-handle" d="M438 458 H390" />
       <circle class="pan-rim vegetable-pan" cx="500" cy="458" r="64" />
       <circle class="pan-inner vegetable-base" cx="500" cy="458" r="46" />
-      <rect class="carrot-piece" x="466" y="438" width="13" height="30" rx="5" transform="rotate(-34 472 453)" />
-      <rect class="carrot-piece" x="512" y="470" width="13" height="28" rx="5" transform="rotate(48 518 484)" />
-      <circle class="veggie-onion" cx="498" cy="452" r="10" />
-      <circle class="veggie-onion" cx="526" cy="472" r="8" />
-      <rect class="bell-pepper-piece" x="526" y="438" width="12" height="30" rx="5" transform="rotate(-32 532 453)" />
-      <rect class="bell-pepper-piece" x="482" y="472" width="12" height="27" rx="5" transform="rotate(38 488 486)" />
+      ${renderVegetablesMix(500, 458, 0.72)}
       <path class="veggie-steam-line" d="M474 430 C466 418 482 414 476 402 M510 428 C502 416 518 412 512 400 M538 436 C530 424 546 420 540 408" />
     </g>
 
@@ -393,15 +441,7 @@ function renderPhase3Foods(slots) {
       <path class="pan-handle angled-handle" d="M843 500 L922 574" />
       <circle class="pan-rim black-pan" cx="795" cy="458" r="66" />
       <circle class="pan-inner oil-pan" cx="795" cy="458" r="48" />
-      <path class="fried-potato-slice" d="M750 430 C762 410 790 416 792 440 C794 462 764 470 752 452 C744 442 744 436 750 430 Z" />
-      <path class="fried-potato-slice potato-slice-light" d="M790 422 C806 406 832 418 830 442 C828 462 798 468 788 450 C782 438 782 430 790 422 Z" />
-      <path class="fried-potato-slice" d="M818 456 C834 438 860 452 856 476 C852 498 820 500 812 478 C808 468 810 462 818 456 Z" />
-      <path class="fried-potato-slice potato-slice-light" d="M764 474 C780 458 808 470 806 492 C804 512 774 518 762 498 C756 488 756 480 764 474 Z" />
-      <path class="potato-fry-marks" d="M764 438 l12 5 M802 436 l13 6 M828 472 l12 -5 M778 490 l14 6" />
-      <circle class="potato-eye" cx="772" cy="450" r="2.7" />
-      <circle class="potato-eye" cx="810" cy="446" r="2.7" />
-      <circle class="potato-eye" cx="834" cy="482" r="2.7" />
-      <circle class="potato-eye" cx="786" cy="500" r="2.7" />
+      ${renderWholePotatoes(795, 458, 0.62)}
     </g>
   `;
 }
@@ -446,11 +486,7 @@ function renderPhase4Foods(slots) {
       <path class="pan-handle angled-handle" d="M843 500 L922 574" />
       <circle class="pan-rim black-pan" cx="795" cy="458" r="66" />
       <circle class="pan-inner oil-pan" cx="795" cy="458" r="48" />
-      <path class="plantain-strip" d="M756 438 C770 420 792 424 798 448 C786 470 762 466 756 438 Z" />
-      <path class="plantain-strip plantain-strip-front" d="M802 440 C818 422 842 430 846 456 C832 478 808 468 802 440 Z" />
-      <path class="plantain-strip" d="M770 478 C786 458 810 464 816 490 C800 510 776 502 770 478 Z" />
-      <path class="plantain-strip plantain-strip-front" d="M818 482 C832 462 856 470 860 496 C846 516 822 506 818 482 Z" />
-      <path class="plantain-brown-line" d="M764 440 C774 450 784 454 794 450 M810 444 C822 454 834 458 842 454 M780 480 C792 490 802 494 812 490 M826 486 C838 496 848 500 856 496" />
+      ${renderPlantainSlices(795, 458)}
     </g>
   `;
 }
@@ -469,6 +505,16 @@ function renderFoodPreviewSvg(foodId) {
   const kind = getPreviewFoodKind(foodId);
   const potFoods = ["arroz", "pasta", "papas", "lentejas", "sopa"];
   const content = renderPreviewFoodContent(kind);
+
+  if (kind === "guiso") {
+    return `
+      <svg class="food-preview-svg" viewBox="0 0 300 230" aria-hidden="true" focusable="false">
+        <g class="food-pan food-preview-guiso">
+          ${renderGuisoBowl(150, 112, 1.22)}
+        </g>
+      </svg>
+    `;
+  }
 
   return `
     <svg class="food-preview-svg" viewBox="0 0 300 230" aria-hidden="true" focusable="false">
@@ -508,7 +554,7 @@ function getPreviewFoodKind(foodId) {
     huevos: "huevos",
     carne: "carne",
     "carne-doble": "carne",
-    cerdo: "carne",
+    cerdo: "cerdo",
     "carne-res": "carne",
     "carne-f4-doble": "carne",
     pollo: "pollo",
@@ -560,34 +606,7 @@ function renderPreviewFoodContent(kind) {
   }
 
   if (kind === "papas") {
-    return `
-      <g class="potatoes-in-pot">
-        <g transform="translate(110 76) rotate(-18)">
-          <path class="whole-potato potato-in-pot" d="M0 20 C2 4 22 -4 36 8 C50 20 44 44 26 50 C10 54 -4 38 0 20 Z" />
-          <path class="potato-skin-mark potato-skin-mark-small" d="M10 38 C18 40 25 39 32 35" />
-          <circle class="potato-eye" cx="14" cy="17" r="2.8" />
-          <circle class="potato-eye" cx="27" cy="24" r="2.8" />
-        </g>
-        <g transform="translate(150 72) rotate(14)">
-          <path class="whole-potato whole-potato-back potato-in-pot" d="M0 18 C4 2 24 -3 38 8 C54 21 48 45 30 51 C12 56 -4 36 0 18 Z" />
-          <path class="potato-skin-mark potato-skin-mark-small" d="M28 37 C36 33 40 27 42 20" />
-          <circle class="potato-eye" cx="16" cy="15" r="2.8" />
-          <circle class="potato-eye" cx="30" cy="24" r="3" />
-        </g>
-        <g transform="translate(118 120) rotate(20)">
-          <path class="whole-potato whole-potato-front potato-in-pot" d="M0 18 C5 2 25 -3 39 8 C52 20 47 43 30 50 C12 56 -5 36 0 18 Z" />
-          <path class="potato-skin-mark potato-skin-mark-small" d="M9 36 C17 39 26 38 34 34" />
-          <circle class="potato-eye" cx="16" cy="17" r="2.8" />
-          <circle class="potato-eye" cx="30" cy="26" r="3" />
-        </g>
-        <g transform="translate(166 122) rotate(-10)">
-          <path class="whole-potato potato-in-pot" d="M0 17 C4 2 22 -4 36 7 C50 19 45 42 28 49 C12 55 -4 35 0 17 Z" />
-          <path class="potato-skin-mark potato-skin-mark-small" d="M27 36 C35 32 39 26 41 19" />
-          <circle class="potato-eye" cx="13" cy="16" r="2.8" />
-          <circle class="potato-eye" cx="27" cy="23" r="3" />
-        </g>
-      </g>
-    `;
+    return renderWholePotatoes(150, 112, 0.85);
   }
 
   if (kind === "huevos") {
@@ -613,25 +632,19 @@ function renderPreviewFoodContent(kind) {
   }
 
   if (kind === "carne") {
-    return `
-      <path class="beef-piece" d="M96 94 C112 64 156 68 174 98 C158 132 108 134 96 94 Z" />
-      <path class="beef-piece beef-piece-two" d="M164 124 C182 94 224 104 234 138 C212 166 174 158 164 124 Z" />
-      <path class="beef-piece beef-piece-three" d="M110 148 C130 122 168 138 168 170 C144 188 110 178 110 148 Z" />
-      <path class="beef-line" d="M112 94 C132 106 148 112 166 104 M178 126 C198 136 216 138 228 130 M126 150 C142 160 156 162 166 156" />
-      <circle class="seasoning-dot" cx="136" cy="82" r="5" />
-      <circle class="seasoning-dot" cx="204" cy="150" r="5" />
-    `;
+    return renderCarnePieces(150, 112, 1);
+  }
+
+  if (kind === "cerdo") {
+    return renderPorkChop(150, 112, 0.86);
   }
 
   if (kind === "platano") {
-    return `
-      <ellipse class="plantain-slice" cx="110" cy="88" rx="18" ry="34" transform="rotate(-34 110 88)" />
-      <ellipse class="plantain-slice" cx="148" cy="104" rx="18" ry="34" transform="rotate(-14 148 104)" />
-      <ellipse class="plantain-slice" cx="186" cy="106" rx="18" ry="32" transform="rotate(14 186 106)" />
-      <ellipse class="plantain-slice plantain-front" cx="132" cy="152" rx="19" ry="34" transform="rotate(58 132 152)" />
-      <ellipse class="plantain-slice plantain-front" cx="192" cy="150" rx="19" ry="34" transform="rotate(48 192 150)" />
-      <path class="plantain-seeds" d="M110 88 l6 6 M148 104 l6 6 M186 106 l6 6 M132 152 l6 6 M192 150 l6 6" />
-    `;
+    return renderPlantainSlices(150, 112, 1.28);
+  }
+
+  if (kind === "verduras") {
+    return renderVegetablesMix(150, 112, 1);
   }
 
   return `
