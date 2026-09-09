@@ -183,26 +183,18 @@ function renderWholePotatoes(cx, cy, scale = 1) {
       <g transform="translate(-38 -28) rotate(-18)">
         <path class="whole-potato potato-in-pot" d="M0 20 C2 4 22 -4 36 8 C50 20 44 44 26 50 C10 54 -4 38 0 20 Z" />
         <path class="potato-skin-mark potato-skin-mark-small" d="M10 38 C18 40 25 39 32 35" />
-        <ellipse class="potato-speck" cx="14" cy="17" rx="2.4" ry="3.4" />
-        <ellipse class="potato-speck" cx="28" cy="27" rx="1.7" ry="2.5" />
       </g>
       <g transform="translate(8 -38) rotate(14)">
         <path class="whole-potato whole-potato-back potato-in-pot" d="M0 18 C4 2 24 -3 38 8 C54 21 48 45 30 51 C12 56 -4 36 0 18 Z" />
         <path class="potato-skin-mark potato-skin-mark-small" d="M28 37 C36 33 40 27 42 20" />
-        <ellipse class="potato-speck" cx="18" cy="15" rx="1.8" ry="2.6" />
-        <ellipse class="potato-speck" cx="31" cy="28" rx="2.2" ry="3.1" />
       </g>
       <g transform="translate(-28 14) rotate(20)">
         <path class="whole-potato whole-potato-front potato-in-pot" d="M0 18 C5 2 25 -3 39 8 C52 20 47 43 30 50 C12 56 -5 36 0 18 Z" />
         <path class="potato-skin-mark potato-skin-mark-small" d="M9 36 C17 39 26 38 34 34" />
-        <ellipse class="potato-speck" cx="15" cy="17" rx="2.1" ry="3" />
-        <ellipse class="potato-speck" cx="30" cy="29" rx="1.6" ry="2.5" />
       </g>
       <g transform="translate(22 16) rotate(-10)">
         <path class="whole-potato potato-in-pot" d="M0 17 C4 2 22 -4 36 7 C50 19 45 42 28 49 C12 55 -4 35 0 17 Z" />
         <path class="potato-skin-mark potato-skin-mark-small" d="M27 36 C35 32 39 26 41 19" />
-        <ellipse class="potato-speck" cx="12" cy="17" rx="1.7" ry="2.6" />
-        <ellipse class="potato-speck" cx="27" cy="24" rx="2.2" ry="3" />
       </g>
     </g>
   `;
