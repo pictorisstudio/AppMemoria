@@ -135,7 +135,7 @@
   stroke: #ef4444;
 }
 
-.burner-svg.is-target circle:first-child {
+.cooking-scene.is-visual-cue-mode .burner-svg.is-target circle:first-child {
   stroke: #facc15;
   stroke-width: 10;
   filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.75));

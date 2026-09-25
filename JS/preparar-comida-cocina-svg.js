@@ -94,7 +94,6 @@ function renderKitchenSvg() {
 
 function getFoodFeedbackClass(targetId) {
   const scenario = getCurrentScenario();
-  if (!scenario.visualCueMode) return "";
 
   if (gameState.feedbackTarget === targetId) {
     if (gameState.feedbackType === "success") return "is-food-success";
@@ -102,6 +101,7 @@ function getFoodFeedbackClass(targetId) {
   }
 
   if (
+    scenario.visualCueMode &&
     gameState.screen === "scene" &&
     getCurrentStep().targetId === targetId
   ) {
