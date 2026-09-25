@@ -93,13 +93,15 @@ function renderKitchenSvg() {
 }
 
 function getFoodFeedbackClass(targetId) {
+  const scenario = getCurrentScenario();
+  if (!scenario.visualCueMode) return "";
+
   if (gameState.feedbackTarget === targetId) {
     if (gameState.feedbackType === "success") return "is-food-success";
     if (gameState.feedbackType === "error") return "is-food-error";
   }
 
   if (
-    getCurrentScenario().visualCueMode &&
     gameState.screen === "scene" &&
     getCurrentStep().targetId === targetId
   ) {
